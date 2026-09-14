@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Weathered Thread — Product (Key Screen Mock)</title>
+<style>
+/*
+  Governs: DESIGN.md Colors, Typography, Components (button-primary, garment-swatch,
+  motif-tile selected state), Shapes, Elevation.
+  EXPERIENCE.md: Component Patterns (garment-swatch, button-primary rows),
+  State Patterns (motif preview placeholder, out-of-stock), Key Flow 1 steps 3-5.
+  Fonts: Fraunces / IBM Plex Mono are the brand typefaces; this offline mock uses
+  system serif/mono fallbacks (Georgia / ui-monospace) since it must render with no
+  network access. Swap in real webfonts at build time.
+*/
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 40px 16px; display: flex; justify-content: center;
+  background: #ddd6c8; font-family: -apple-system, Georgia, serif;
+}
+.frame {
+  width: 390px; background: #EFEAE0; color: #2B2A26;
+  border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(43,42,38,.25);
+}
+.nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px; border-bottom: 1px solid #D9D2C2;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 11px;
+  letter-spacing: .08em; text-transform: uppercase;
+}
+.nav .back { font-size: 13px; letter-spacing: 0; text-transform: none; }
+.preview {
+  aspect-ratio: 4/5; background: #F7F4EC; display: flex; align-items: center;
+  justify-content: center; text-align: center; padding: 24px;
+  border-bottom: 1px solid #D9D2C2;
+}
+.preview .label {
+  font-family: ui-monospace, monospace; font-size: 12px; color: #7C8567;
+  line-height: 1.5; max-width: 260px;
+}
+.preview .swatch {
+  width: 120px; height: 120px; border-radius: 4px; background: #2F4858;
+  margin: 0 auto 16px; display: flex; align-items: center; justify-content: center;
+  color: #EFEAE0; font-family: ui-monospace, monospace; font-size: 10px;
+}
+.content { padding: 20px; }
+h1 { font-size: 22px; font-weight: 500; margin: 0 0 4px; }
+.price {
+  font-family: ui-monospace, monospace; font-size: 16px; font-weight: 500;
+  color: #2B2A26; margin: 0 0 20px;
+}
+.field-label {
+  font-family: ui-monospace, monospace; font-size: 11px; letter-spacing: .06em;
+  text-transform: uppercase; color: #7C8567; margin-bottom: 8px; display: block;
+}
+.swatches { display: flex; gap: 10px; margin-bottom: 20px; }
+.swatch-dot {
+  width: 32px; height: 32px; border-radius: 9999px; border: 2px solid #D9D2C2;
+  position: relative; cursor: pointer;
+}
+.swatch-dot.selected { border-color: #2B2A26; }
+.swatch-dot.oos { opacity: .35; }
+.swatch-dot.oos::after {
+  content: ""; position: absolute; inset: -4px; border: 1px solid #7C8567;
+  border-radius: 9999px;
+}
+.sw-pepper { background: #5b5652; } .sw-bluejean { background: #45607a; }
+.sw-ivory { background: #efe9d8; } .sw-bay { background: #7f8f8a; }
+.sizes { display: flex; gap: 8px; margin-bottom: 24px; }
+.size {
+  width: 40px; height: 36px; border: 1px solid #D9D2C2; border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: ui-monospace, monospace; font-size: 12px;
+}
+.size.selected { border-color: #2B2A26; background: #2B2A26; color: #EFEAE0; }
+.btn-primary {
+  width: 100%; padding: 16px; background: #2F4858; color: #EFEAE0; border: none;
+  border-radius: 2px; font-family: ui-monospace, monospace; font-size: 13px;
+  letter-spacing: .06em; text-transform: uppercase; margin-bottom: 28px;
+}
+.desc { font-size: 15px; line-height: 1.6; margin-bottom: 28px; }
+.section { border-top: 1px solid #D9D2C2; padding: 20px 0; }
+.section h2 {
+  font-family: ui-monospace, monospace; font-size: 12px; letter-spacing: .08em;
+  text-transform: uppercase; color: #A8823C; margin: 0 0 10px;
+}
+.section p { font-size: 14px; line-height: 1.6; margin: 0; color: #2B2A26; }
+.oos-note {
+  font-family: ui-monospace, monospace; font-size: 10px; color: #7C8567;
+  margin-top: 6px;
+}
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="nav"><span class="back">← Sea Isle</span><span>Bag (0)</span></div>
+
+  <div class="preview">
+    <div>
+      <div class="swatch">wt</div>
+      <div class="label">Water Tower on Blue Jean Crewneck<br>— placeholder mockup, real photography pending —</div>
+    </div>
+  </div>
+
+  <div class="content">
+    <h1>Water Tower — Crewneck Sweatshirt</h1>
+    <p class="price">$68</p>
+
+    <span class="field-label">Color</span>
+    <div class="swatches">
+      <div class="swatch-dot sw-pepper selected" title="Pepper"></div>
+      <div class="swatch-dot sw-bluejean" title="Blue Jean"></div>
+      <div class="swatch-dot sw-ivory oos" title="Ivory — out of stock"></div>
+      <div class="swatch-dot sw-bay" title="Bay"></div>
+    </div>
+    <p class="oos-note">Ivory currently out of stock in this style.</p>
+
+    <span class="field-label" style="margin-top:20px; display:block;">Size</span>
+    <div class="sizes">
+      <div class="size">S</div>
+      <div class="size selected">M</div>
+      <div class="size">L</div>
+      <div class="size">XL</div>
+    </div>
+
+    <button class="btn-primary">Add to Bag</button>
+
+    <p class="desc">A water tower on the skyline means you're close. This one's Sea Isle's — stitched onto a heavyweight crewneck built to soften with every wash, not wear out.</p>
+
+    <div class="section">
+      <h2>The Garment</h2>
+      <p>Comfort Colors garment-dyed crewneck sweatshirt. Soft, broken-in feel from the first wear, generous fit. Fabric weight and care detail pending final spec sheet.</p>
+    </div>
+    <div class="section">
+      <h2>The Embroidery</h2>
+      <p>Water Tower — one motif from the Sea Isle collection. Stitched in navy thread, part of the "PLACE → STORY → MOTIF → OBJECT" line: a specific landmark, remembered.</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

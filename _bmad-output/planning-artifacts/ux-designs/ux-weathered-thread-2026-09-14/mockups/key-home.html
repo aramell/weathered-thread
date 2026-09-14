@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Weathered Thread — Home (Key Screen Mock)</title>
+<style>
+/*
+  Governs: EXPERIENCE.md Information Architecture (Home row, fixed section order
+  from imports/website-build-handoff-prd.md §4), Voice and Tone, Component
+  Patterns (nav-header, product-card, collection-story-block).
+  DESIGN.md: Colors, Typography, Layout & Spacing (story-gap between sections).
+  Fonts: Fraunces / IBM Plex Mono are the brand typefaces; this offline mock uses
+  system serif/mono fallbacks since it must render with no network access.
+*/
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 40px 16px; display: flex; justify-content: center;
+  background: #ddd6c8; font-family: -apple-system, Georgia, serif;
+}
+.frame {
+  width: 390px; background: #EFEAE0; color: #2B2A26;
+  border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(43,42,38,.25);
+}
+.nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px; border-bottom: 1px solid #D9D2C2; position: sticky; top: 0;
+  background: #EFEAE0; z-index: 2;
+}
+.nav .mark { font-size: 15px; font-weight: 500; }
+.nav .links {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 10px;
+  letter-spacing: .08em; text-transform: uppercase; display: flex; gap: 14px;
+}
+section { padding: 40px 20px; border-bottom: 1px solid #D9D2C2; }
+.hero { text-align: center; padding: 64px 24px; }
+.hero .tag {
+  font-family: ui-monospace, monospace; font-size: 11px; letter-spacing: .1em;
+  text-transform: uppercase; color: #7C8567; margin: 0 0 14px;
+}
+.hero h1 { font-size: 30px; font-weight: 450; line-height: 1.15; margin: 0 0 14px; }
+.hero p { font-size: 15px; color: #2B2A26; opacity: .8; margin: 0; }
+
+.feature { background: #2F4858; color: #EFEAE0; text-align: left; }
+.feature .eyebrow {
+  font-family: ui-monospace, monospace; font-size: 11px; letter-spacing: .1em;
+  text-transform: uppercase; opacity: .75; margin: 0 0 10px;
+}
+.feature h2 { font-size: 26px; font-weight: 450; margin: 0 0 12px; }
+.feature p { font-size: 14px; line-height: 1.6; opacity: .92; margin: 0 0 20px; }
+.feature .link {
+  font-family: ui-monospace, monospace; font-size: 11px; letter-spacing: .06em;
+  text-transform: uppercase; border-bottom: 1px solid #A8823C; padding-bottom: 2px;
+}
+
+.idea { text-align: center; }
+.idea p {
+  font-size: 19px; line-height: 1.5; font-style: italic; max-width: 300px;
+  margin: 0 auto;
+}
+
+.grid-head { font-family: ui-monospace, monospace; font-size: 12px; letter-spacing: .08em;
+  text-transform: uppercase; color: #7C8567; margin: 0 0 16px; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.card { background: #F7F4EC; border-radius: 4px; padding: 14px; }
+.card .sw { aspect-ratio: 1; background: #D9D2C2; border-radius: 4px; margin-bottom: 10px; }
+.card .t { font-size: 13px; margin: 0 0 2px; }
+.card .p { font-family: ui-monospace, monospace; font-size: 12px; color: #2B2A26; margin: 0; }
+
+.embroidery { text-align: center; }
+.embroidery h2 { font-size: 20px; font-weight: 500; margin: 0 0 10px; }
+.embroidery p { font-size: 14px; line-height: 1.6; max-width: 300px; margin: 0 auto; }
+
+.signup { text-align: center; }
+.signup h2 { font-size: 18px; font-weight: 500; margin: 0 0 8px; }
+.signup p { font-size: 13px; opacity: .75; margin: 0 0 16px; }
+.signup form { display: flex; gap: 8px; }
+.signup input {
+  flex: 1; border: 1px solid #D9D2C2; border-radius: 2px; padding: 10px 12px;
+  font-size: 13px; background: #F7F4EC;
+}
+.signup button {
+  background: #2F4858; color: #EFEAE0; border: none; border-radius: 2px;
+  padding: 0 16px; font-family: ui-monospace, monospace; font-size: 11px;
+  text-transform: uppercase; letter-spacing: .06em;
+}
+
+footer {
+  padding: 28px 20px 40px; font-family: ui-monospace, monospace; font-size: 11px;
+  color: #7C8567; display: flex; justify-content: space-between; border-bottom: none;
+}
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="nav">
+    <span class="mark">weathered thread</span>
+    <span class="links"><span>Shop</span><span>Collections</span><span>About</span></span>
+  </div>
+
+  <section class="hero">
+    <p class="tag">Made to Remember. Stitched in.</p>
+    <h1>A sense of place, stitched in.</h1>
+    <p>Embroidered apparel for the towns worth remembering.</p>
+  </section>
+
+  <section class="feature">
+    <p class="eyebrow">Launch Collection</p>
+    <h2>Sea Isle</h2>
+    <p>A water tower on the skyline, a life ring at the marina, the exit you take when you're almost there — thirteen small landmarks, stitched onto garment-dyed cotton built to soften with wear.</p>
+    <span class="link">Shop Sea Isle</span>
+  </section>
+
+  <section class="idea">
+    <p>"The embroidery is the medium. The feeling is the product."</p>
+  </section>
+
+  <section>
+    <p class="grid-head">Shop</p>
+    <div class="grid">
+      <div class="card"><div class="sw"></div><p class="t">Crewneck Sweatshirt</p><p class="p">$68</p></div>
+      <div class="card"><div class="sw"></div><p class="t">Heavyweight Tee</p><p class="p">$38</p></div>
+      <div class="card"><div class="sw"></div><p class="t">Lightweight Crewneck</p><p class="p">$58</p></div>
+      <div class="card"><div class="sw"></div><p class="t">Long Sleeve Tee</p><p class="p">$42</p></div>
+    </div>
+  </section>
+
+  <section class="embroidery">
+    <h2>The Embroidery</h2>
+    <p>Every motif is stitched, not printed — close-up detail on stitch quality and garment texture on every product page.</p>
+  </section>
+
+  <section class="signup">
+    <h2>Stay Stitched In</h2>
+    <p>New towns, new motifs, no noise.</p>
+    <form><input type="email" placeholder="you@email.com" /><button>Join</button></form>
+  </section>
+
+  <footer><span>© Weathered Thread</span><span>Shipping · Returns</span></footer>
+</div>
+</body>
+</html>

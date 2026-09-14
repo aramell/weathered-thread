@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Weathered Thread — Collection Story (Key Screen Mock)</title>
+<style>
+/*
+  Governs: DESIGN.md Colors (Deep Harbor large-area use), Components
+  (collection-story-block, motif-tile), Typography (display-lg-mobile).
+  EXPERIENCE.md: Information Architecture (Collection Story row), Component
+  Patterns (motif-tile), Key Flow 1 steps 1-3.
+  Fonts: Fraunces / IBM Plex Mono are the brand typefaces; this offline mock uses
+  system serif/mono fallbacks since it must render with no network access.
+*/
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 40px 16px; display: flex; justify-content: center;
+  background: #ddd6c8; font-family: -apple-system, Georgia, serif;
+}
+.frame {
+  width: 390px; background: #EFEAE0; color: #2B2A26;
+  border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(43,42,38,.25);
+}
+.nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px; border-bottom: 1px solid #D9D2C2;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 11px;
+  letter-spacing: .08em; text-transform: uppercase;
+}
+.story {
+  background: #2F4858; color: #EFEAE0; padding: 56px 24px 40px;
+}
+.story .eyebrow {
+  font-family: ui-monospace, monospace; font-size: 11px; letter-spacing: .1em;
+  text-transform: uppercase; opacity: .75; margin: 0 0 10px;
+}
+.story h1 { font-size: 34px; font-weight: 450; margin: 0 0 16px; line-height: 1.15; }
+.story p { font-size: 15px; line-height: 1.65; max-width: 320px; opacity: .92; margin: 0; }
+.gallery-head { padding: 28px 20px 12px; }
+.gallery-head h2 {
+  font-family: ui-monospace, monospace; font-size: 12px; letter-spacing: .08em;
+  text-transform: uppercase; color: #7C8567; margin: 0;
+}
+.gallery {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+  padding: 0 20px 28px;
+}
+.tile {
+  background: #F7F4EC; border-radius: 4px; padding: 16px 12px; text-align: center;
+  border: 1px solid transparent;
+}
+.tile.selected { border-color: #A8823C; }
+.tile .glyph {
+  width: 44px; height: 44px; border-radius: 4px; background: #D9D2C2; margin: 0 auto 10px;
+}
+.tile .name {
+  font-family: ui-monospace, monospace; font-size: 11px; letter-spacing: .02em;
+}
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="nav"><span>Weathered Thread</span><span>Search · Bag</span></div>
+
+  <div class="story">
+    <p class="eyebrow">Collection</p>
+    <h1>Sea Isle</h1>
+    <p>A story, stitched in. A water tower on the skyline, a life ring at the marina, the exit you take when you're almost there — thirteen small landmarks, remembered the way this town wants to be remembered.</p>
+  </div>
+
+  <div class="gallery-head"><h2>Choose a Motif</h2></div>
+  <div class="gallery">
+    <div class="tile"><div class="glyph"></div><div class="name">Seagull</div></div>
+    <div class="tile"><div class="glyph"></div><div class="name">Wave</div></div>
+    <div class="tile"><div class="glyph"></div><div class="name">Smile You're in Sea Isle</div></div>
+    <div class="tile selected"><div class="glyph"></div><div class="name">Water Tower</div></div>
+    <div class="tile"><div class="glyph"></div><div class="name">Life Ring</div></div>
+    <div class="tile"><div class="glyph"></div><div class="name">Turtle</div></div>
+    <div class="tile"><div class="glyph"></div><div class="name">Bike</div></div>
+    <div class="tile"><div class="glyph"></div><div class="name">Boat</div></div>
+    <div class="tile"><div class="glyph"></div><div class="name">Exit 17</div></div>
+    <div class="tile"><div class="glyph"></div><div class="name">Nautical Map – Fish Alley</div></div>
+    <div class="tile"><div class="glyph"></div><div class="name">Beach Chair</div></div>
+    <div class="tile"><div class="glyph"></div><div class="name">Pickleball</div></div>
+    <div class="tile"><div class="glyph"></div><div class="name">Lobster Loft</div></div>
+  </div>
+</div>
+</body>
+</html>
