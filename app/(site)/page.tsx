@@ -70,7 +70,7 @@ export default function Home() {
         <p className="mb-5 font-display text-body-sm">
           New towns, new motifs, no noise.
         </p>
-        <form className="flex gap-2">
+        <div className="flex gap-2">
           <label htmlFor="email-signup" className="sr-only">
             Email address
           </label>
@@ -81,12 +81,12 @@ export default function Home() {
             className="min-h-11 flex-1 rounded-sm border border-line bg-paper-raised px-3 font-display text-body-sm text-wet-ink"
           />
           <button
-            type="submit"
+            type="button"
             className="min-h-11 rounded-sm bg-deep-harbor px-4 font-mono text-label-mono uppercase text-sailcloth"
           >
             Join
           </button>
-        </form>
+        </div>
       </section>
 
       {/* Footer */}

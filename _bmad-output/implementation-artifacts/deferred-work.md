@@ -13,3 +13,55 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-1-3-sea-isle-collection-story-page.md`
   summary: `nav-header`'s "Collections" link points to `/collections`, which 404s — there is no `app/(site)/collections/page.tsx` (an index of all collections).
   evidence: Confirmed via route listing; pre-existing from Story 1.2, not caused by this story, surfaced while tracing this route's consumers.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-1-homepage-renders-with-brand-identity.md`
+  summary: `components/nav-scroll-shell.tsx` measures `navHeight` via `offsetHeight` once at mount, with no re-measure on window resize, orientation change, or webfont-load reflow — the sticky/hairline scroll threshold can go stale.
+  evidence: Confirmed the `useEffect` has an empty dependency array and no resize/ResizeObserver listener; introduced by Story 1.2 (`6e93e8b`), not this story, surfaced while reviewing the bundled diff.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-1-homepage-renders-with-brand-identity.md`
+  summary: `app/(site)/collections/[slug]/page.tsx`'s `generateMetadata` reads `collection.story[0]` with no check that `story` is non-empty, so a future collection with an empty `story` array would silently get an `undefined` meta description.
+  evidence: Confirmed by reading the function; introduced by Story 1.3 (`88f345c`), not this story, surfaced while reviewing the bundled diff.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-1-homepage-renders-with-brand-identity.md`
+  summary: Shipped homepage/layout code still uses Fraunces + IBM Plex Mono, but the in-flight `sprint-change-proposal-2026-09-15.md` rework (reflected in uncommitted edits to `epics.md`/DESIGN.md/EXPERIENCE.md) calls for Libre Franklin body copy — code and planning docs are currently out of sync.
+  evidence: Confirmed by diffing planning-doc changes against `app/layout.tsx`/`app/globals.css`/`app/(site)/page.tsx` in the same diff; this is scope for the correct-course rework, not this story.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-1-homepage-renders-with-brand-identity.md`
+  summary: The homepage's fixed section order per spec-1-1 (7 sections) has not been updated to add "product philosophy" and "lifestyle imagery" sections that the in-flight correct-course rework specifies in epics.md/EXPERIENCE.md.
+  evidence: Confirmed `app/(site)/page.tsx` still renders exactly the original 7 sections; the rework is not yet implemented as of this review, which is expected since spec-1-1 predates the proposal.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-1-homepage-renders-with-brand-identity.md`
+  summary: spec-1-1's `<frozen-after-approval>` Intent block still describes pre-correct-course scope (Fraunces/IBM Plex Mono, 7 fixed sections) with nothing in the spec itself flagging it as pending renegotiation per the sprint-change proposal.
+  evidence: Confirmed by reading the frozen block; the correct-course workflow, not this build run, is responsible for updating/flagging frozen specs when scope changes.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-1-homepage-renders-with-brand-identity.md`
+  summary: The 13 new Sea Isle motif names introduced by the correct-course rework in `epics.md` are not yet reflected in `app/(site)/collections/[slug]/page.tsx` or `spec-1-3-sea-isle-collection-story-page.md`, which still use the old motif names.
+  evidence: Confirmed by comparing epics.md's updated AC list against the shipped code/spec; expected since this rework is still in flight and out of Story 1.1's scope.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-1-homepage-renders-with-brand-identity.md`
+  summary: `epic-1-context.md`'s cached "Requirements & Constraints" section still quotes the old 13 motif names verbatim even though its stated source (`epics.md`) has since changed.
+  evidence: Confirmed by comparing the cached context file against the current epics.md; the context file is documented as auto-regenerating but nothing currently marks it stale.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-1-homepage-renders-with-brand-identity.md`
+  summary: The new 13-motif-name list added to `epics.md` mixes naming conventions — some entries spell "Sea Isle City" out fully, one abbreviates to "SIC", and capitalization is inconsistent across entries.
+  evidence: Confirmed by reading the list in epics.md; worth normalizing before this becomes shipped product copy.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-1-homepage-renders-with-brand-identity.md`
+  summary: The new "product philosophy" and "lifestyle imagery" homepage sections are named in epics.md/EXPERIENCE.md but the actual copy requirement ("Made to look better lived in") only appears in the sprint-change-proposal's prose, not in epics.md's Story 1.1 AC that implementers will actually consult.
+  evidence: Confirmed by comparing sprint-change-proposal-2026-09-15.md Section 4 against epics.md's current Story 1.1 AC list.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-1-homepage-renders-with-brand-identity.md`
+  summary: The new "lifestyle imagery" homepage section doesn't say whether it follows the rest of Epic 1's explicit placeholder-color-block convention (no `<img>`, no spinner, until Epic 2 photography) or how it satisfies epic-1-context.md's "cold load shows no spinner" constraint and the UX doc's alt-text requirement.
+  evidence: Confirmed by reading epic-1-context.md's constraints against the new section's description in epics.md/EXPERIENCE.md; unresolved as of this review.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-1-homepage-renders-with-brand-identity.md`
+  summary: `sprint-change-proposal-2026-09-15.md` Section 1 asserts a fourth planning area (product-page content requirements) "already matched" what's planned, requiring no change, but gives no citation, unlike every other claim in the same proposal.
+  evidence: Confirmed by reading the proposal; this claim can't currently be checked against a source.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-1-homepage-renders-with-brand-identity.md`
+  summary: `sprint-change-proposal-2026-09-15.md` references a "Weathered Thread — Next Iteration Notes" / "CURRENT WEBSITE WORKING DOCUMENT" throughout but never gives a file path or location for it, so none of the proposal's claims can be checked against their source.
+  evidence: Confirmed by reading the proposal in full; no such reference is given anywhere in the diff.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-1-homepage-renders-with-brand-identity.md`
+  summary: epics.md's new About-page AC (handmade-variation copy, processing-time copy, "Sea Isle as first chapter" positioning) gives no guidance on where this content lands relative to the page's existing "brand idea, philosophy, and tagline" content.
+  evidence: Confirmed by reading the new AC block; unlike other ACs in the same doc (e.g. FR15's homepage section order), it doesn't pin placement.

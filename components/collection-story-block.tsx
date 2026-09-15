@@ -30,12 +30,40 @@ export default function CollectionStoryBlock({
       return;
     }
 
+    // Reveal must be scroll-triggered, never fire on initial mount — but an
+    // IntersectionObserver's first callback reports the *current* intersection
+    // state as soon as observe() runs, so a section already on-screen at load
+    // (short Hero, tall viewport) would otherwise reveal with zero scrolling.
+    // Gate on an actual scroll event, and re-check visibility directly on
+    // scroll so a still-visible-but-already-past-threshold section isn't
+    // stuck waiting for another threshold crossing that may never happen.
+    let hasScrolled = false;
+    let done = false;
+
+    const reveal = () => {
+      if (done) return;
+      done = true;
+      setRevealed(true);
+      observer.disconnect();
+      window.removeEventListener("scroll", handleScroll);
+    };
+
+    const handleScroll = () => {
+      hasScrolled = true;
+      const rect = node.getBoundingClientRect();
+      const visibleHeight =
+        Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
+      if (rect.height > 0 && visibleHeight / rect.height >= 0.2) {
+        reveal();
+      }
+    };
+
     const observer = new IntersectionObserver(
       (entries) => {
+        if (!hasScrolled) return;
         for (const entry of entries) {
           if (entry.isIntersecting) {
-            setRevealed(true);
-            observer.disconnect();
+            reveal();
           }
         }
       },
@@ -43,7 +71,11 @@ export default function CollectionStoryBlock({
     );
 
     observer.observe(node);
-    return () => observer.disconnect();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   return (
