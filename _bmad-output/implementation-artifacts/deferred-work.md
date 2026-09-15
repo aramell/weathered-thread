@@ -93,3 +93,7 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-1-4-about-page.md`
   summary: No page besides Home renders a `<footer>` (copyright/shipping info) — `app/(site)/layout.tsx` only injects the nav, so every other route (Collection Story, now About) ends with no site-wide footer.
   evidence: Confirmed `app/(site)/collections/[slug]/page.tsx` (Story 1.3) also has no footer, so this is a pre-existing sitewide pattern gap, not introduced by Story 1.4; deciding whether footer belongs in `app/(site)/layout.tsx` (persistent, like nav) or stays per-page is a design call bigger than one story.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-5-homepage-email-signup.md`
+  summary: The repo has zero automated tests anywhere (no test files, config, or `package.json` script) — Story 1.5's new `subscribeEmail` Server Action, the first logic in the site that calls a paid external API and mutates real third-party state, ships with only live-manual and lint/build verification.
+  evidence: Confirmed via repo-wide search (no `*.test.*`/`*.spec.*` files, no jest/vitest/playwright config, no test script) during Story 1.5's review; this is a pre-existing gap present since Story 1.1, not something this story introduced — establishing the repo's first test framework and mocking convention is a project-level decision bigger than one story's trivial-fix bar.

@@ -1,5 +1,6 @@
 import ButtonPrimary from "@/components/button-primary";
 import CollectionStoryBlock from "@/components/collection-story-block";
+import EmailSignupForm from "@/components/email-signup-form";
 import ProductCard from "@/components/product-card";
 
 const shopItems = [
@@ -70,23 +71,7 @@ export default function Home() {
         <p className="mb-5 font-body text-body-sm">
           New towns, new motifs, no noise.
         </p>
-        <div className="flex gap-2">
-          <label htmlFor="email-signup" className="sr-only">
-            Email address
-          </label>
-          <input
-            id="email-signup"
-            type="email"
-            placeholder="you@email.com"
-            className="min-h-11 flex-1 rounded-sm border border-line bg-paper-raised px-3 font-body text-body-sm text-wet-ink"
-          />
-          <button
-            type="button"
-            className="min-h-11 rounded-sm bg-deep-harbor px-4 font-mono text-label-mono uppercase text-sailcloth"
-          >
-            Join
-          </button>
-        </div>
+        <EmailSignupForm />
       </section>
 
       {/* Footer */}
