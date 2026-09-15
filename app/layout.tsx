@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, IBM_Plex_Mono, Libre_Franklin } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -34,7 +35,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${fraunces.variable} ${ibmPlexMono.variable} ${libreFranklin.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-display">{children}</body>
+      <body className="min-h-full flex flex-col font-display">
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
