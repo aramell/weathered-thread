@@ -89,3 +89,7 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-1-3-sea-isle-collection-story-page-2.md`
   summary: The corrected 13-motif list (approved verbatim in sprint-change-proposal-2026-09-15.md) mixes caption conventions: most are Title Case place names, one is an unexplained initialism ("SIC Water Tower" — "SIC" is never expanded anywhere on the page), and one is lowercase ("Sea Isle shoreline / sailboat"). Three names are also noticeably longer than the rest and embed slashes.
   evidence: Verified these are the exact strings from the approved proposal/epics.md AC, not an implementation choice — normalizing casing or expanding "SIC" would mean altering brand-approved customer-facing copy without sign-off, so it's flagged rather than silently changed.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-4-about-page.md`
+  summary: No page besides Home renders a `<footer>` (copyright/shipping info) — `app/(site)/layout.tsx` only injects the nav, so every other route (Collection Story, now About) ends with no site-wide footer.
+  evidence: Confirmed `app/(site)/collections/[slug]/page.tsx` (Story 1.3) also has no footer, so this is a pre-existing sitewide pattern gap, not introduced by Story 1.4; deciding whether footer belongs in `app/(site)/layout.tsx` (persistent, like nav) or stays per-page is a design call bigger than one story.

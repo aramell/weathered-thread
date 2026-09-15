@@ -11,9 +11,12 @@
   --color-line: #D9D2C2;
 
   /* Typefaces — Fraunces carries expressive type, IBM Plex Mono carries
-     functional/precise type. CSS variables come from next/font in layout.tsx. */
+     functional/precise type, Libre Franklin carries paragraph-length body
+     copy (DESIGN.md's body/body-sm tokens). CSS variables come from
+     next/font in layout.tsx. */
   --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
   --font-mono: var(--font-ibm-plex-mono), ui-monospace, "SFMono-Regular", monospace;
+  --font-body: var(--font-libre-franklin), ui-sans-serif, system-ui, sans-serif;
 
   /* Type scale (DESIGN.md typography tokens) */
   --text-display-lg: 40px;
