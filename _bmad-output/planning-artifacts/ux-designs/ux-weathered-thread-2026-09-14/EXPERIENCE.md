@@ -20,7 +20,7 @@ Two systems make up the full purchase path: this site (everything through "Add t
 
 | Surface | Reached from | Purpose |
 |---|---|---|
-| Home | Site entry | Hero → Sea Isle feature → brand idea/story → shop grid → embroidery/detail section → email signup → footer (order fixed per brand PRD) |
+| Home | Site entry | Hero → Sea Isle feature → brand idea/story → shop grid → product philosophy → embroidery/detail section → lifestyle imagery → email signup → footer (order fixed per brand PRD) |
 | Shop | Nav: SHOP | Garment-type grid — Sweatshirts / Tees / (Hats, if sellable at launch) |
 | Garment Type List | Shop tap | Grid of blanks in that garment type, by color |
 | Collections | Nav: COLLECTIONS | List of town collections — Sea Isle only at launch, structured for more |
@@ -45,6 +45,9 @@ Microcopy only; brand voice and aesthetic posture live in `DESIGN.md.Brand & Sty
 | "Continuing to checkout." (before the Squarespace redirect) | "Redirecting…" (generic, no sense of continuity) |
 | "This design is currently out of stock in your size." | "Oops! Sold out 😢" |
 | Full sentences, quiet confidence | Exclamation marks, urgency language, countdown/scarcity copy |
+| "The beauty is in the details." | Apologizing for handmade variation as a flaw |
+| "Because each piece is embroidered individually, slight variations in stitching and finish are natural." | "Please excuse any imperfections" |
+| "Made to order. Please allow [X–X business days] for your piece to be embroidered and prepared for shipment." | "Processing times may vary" (vague, non-committal) |
 
 ## Component Patterns
 

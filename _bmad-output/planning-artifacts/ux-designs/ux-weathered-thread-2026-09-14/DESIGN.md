@@ -29,12 +29,12 @@ typography:
     fontWeight: '500'
     lineHeight: '1.25'
   body:
-    fontFamily: Fraunces
+    fontFamily: Libre Franklin
     fontSize: 17px
     fontWeight: '400'
     lineHeight: '1.6'
   body-sm:
-    fontFamily: Fraunces
+    fontFamily: Libre Franklin
     fontSize: 15px
     fontWeight: '400'
     lineHeight: '1.55'
@@ -133,7 +133,7 @@ Five brand colors, two supporting tones, transcribed exactly from `imports/websi
 
 ## Typography
 
-Two typefaces, each with one job. **Fraunces** (serif) carries everything expressive — display, headlines, and body copy, using its text optical size for reading passages so it stays warm and legible at paragraph length rather than only working as oversized display type. **IBM Plex Mono** carries everything functional and precise — labels, navigation, prices, SKU/care detail, captions — the brand's nod to a garment tag or a hand-stamped receipt.
+Three typefaces, each with one job. **Fraunces** (serif) carries display and headline moments only — hero, collection-story headlines, section headers ("THE GARMENT," "THE EMBROIDERY") — where its personality earns its place. **Libre Franklin** (sans) carries body copy — emotional description, story paragraphs, product narrative — a plainer, more legible workhorse at paragraph length. **IBM Plex Mono** carries everything functional and precise — labels, navigation, prices, SKU/care detail, captions — the brand's nod to a garment tag or a hand-stamped receipt.
 
 - `{typography.display-lg}` — hero and collection-story headlines ("SEA ISLE"). Drop to `{typography.display-lg-mobile}` under the mobile breakpoint.
 - `{typography.headline}` — section headers within a page ("THE GARMENT," "THE EMBROIDERY").

@@ -31,7 +31,7 @@ FR11: Visitor can search text across garments and motifs; empty results show a p
 FR12: Product page renders, in fixed order: product images → name/price → color/size selectors → Add to Bag → emotional description → "THE GARMENT" → "THE EMBROIDERY" → fit/size → care → shipping/returns.
 FR13: Catalog data (price, inventory, SKU, product name, Squarespace product URL) is synced from Squarespace's Products/Inventory API into the site's static content via a manually-run sync script.
 FR14: Motif, story, and collection-grouping content is authored directly in the repo, keyed to synced garment data by SKU.
-FR15: Homepage renders, in fixed order: Hero → Sea Isle feature → brand idea/story → shop/product grid → embroidery/detail section → email signup → footer.
+FR15: Homepage renders, in fixed order: Hero → Sea Isle feature → brand idea/story → shop/product grid → product philosophy → embroidery/detail section → lifestyle imagery → email signup → footer.
 
 ### NonFunctional Requirements
 
@@ -69,7 +69,7 @@ UX-DR6: Implement `product-card` — Paper Raised surface, body-type title, pric
 UX-DR7: Implement `collection-story-block` — Deep Harbor surface, Sailcloth text, `display-lg` heading; scroll-triggered reveal only, no autoplay/carousel — the one place Deep Harbor covers a full section by design.
 UX-DR8: Implement the `checkout-handoff` interstitial — Sailcloth surface, headline/body-sm text, confirms garment + motif + color/size in plain language, one `button-primary` forward ("Continue to Checkout"); not skippable-by-accident.
 UX-DR9: Implement the 5-color brand palette + 2 supporting tones as real design tokens, exact hex values: Sailcloth `#EFEAE0`, Wet Ink `#2B2A26`, Deep Harbor `#2F4858`, Marsh Sage `#7C8567`, Antique Brass `#A8823C`, Paper Raised `#F7F4EC`, Line `#D9D2C2`.
-UX-DR10: Implement typography tokens as real webfonts — Fraunces (display/headline/body) + IBM Plex Mono (label/price/caption) — replacing the system-font fallback used in the offline mockups.
+UX-DR10: Implement typography tokens as real webfonts — Fraunces (display/headline) + Libre Franklin (body) + IBM Plex Mono (label/price/caption) — replacing the system-font fallback used in the offline mockups.
 UX-DR11: Implement spacing/radius tokens per `DESIGN.md`: spacing scale 1–7 plus `gutter-mobile`/`gutter-desktop`/`story-gap`; radii `sm`/`DEFAULT`/`md`/`full`.
 UX-DR12: Tap targets ≥ 44×44px across all interactive elements (mobile-first accessibility floor).
 UX-DR13: Alt text on all embroidery/product photography is descriptive of motif + story cue (e.g. "Water Tower motif embroidered on Blue Jean crewneck sweatshirt"), never filename-derived.
@@ -128,9 +128,9 @@ So that I immediately understand what Weathered Thread is and what's in the curr
 
 **Given** a visitor navigates to weatheredthread.com
 **When** the homepage loads
-**Then** it renders sections in this fixed order: Hero, Sea Isle feature, brand idea/story, shop/product grid, embroidery/detail section, email signup, footer
+**Then** it renders sections in this fixed order: Hero, Sea Isle feature, brand idea/story, shop/product grid, product philosophy, embroidery/detail section, lifestyle imagery, email signup, footer
 **And** Sailcloth, Wet Ink, Deep Harbor, Marsh Sage, and Antique Brass render as the only brand colors used, with Paper Raised/Line as supporting tones
-**And** headings/body copy render in Fraunces and labels/prices render in IBM Plex Mono
+**And** headings render in Fraunces, body copy renders in Libre Franklin, and labels/prices render in IBM Plex Mono
 **And** Deep Harbor covers the Sea Isle feature section as a full-bleed block — its one sanctioned large-area use
 **And** cards/raised surfaces use `rounded.DEFAULT` corners, buttons use `rounded.sm`, and no shape exceeds `rounded.md` except the circular `rounded.full` swatches introduced in Epic 3
 
@@ -173,7 +173,7 @@ So that the collection feels like a place worth remembering, not just a product 
 
 **Given** Sea Isle currently has 13 authored motifs
 **When** the gallery renders
-**Then** all 13 motif-tiles show with their real names (Seagull, Wave, Smile You're in Sea Isle, Water Tower, Life Ring, Turtle, Bike, Boat, Exit 17, Nautical Map – Fish Alley, Beach Chair, Pickleball, Lobster Loft)
+**Then** all 13 motif-tiles show with their real names (Sea Isle City Waves, Pickleball, Beach Chair, Seagull, Bicycle, Turtle, Life Preserver / N.J., Exit 17 / Sea Isle City, Sea Isle shoreline / sailboat, SIC Water Tower, Sea Isle Boat, Lobster Loft, Smile You're in Sea Isle)
 **And** this story covers browsing/reading only — tapping a motif to start the picker is Epic 3's
 
 ### Story 1.4: About Page
@@ -188,6 +188,12 @@ So that I understand what Weathered Thread stands for beyond the products.
 **When** the page loads
 **Then** it renders the brand idea, philosophy, and tagline using the same brand tokens as the rest of the site
 **And** the page contains no product grid, picker, or purchase path
+
+**Given** a visitor reads the About / How It's Made content
+**When** the page renders
+**Then** it explains the individual embroidery process using the handmade-variation language exactly as specified: "The beauty is in the details." and "Because each piece is embroidered individually, slight variations in stitching and finish are natural. These little differences are part of the character of a handmade piece."
+**And** it explains processing time confidently and matter-of-factly, using the customer-facing term "processing time" (e.g. "Made to order. Please allow [X–X business days] for your piece to be embroidered and prepared for shipment.")
+**And** it positions Sea Isle as the first chapter of a broader place-based brand
 
 ### Story 1.5: Homepage Email Signup
 
