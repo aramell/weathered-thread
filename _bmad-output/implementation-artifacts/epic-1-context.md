@@ -4,53 +4,49 @@
 
 ## Goal
 
-This epic establishes the visitor-facing foundation of the site: the brand identity (colors, type, spacing, shape) applied consistently, a persistent navigation shell, and the three "storytelling" surfaces a visitor sees before ever touching the garment×motif picker — the homepage, the Sea Isle Collection Story, and About — plus the homepage's email capture. It matters because the brand's core idea (PLACE → STORY → MOTIF → OBJECT) has to be felt on first load, not just be navigable; later epics (catalog data, picker, checkout handoff) build on the shell and tokens this epic delivers.
+A visitor can land on the site with the full brand identity applied — colors, typography, spacing — and immediately understand what Weathered Thread is. They can navigate to Shop, Collections, or About from anywhere via a consistent nav header, browse the homepage in its fixed section order, read the Sea Isle Collection Story (place/story narrative + motif gallery) before picking anything, read the brand's philosophy on About, and sign up for email updates. This epic establishes the design system and storytelling surfaces every later epic's UI builds on top of.
 
 ## Stories
 
-- Story 1.1: Homepage renders with brand identity, fixed section order
-- Story 1.2: Site-wide navigation (`nav-header`)
-- Story 1.3: Sea Isle Collection Story page (story block + motif gallery, browse-only)
-- Story 1.4: About page
-- Story 1.5: Homepage email signup via Resend
+- Story 1.1: Homepage Renders With Brand Identity
+- Story 1.2: Site-Wide Navigation
+- Story 1.3: Sea Isle Collection Story Page
+- Story 1.4: About Page
+- Story 1.5: Homepage Email Signup
 
 ## Requirements & Constraints
 
-- Homepage section order is fixed: Hero → Sea Isle feature → brand idea/story → shop/product grid → embroidery/detail section → email signup → footer. Do not reorder.
-- Nav is present on every page: SHOP, COLLECTIONS, ABOUT, search icon, bag icon. Tapping SHOP/COLLECTIONS/ABOUT routes to their respective surfaces (Shop and Search results themselves are out of scope for this epic — Epic 3).
-- Sea Isle Collection Story renders the `collection-story-block` first, then a motif gallery of all 13 authored motifs (Seagull, Wave, "Smile You're in Sea Isle", Water Tower, Life Ring, Turtle, Bike, Boat, Exit 17, Nautical Map – Fish Alley, Beach Chair, Pickleball, Lobster Loft), each with its real name label. Tapping a motif to start the picker is Epic 3's concern — this epic is browse/read only.
-- About page uses the same brand tokens as the rest of the site and contains no product grid, picker, or purchase path.
-- Mobile-first: every surface in this epic must work correctly at ~390px width first, with no horizontal scroll, before desktop layout is considered.
-- All interactive elements (nav items/icons, buttons) need tap targets ≥ 44×44px.
-- Motif tiles and any color/label UI need real text labels, never color/image-only identification; screen readers must announce selection-state changes where selection exists.
-- Text/background contrast for Wet Ink-on-Sailcloth and Sailcloth-on-Deep-Harbor must clear WCAG AA at body text size.
-- No accounts, login, personalization, or session state anywhere.
-- No carousels, popups, discount modals, countdown timers, or scarcity UI — the collection story block uses a one-time scroll-triggered reveal, never autoplay.
-- Cold load shows no spinner: images lazy-load behind a Sailcloth/Paper Raised placeholder.
-- Email signup: the Resend API key must never reach the client bundle; validation errors and success must be shown in plain, non-hyped language (e.g. not "Buy Now!!"/exclamation-heavy copy).
+- Homepage renders in this fixed order: Hero → Sea Isle feature → brand idea/story → shop/product grid → product philosophy → embroidery/detail section → lifestyle imagery → email signup → footer. Product philosophy ("Made to look better lived in") is distinct from the brand idea/story section ("The embroidery is the medium. The feeling is the product."); lifestyle imagery is atmospheric real-world photography (wood/porch/boardwalk/beach) placed late. Both are newly added sections as of a 2026-09-15 brand refinement — supersedes any older 7-section version.
+- Only the five brand colors (Sailcloth, Wet Ink, Deep Harbor, Marsh Sage, Antique Brass) plus supporting tones Paper Raised/Line are used anywhere — never a sixth color, never pure white/black. Deep Harbor covers full-bleed dark sections (hero/story block, footer) but must never read as generic nautical navy.
+- Three typefaces, one job each: Fraunces for display/headline moments only (hero, collection-story headlines, section headers) — never body copy; Libre Franklin for body copy/story paragraphs/narrative (a 2026-09-15 correction — body previously, incorrectly, used Fraunces); IBM Plex Mono for everything functional (nav, labels, prices, captions).
+- Cards/raised surfaces use `rounded.DEFAULT`; buttons use `rounded.sm`; nothing exceeds `rounded.md` except the `rounded.full` swatches (Epic 3).
+- Mobile-first at ~390px+: single-column, `gutter-mobile` padding, no horizontal scroll; desktop uses wider `gutter-desktop` and may run story sections image+text side by side. Tap targets ≥ 44×44px. Images lazy-load behind a Paper Raised/Sailcloth placeholder, no spinner on cold load. Wet Ink-on-Sailcloth and Sailcloth-on-Deep-Harbor text must clear WCAG AA. No carousels, popups, discount modals, countdowns, or scarcity UI.
+- Nav shows SHOP/COLLECTIONS/ABOUT as text labels at every breakpoint plus search/bag icons — no separate icon-forward mobile treatment (confirmed during Story 1.2's review). Sticky on mobile once scrolled past; constant Sailcloth surface, no tint/shadow, only a Line hairline once scrolled.
+- Sea Isle has exactly 13 authored motifs; the Collection Story gallery must show all 13 with these exact names (a 2026-09-15 correction — do not use an older name list): Sea Isle City Waves, Pickleball, Beach Chair, Seagull, Bicycle, Turtle, Life Preserver / N.J., Exit 17 / Sea Isle City, Sea Isle shoreline / sailboat, SIC Water Tower, Sea Isle Boat, Lobster Loft, Smile You're in Sea Isle. Note two distinct boat/shoreline motifs, not one generic "Boat." This page covers browsing/reading only — tapping a motif to start the picker is Epic 3's.
+- About renders brand idea/philosophy/tagline with the same brand tokens, with no product grid, picker, or purchase path. Its How It's Made content must use this handmade-variation language exactly: "The beauty is in the details." and "Because each piece is embroidered individually, slight variations in stitching and finish are natural. These little differences are part of the character of a handmade piece." It must also state processing time confidently using the term "processing time" (e.g. "Made to order. Please allow [X–X business days] for your piece to be embroidered and prepared for shipment.") — the exact day range is an open pre-launch item, don't invent one — and position Sea Isle as the first chapter of a broader place-based brand.
+- Email signup: valid submission calls the `subscribeEmail` Server Action (sends via Resend) and shows a plain-language success message; invalid/empty submission is validated inside `subscribeEmail` only and shows a plain-language error. `RESEND_API_KEY` never reaches the client bundle.
+- Voice throughout: full sentences, quiet confidence — no exclamation marks, urgency, or scarcity language; never apologize for handmade variation as a flaw or hedge with "processing times may vary."
 
 ## Technical Decisions
 
-- The repo is already a `create-next-app` Next.js 16.3.5 App Router scaffold — this epic builds on it, it does not scaffold a new app.
-- Server-Components-first: every route renders as a Server Component by default. `'use client'` is reserved for actual interactivity (e.g. the nav's scroll-triggered sticky/hairline state, the collection story's scroll-reveal trigger) — there is no global client store and no picker state to manage in this epic (that's Epic 3's `ProductPickerShell`).
-- Routes live under `app/(site)/`: Home, Shop, Collections, About, Search. The Sea Isle Collection Story is under `collections/[slug]/`. This epic implements Home, the Collection Story, and About; Shop/Search pages themselves are Epic 3.
-- Email signup goes through exactly one Server Action, `subscribeEmail`, defined in `app/(site)/actions.ts`. It is the only email-capture entry point on the site (others may reuse it later); all validation lives inside it. It calls Resend via the Vercel Marketplace integration. The Resend key is read only from `RESEND_API_KEY`, server-side only, never referenced from a Client Component.
-- `Next.js` `cacheComponents` flag stays off — this epic's content is static/build-time, no per-request dynamic data, default static rendering is sufficient.
-- Motif and collection content (names, story copy) for Sea Isle is repo-authored data (produced by Epic 2's `content/catalog/{sku}/authored.ts` + collection grouping) — this epic reads/renders it but does not build the sync pipeline.
-- Brand tokens to implement as real values (not placeholders): colors — Sailcloth `#EFEAE0`, Wet Ink `#2B2A26`, Deep Harbor `#2F4858`, Marsh Sage `#7C8567`, Antique Brass `#A8823C`, Paper Raised `#F7F4EC`, Line `#D9D2C2`. Typography — Fraunces for display/headline/body (with a distinct mobile display size), IBM Plex Mono for label/price/caption, as real webfonts (not system-font fallback). Spacing scale 1–7 (4px–48px) plus `gutter-mobile` (20px), `gutter-desktop` (64px), `story-gap` (96px). Radii: `sm` 2px, `DEFAULT` 4px, `md` 6px, `full` 9999px (reserved for circular swatches, not used in this epic).
-- Components this epic needs: `nav-header` (Sailcloth surface, Wet Ink text, label-mono labels; sticky + Line hairline on scroll on mobile only, text labels on desktop, icon-forward on mobile; no color fill/shadow), `collection-story-block` (Deep Harbor full-bleed surface, Sailcloth text, `display-lg` heading, scroll-triggered reveal), `button-primary` (Deep Harbor fill / Sailcloth label-mono text / `rounded.sm`; exactly one per screen; disabled not hidden when precondition unmet), `button-secondary` (transparent, Wet Ink border/text; never the primary action, always paired with a `button-primary` on the same screen), `product-card` (Paper Raised surface, body-type title, price-mono price, `rounded.DEFAULT`) for the homepage's shop/product grid section.
+- Server-Components-first App Router: every route in this epic renders as a Server Component by default; no client-side interactivity needed here (email signup posts to a Server Action).
+- No global client store; no accounts, login, personalization, or session state anywhere on the site.
+- Every email-capture entry point posts to exactly one Server Action, `subscribeEmail` (`app/(site)/actions.ts`) — never a route handler or second implementation.
+- Catalog/narrative content (motif names, story copy) is repo-authored TypeScript/JSON under `content/`, not a database. Story 1.3's motif list is authored content, never synced from Squarespace.
+- Design tokens (colors, typography, spacing, radii) should be real, reusable tokens per `DESIGN.md`, not one-off hardcoded values, since Epics 2–4 build on the same system.
 
 ## UX & Interaction Patterns
 
-- Deep Harbor is reserved for full-section, strong-contrast moments (Sea Isle feature block, footer) — it should never read as saturated "navy," and is not used as general decoration elsewhere.
-- Scroll-triggered reveal for story sections (homepage's Sea Isle feature, the Collection Story block) is subtle, one-time, and never re-triggers on scroll-back; no autoplay/carousel anywhere.
-- Nav: on mobile, becomes sticky once scrolled past and shows icon-forward controls; on desktop, items render as inline text labels and the nav does not need to go sticky. No hamburger drawer — three top-level items fit as-is.
-- Voice/microcopy is quiet and plain: e.g. "Sea Isle. A story, stitched in.", not exclamation-driven or scarcity-flavored language; this applies to email signup confirmation/error copy too.
-- Breakpoint for mobile/desktop is an assumption of ~768px (not finalized in planning) — a build-time decision may override it.
+- `nav-header`: Sailcloth surface, Wet Ink text, `label-mono` labels; bag icon shows no count badge pre-launch.
+- `collection-story-block`: Deep Harbor surface, Sailcloth text, `display-lg` heading; scroll-triggered reveal only, one-time, no autoplay/carousel. Shared between Home (Sea Isle feature) and the Collection Story page — keep the component consistent rather than diverging implementations.
+- `button-primary` (Deep Harbor fill, Sailcloth label): exactly one per screen (e.g. "Shop the Collection").
+- `button-secondary` (transparent, Wet Ink border/text): secondary actions only, always paired with a `button-primary`, never standing alone.
+- `motif-tile` (Paper Raised surface, `caption-mono` name label): read-only browsing here — selection behavior belongs to Epic 3. Every tile carries a visible text name, never color/image-only identification.
+- Focus/reading order follows visual order on every surface. Breakpoint: no exact px set during Discovery — treat ~768px as the mobile/desktop split absent a build-time override.
 
 ## Cross-Story Dependencies
 
-- Story 1.2 (`nav-header`) is used by every other story in this epic (and by all later epics) — build it as the shared shell first.
-- Story 1.3 depends on Sea Isle's 13 motifs already being authored content (name + story copy); it only renders/reads them, it does not create the authoring pipeline (Epic 2) or make motifs tappable into a picker (Epic 3).
-- Story 1.1's "shop/product grid" homepage section reuses the `product-card` component that Epic 3's Shop surface will also use — keep the component shared rather than duplicated.
-- Story 1.5's `subscribeEmail` Server Action is the one email-capture implementation the brand's AD-6 rule expects; any future signup entry point should call the same action rather than adding a second implementation.
+- Story 1.2's nav-header must render on every page the other stories add.
+- Story 1.3's 13 motif names are the actual authored set Epic 2 (Story 2.2) and Epic 3 (motif selection, Product surface) consume later — get the names right here.
+- Story 1.4 has an open pre-launch item: the `[X–X business days]` processing-time range needs a real number confirmed before it's launch-ready.
+- Story 1.1's shop/product grid section reuses the `product-card` component that Epic 3's Shop surface will also use — keep it shared, not duplicated.

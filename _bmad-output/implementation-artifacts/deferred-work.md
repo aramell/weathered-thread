@@ -81,3 +81,11 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-1-2-site-wide-navigation.md`
   summary: `app/globals.css`'s `--text-display-lg-mobile` token omits a letter-spacing value that its desktop counterpart `--text-display-lg` defines (`-0.01em`), an inconsistency in the type scale not called out as intentional.
   evidence: Confirmed by reading the token block (Story 1.1, `cab085d`); same diff-range artifact as above, not caused by Story 1.2.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-3-sea-isle-collection-story-page-2.md`
+  summary: The `collection-story-block` narrative prose ("A water tower on the skyline, a life ring at the marina, the exit you take when you're almost there...") references landmarks by their pre-correction phrasing ("life ring," "the exit"), which now sits just above motif-tile labels using the corrected names ("Life Preserver / N.J.", "Exit 17 / Sea Isle City") — a soft naming mismatch between narrative copy and gallery captions. The identical sentence is also duplicated on the homepage (`app/(site)/page.tsx`).
+  evidence: Confirmed the prose is unchanged and the motif labels are changed; out of this story's approved scope (sprint-change-proposal-2026-09-15.md's Technical Impact section scopes the rework to the `motifs` array only, not narrative copy) — rewriting brand-voice prose needs its own stakeholder sign-off, not a code-level fix.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-3-sea-isle-collection-story-page-2.md`
+  summary: The corrected 13-motif list (approved verbatim in sprint-change-proposal-2026-09-15.md) mixes caption conventions: most are Title Case place names, one is an unexplained initialism ("SIC Water Tower" — "SIC" is never expanded anywhere on the page), and one is lowercase ("Sea Isle shoreline / sailboat"). Three names are also noticeably longer than the rest and embed slashes.
+  evidence: Verified these are the exact strings from the approved proposal/epics.md AC, not an implementation choice — normalizing casing or expanding "SIC" would mean altering brand-approved customer-facing copy without sign-off, so it's flagged rather than silently changed.
