@@ -74,7 +74,7 @@ UX-DR11: Implement spacing/radius tokens per `DESIGN.md`: spacing scale 1–7 pl
 UX-DR12: Tap targets ≥ 44×44px across all interactive elements (mobile-first accessibility floor).
 UX-DR13: Alt text on all embroidery/product photography is descriptive of motif + story cue (e.g. "Water Tower motif embroidered on Blue Jean crewneck sweatshirt"), never filename-derived.
 UX-DR14: Focus order on the Product surface follows visual order: images → garment/motif selection → Add to Bag → detail sections.
-UX-DR15: Mobile layout: single column; motif gallery/product grids max 2 columns; sticky Add-to-Bag bar once the primary button scrolls out of view; icon-forward nav.
+UX-DR15: Mobile layout: single column; motif gallery/product grids max 2 columns; sticky Add-to-Bag bar once the primary button scrolls out of view; nav renders the same text-label links as desktop (confirmed during Story 1.2 review — no separate icon-forward mobile treatment).
 UX-DR16: Desktop layout: motif gallery/product grids up to 3 columns; text-label nav; wider `gutter-desktop` margin; story sections may run image + text side by side.
 UX-DR17: Implement every State Pattern from `EXPERIENCE.md`: cold load (lazy-load placeholder, no spinner), motif-preview swap (feels like a photo swap, never a spinner over the garment), no-motif-selected prompt, out-of-stock disabled + microcopy, empty search "No matches", Checkout Handoff redirect-failure retry.
 
@@ -151,8 +151,8 @@ So that I can move between Shop, Collections, About, search, and my bag from any
 **Given** a visitor is on any page
 **When** the page renders
 **Then** a `nav-header` shows SHOP, COLLECTIONS, ABOUT, a search icon, and a bag icon
-**And** on mobile it becomes sticky once scrolled past; on desktop items render as text labels, on mobile icon-forward
-**And** it shows no color fill or shadow — only a Line hairline once scrolled
+**And** on mobile it becomes sticky once scrolled past; items render as text labels at every breakpoint (no separate mobile icon-forward treatment)
+**And** it shows a constant Sailcloth surface with no additional tint or shadow — only a Line hairline once scrolled
 
 **Given** a visitor taps SHOP, COLLECTIONS, or ABOUT
 **When** the tap registers

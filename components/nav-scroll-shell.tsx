@@ -23,15 +23,20 @@ export default function NavScrollShell({ children }: NavScrollShellProps) {
     const node = headerRef.current;
     if (!node) return;
 
-    const navHeight = node.offsetHeight;
-
+    // Re-measure on every check rather than once at mount, so the sticky
+    // threshold stays correct across resize, orientation change, and
+    // webfont-load reflow of the header's own height.
     const handleScroll = () => {
-      setScrolledPast(window.scrollY > navHeight);
+      setScrolledPast(window.scrollY > node.offsetHeight);
     };
 
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
   }, []);
 
   return (

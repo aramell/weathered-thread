@@ -29,7 +29,7 @@ export default function NavHeader() {
           <Link
             key={link.href}
             href={link.href}
-            className="inline-flex min-h-11 items-center font-mono text-label-mono uppercase text-wet-ink"
+            className="inline-flex min-h-11 min-w-11 items-center justify-center px-1 font-mono text-label-mono uppercase text-wet-ink"
           >
             {link.label}
           </Link>

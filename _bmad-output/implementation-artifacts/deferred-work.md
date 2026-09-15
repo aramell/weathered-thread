@@ -65,3 +65,19 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-1-1-homepage-renders-with-brand-identity.md`
   summary: epics.md's new About-page AC (handmade-variation copy, processing-time copy, "Sea Isle as first chapter" positioning) gives no guidance on where this content lands relative to the page's existing "brand idea, philosophy, and tagline" content.
   evidence: Confirmed by reading the new AC block; unlike other ACs in the same doc (e.g. FR15's homepage section order), it doesn't pin placement.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-2-site-wide-navigation.md`
+  summary: The nav's sticky/hairline scroll-toggle behavior (the story's central acceptance criteria) has no automated test — a regression (e.g. an inverted scroll comparison, or a dropped desktop override) would ship undetected.
+  evidence: Confirmed no test framework exists anywhere in the repo (no jest/vitest/playwright/RTL, no test script in package.json, no CI workflows); the only verification is a one-time manual chrome-devtools-mcp pass recorded in prose in the spec's Implementation Notes. Adding a first test is a project-wide infrastructure decision, not a fix scoped to this story.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-2-site-wide-navigation.md`
+  summary: The brand color-contrast requirement (Wet-Ink-on-Sailcloth, Sailcloth-on-Deep-Harbor must clear WCAG AA at body text size, per epic-1-context.md) has no automated check — a future token-value change could silently drop below AA.
+  evidence: Confirmed no accessibility-check tooling (axe, pa11y, or similar) exists or is configured anywhere in the repo; same root cause as the test-infrastructure gap above.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-2-site-wide-navigation.md`
+  summary: `components/collection-story-block.tsx`'s fade-reveal transition has no `prefers-reduced-motion` check, so visitors who've opted out of motion still get the 700ms opacity animation.
+  evidence: Confirmed by reading the component (Story 1.1, `cab085d`); surfaced during Story 1.2's review because its diff range inadvertently included Story 1.1's cumulative changes, but the component itself is Story 1.1's, not Story 1.2's.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-2-site-wide-navigation.md`
+  summary: `app/globals.css`'s `--text-display-lg-mobile` token omits a letter-spacing value that its desktop counterpart `--text-display-lg` defines (`-0.01em`), an inconsistency in the type scale not called out as intentional.
+  evidence: Confirmed by reading the token block (Story 1.1, `cab085d`); same diff-range artifact as above, not caused by Story 1.2.
