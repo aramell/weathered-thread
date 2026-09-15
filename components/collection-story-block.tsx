@@ -81,7 +81,7 @@ export default function CollectionStoryBlock({
   return (
     <section
       ref={sectionRef}
-      className={`w-full bg-deep-harbor px-gutter-mobile py-story-gap text-sailcloth transition-opacity duration-700 ease-out md:px-gutter-desktop ${
+      className={`w-full bg-deep-harbor px-gutter-mobile py-story-gap text-sailcloth transition-opacity duration-700 ease-out motion-reduce:transition-none md:px-gutter-desktop ${
         revealed ? "opacity-100" : "opacity-0"
       }`}
     >
