@@ -13,7 +13,7 @@ export default function ProductCard({ name, price }: ProductCardProps) {
   return (
     <div className="rounded bg-paper-raised p-4">
       <div className="mb-3 aspect-square rounded bg-sailcloth" aria-hidden="true" />
-      <p className="font-display text-body">{name}</p>
+      <p className="font-body text-body">{name}</p>
       <p className="font-mono text-price-mono">{price}</p>
     </div>
   );

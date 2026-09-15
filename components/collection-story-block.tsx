@@ -91,7 +91,7 @@ export default function CollectionStoryBlock({
       <h2 className="mb-4 font-display text-display-lg-mobile md:text-display-lg">
         {heading}
       </h2>
-      <div className="flex flex-col items-start gap-5 font-display text-body">
+      <div className="flex flex-col items-start gap-5 font-body text-body">
         {children}
       </div>
     </section>

@@ -14,10 +14,9 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 // Libre Franklin is the canonical `font-body` typeface (DESIGN.md's
-// body/body-sm tokens) — wired here so the CSS variable is available
-// sitewide, but the `font-body` utility (globals.css) is only applied on
-// About's new copy for now. Existing pages keep rendering Fraunces for body
-// text; this addition must not change their output.
+// body/body-sm tokens), applied sitewide on body/body-sm-scaled text.
+// Headline/display-sized text and mono/label elements stay on Fraunces/IBM
+// Plex Mono — only paragraph-length copy uses `font-body`.
 const libreFranklin = Libre_Franklin({
   variable: "--font-libre-franklin",
   subsets: ["latin"],

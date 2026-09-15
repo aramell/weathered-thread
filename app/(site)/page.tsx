@@ -20,7 +20,7 @@ export default function Home() {
         <h1 className="mb-4 font-display text-display-lg-mobile md:text-display-lg">
           A sense of place, stitched in.
         </h1>
-        <p className="font-display text-body">
+        <p className="font-body text-body">
           Embroidered apparel for the towns worth remembering.
         </p>
       </section>
@@ -58,7 +58,7 @@ export default function Home() {
       {/* Embroidery detail */}
       <section className="mx-auto w-full max-w-md px-gutter-mobile text-center md:px-gutter-desktop">
         <h2 className="mb-3 font-display text-headline">The Embroidery</h2>
-        <p className="font-display text-body">
+        <p className="font-body text-body">
           Every motif is stitched, not printed — close-up detail on stitch
           quality and garment texture on every product page.
         </p>
@@ -67,7 +67,7 @@ export default function Home() {
       {/* Email signup */}
       <section className="mx-auto w-full max-w-md px-gutter-mobile text-center md:px-gutter-desktop">
         <h2 className="mb-2 font-display text-headline">Stay Stitched In</h2>
-        <p className="mb-5 font-display text-body-sm">
+        <p className="mb-5 font-body text-body-sm">
           New towns, new motifs, no noise.
         </p>
         <div className="flex gap-2">
@@ -78,7 +78,7 @@ export default function Home() {
             id="email-signup"
             type="email"
             placeholder="you@email.com"
-            className="min-h-11 flex-1 rounded-sm border border-line bg-paper-raised px-3 font-display text-body-sm text-wet-ink"
+            className="min-h-11 flex-1 rounded-sm border border-line bg-paper-raised px-3 font-body text-body-sm text-wet-ink"
           />
           <button
             type="button"
