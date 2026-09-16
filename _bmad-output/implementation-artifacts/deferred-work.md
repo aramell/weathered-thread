@@ -125,3 +125,11 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-sitewide-footer-non-home-pages.md`
   summary: The footer's "Shipping · Returns" text has no destination — it is not a link, and no shipping/returns page exists anywhere in `app/` — so every route now surfaces a non-actionable label that reads like it should be clickable.
   evidence: Confirmed via route listing (no matching page) and `website-build-handoff-prd.md:81`, which lists shipping policy/returns copy as planned but not yet built; the text/markup is unchanged from Home's original footer, so this predates this story and building the actual page is a larger scope than this fix.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-2-motif-selection-on-collection-story.md`
+  summary: `lib/placeholder-motif-data.ts`'s flat, global motif list has no per-collection scoping field, so once a second collection exists, every collection page (and the `/collections/[slug]/[motif]` stub's `generateStaticParams`) would render/pre-render all motifs from every collection rather than just its own.
+  evidence: Confirmed via code reading — neither `app/(site)/collections/[slug]/page.tsx` nor the new `[motif]/page.tsx` filters by `collection.slug`, and no field exists on `Motif` to filter by. Currently produces no observable divergence since exactly one collection (`sea-isle`) exists anywhere in the codebase; mirrors Story 3.1's own explicit precedent of applying one flat placeholder list uniformly ahead of real Epic 2 data, so scoping this properly is out of scope until a second collection or real authored-motif data lands.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-2-motif-selection-on-collection-story.md`
+  summary: No automated test coverage exists for `getMotif()`'s not-found path, the 13 motif slugs' uniqueness, or `MotifTileLink`'s tap/`aria-current`/modifier-click behavior — the first tap-to-select Client Component pattern in the repo, which later Epic 3 stories are likely to follow.
+  evidence: Confirmed repo-wide — no test files, config, or `package.json` script exist anywhere (same pre-existing, project-wide gap logged against nearly every prior story, e.g. `spec-1-5-homepage-email-signup.md`, `spec-1-2-site-wide-navigation.md`); establishing a test framework is a project-level decision bigger than any one story's scope.
