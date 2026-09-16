@@ -105,3 +105,11 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-2-1-sync-squarespace-garment-data.md`
   summary: The price-regression check's scope (Open Question + I/O matrix) only covers `price` going down; it doesn't say what should happen if inventory drops to zero, a product name changes, or a product URL changes in a way that should also warrant a warning before overwriting `main`'s data.
   evidence: Confirmed by reading `epic-2-context.md`'s "a previously-synced field (e.g. an older price)" wording (implies any field) against the spec's Open Questions/I-O Matrix, which define regression handling for price only. Not fixed now because Story 2.1 itself is blocked pending Squarespace commerce setup (see project memory `squarespace_not_configured.md`) and unapproved (`status: draft`).
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-homepage-hero-eyebrow-copy.md`
+  summary: Home's `<h1>` ("Made to Remember. Stitched in.") remains word-for-word identical to About's `<h1>` (`app/(site)/about/page.tsx:30`), giving two distinct pages the same top-of-page heading.
+  evidence: Confirmed by comparing `app/(site)/page.tsx:23` against `app/(site)/about/page.tsx:30`. Predates this fix (already present in the site owner's own uncommitted edit); the site owner explicitly chose to keep the new `<h1>` text over reverting to the original "A sense of place, stitched in." when this fix restored the eyebrow, so resolving the duplication itself needs a separate copy decision.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-homepage-hero-eyebrow-copy.md`
+  summary: The homepage hero's new eyebrow "Weathered Thread" repeats the nav wordmark (`components/nav-header.tsx:24`) directly above it and the root `<title>` (`app/layout.tsx:28`), unlike every other eyebrow on the site (Launch Collection, Process, About), which is section-specific rather than a brand-name repeat.
+  evidence: Confirmed via grep across the three files. This was the site owner's explicit choice among three offered options ("Weathered Thread", "Embroidered Apparel", "Est. for the towns worth remembering"), not an oversight — flagged for possible reconsideration, not changed unilaterally.

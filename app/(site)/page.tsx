@@ -16,10 +16,10 @@ export default function Home() {
       {/* Hero */}
       <section className="mx-auto w-full max-w-3xl px-gutter-mobile py-story-gap text-center md:px-gutter-desktop">
         <p className="mb-4 font-mono text-label-mono uppercase text-marsh-sage">
-          Made to Remember. Stitched in.
+          Weathered Thread
         </p>
         <h1 className="mb-4 font-display text-display-lg-mobile md:text-display-lg">
-          A sense of place, stitched in.
+          Made to Remember. Stitched in.
         </h1>
         <p className="font-body text-body">
           Embroidered apparel for the towns worth remembering.
