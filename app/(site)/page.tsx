@@ -1,16 +1,13 @@
+import Link from "next/link";
 import ButtonPrimary from "@/components/button-primary";
 import CollectionStoryBlock from "@/components/collection-story-block";
 import EmailSignupForm from "@/components/email-signup-form";
 import ProductCard from "@/components/product-card";
-
-const shopItems = [
-  { name: "Crewneck Sweatshirt", price: "$68" },
-  { name: "Heavyweight Tee", price: "$38" },
-  { name: "Lightweight Crewneck", price: "$58" },
-  { name: "Long Sleeve Tee", price: "$42" },
-];
+import { garmentTypes } from "@/lib/placeholder-shop-data";
 
 export default function Home() {
+  const shopHeadingId = "shop-heading";
+
   return (
     <main className="flex flex-col gap-story-gap">
       {/* Hero */}
@@ -46,12 +43,23 @@ export default function Home() {
 
       {/* Shop grid */}
       <section className="px-gutter-mobile md:px-gutter-desktop">
-        <p className="mb-4 font-mono text-label-mono uppercase text-marsh-sage">
+        <p
+          id={shopHeadingId}
+          className="mb-4 font-mono text-label-mono uppercase text-marsh-sage"
+        >
           Shop
         </p>
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-          {shopItems.map((item) => (
-            <ProductCard key={item.name} name={item.name} price={item.price} />
+        <div
+          role="list"
+          aria-labelledby={shopHeadingId}
+          className="grid grid-cols-2 gap-4 md:grid-cols-3"
+        >
+          {garmentTypes.map((type) => (
+            <div key={type.slug} role="listitem">
+              <Link href={`/shop/${type.slug}`}>
+                <ProductCard name={type.name} price={type.price} />
+              </Link>
+            </div>
           ))}
         </div>
       </section>
