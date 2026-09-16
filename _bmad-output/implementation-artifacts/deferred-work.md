@@ -113,3 +113,15 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-homepage-hero-eyebrow-copy.md`
   summary: The homepage hero's new eyebrow "Weathered Thread" repeats the nav wordmark (`components/nav-header.tsx:24`) directly above it and the root `<title>` (`app/layout.tsx:28`), unlike every other eyebrow on the site (Launch Collection, Process, About), which is section-specific rather than a brand-name repeat.
   evidence: Confirmed via grep across the three files. This was the site owner's explicit choice among three offered options ("Weathered Thread", "Embroidered Apparel", "Est. for the towns worth remembering"), not an oversight — flagged for possible reconsideration, not changed unilaterally.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-sitewide-footer-non-home-pages.md`
+  summary: The footer's copyright line ("© Weathered Thread") has no year, which is more noticeable now that it ships on every route instead of Home alone.
+  evidence: Confirmed the text is unchanged, verbatim from Home's original footer (predates this story); adding a year is a copy decision, not this story's scope.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-sitewide-footer-non-home-pages.md`
+  summary: `text-marsh-sage` (`#7C8567`) on `--color-sailcloth` (`#EFEAE0`) computes to roughly 3.24:1 contrast, below WCAG AA's 4.5:1 for normal-size text, and the footer's caption-mono/uppercase text is small — this was previously confined to Home's footer and now ships on every route under `(site)`.
+  evidence: Confirmed the token pair and markup are unchanged from Home's original footer (predates this story); distinct from the already-logged "no automated contrast check" gap above (`spec-1-2-site-wide-navigation.md` entry), which covers Wet-Ink-on-Sailcloth and Sailcloth-on-Deep-Harbor, not this pair. Fixing the token value is a brand-color decision bigger than this story's scope.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-sitewide-footer-non-home-pages.md`
+  summary: The footer's "Shipping · Returns" text has no destination — it is not a link, and no shipping/returns page exists anywhere in `app/` — so every route now surfaces a non-actionable label that reads like it should be clickable.
+  evidence: Confirmed via route listing (no matching page) and `website-build-handoff-prd.md:81`, which lists shipping policy/returns copy as planned but not yet built; the text/markup is unchanged from Home's original footer, so this predates this story and building the actual page is a larger scope than this fix.

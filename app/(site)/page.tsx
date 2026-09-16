@@ -73,12 +73,6 @@ export default function Home() {
         </p>
         <EmailSignupForm />
       </section>
-
-      {/* Footer */}
-      <footer className="flex items-center justify-between px-gutter-mobile py-6 font-mono text-caption-mono uppercase text-marsh-sage md:px-gutter-desktop">
-        <span>© Weathered Thread</span>
-        <span>Shipping · Returns</span>
-      </footer>
     </main>
   );
 }
