@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import ButtonSecondary from "@/components/button-secondary";
 import ProductCard from "@/components/product-card";
+import { formatPrice } from "@/lib/format-price";
 import { colorways, garmentTypes, getGarmentType } from "@/lib/placeholder-shop-data";
 
 export function generateStaticParams() {
@@ -57,7 +58,7 @@ export default async function GarmentTypePage({
               <Link href={`/shop/${garmentType.slug}/${colorway.slug}`}>
                 <ProductCard
                   name={colorway.name}
-                  price={garmentType.price}
+                  price={formatPrice(garmentType.price)}
                   image={colorway.frontImage}
                 />
               </Link>

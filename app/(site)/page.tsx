@@ -3,6 +3,7 @@ import ButtonPrimary from "@/components/button-primary";
 import CollectionStoryBlock from "@/components/collection-story-block";
 import EmailSignupForm from "@/components/email-signup-form";
 import ProductCard from "@/components/product-card";
+import { formatPrice } from "@/lib/format-price";
 import { garmentTypes } from "@/lib/placeholder-shop-data";
 
 export default function Home() {
@@ -57,7 +58,7 @@ export default function Home() {
           {garmentTypes.map((type) => (
             <div key={type.slug} role="listitem">
               <Link href={`/shop/${type.slug}`}>
-                <ProductCard name={type.name} price={type.price} />
+                <ProductCard name={type.name} price={formatPrice(type.price)} />
               </Link>
             </div>
           ))}

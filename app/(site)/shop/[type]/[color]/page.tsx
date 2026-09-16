@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { notFound } from "next/navigation";
-import ButtonSecondary from "@/components/button-secondary";
+import ProductPickerShell from "@/components/product-picker-shell";
 import {
   colorways,
   garmentTypes,
@@ -10,12 +9,11 @@ import {
 } from "@/lib/placeholder-shop-data";
 
 /**
- * Minimal Product-surface landing stub (Story 3.1 AC3). This intentionally
- * implements only Story 3.3's garment-first "no motif selected" empty
- * state — image, name/price, disabled Add to Bag, "Choose a design for
- * this piece." Swatch interactivity, sticky Add-to-Bag bar, motif
- * selection, and size selection (Story 3.3's full Product Picker) are out
- * of scope here and will replace this stub when that story is built.
+ * Product-surface entry point, garment-first (Story 3.1 AC3). Renders the
+ * full interactive Product Picker (Story 3.3) seeded with this route's
+ * garment type + color; size and motif are chosen from there. Converges
+ * with the motif-first entry (`/collections/[slug]/[motif]`) on the same
+ * `ProductPickerShell`.
  */
 export function generateStaticParams() {
   return garmentTypes.flatMap((type) =>
@@ -52,34 +50,10 @@ export default async function GarmentColorPage({
   }
 
   return (
-    <main className="flex flex-col gap-story-gap">
-      <section className="mx-auto w-full max-w-md px-gutter-mobile md:px-gutter-desktop">
-        <div className="relative mb-5 aspect-square overflow-hidden rounded bg-paper-raised">
-          <Image
-            src={colorway.frontImage}
-            alt={`${garmentType.name} — ${colorway.name}`}
-            fill
-            preload
-            sizes="(max-width: 768px) 100vw, 448px"
-            className="object-cover"
-          />
-        </div>
-        <h1 className="mb-1 font-display text-headline">
-          {garmentType.name} — {colorway.name}
-        </h1>
-        <p className="mb-4 font-mono text-price-mono">{garmentType.price}</p>
-        <p className="mb-6 font-body text-body">Choose a design for this piece.</p>
-        <button
-          type="button"
-          disabled
-          className="mb-4 inline-flex min-h-11 w-full items-center justify-center rounded-sm bg-deep-harbor px-5 font-mono text-label-mono uppercase text-sailcloth disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          Add to Bag
-        </button>
-        <ButtonSecondary href={`/shop/${garmentType.slug}`}>
-          Back to Shop
-        </ButtonSecondary>
-      </section>
-    </main>
+    <ProductPickerShell
+      seed={{ kind: "garment", garmentTypeSlug: garmentType.slug, colorSlug: colorway.slug }}
+      backHref={`/shop/${garmentType.slug}`}
+      backLabel="Back to Shop"
+    />
   );
 }

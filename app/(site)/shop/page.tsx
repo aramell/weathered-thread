@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import ProductCard from "@/components/product-card";
+import { formatPrice } from "@/lib/format-price";
 import { garmentTypes } from "@/lib/placeholder-shop-data";
 
 export const metadata: Metadata = {
@@ -25,7 +26,7 @@ export default function ShopPage() {
           {garmentTypes.map((type) => (
             <div key={type.slug} role="listitem">
               <Link href={`/shop/${type.slug}`}>
-                <ProductCard name={type.name} price={type.price} />
+                <ProductCard name={type.name} price={formatPrice(type.price)} />
               </Link>
             </div>
           ))}
