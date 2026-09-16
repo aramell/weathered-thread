@@ -125,7 +125,3 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-sitewide-footer-non-home-pages.md`
   summary: The footer's "Shipping · Returns" text has no destination — it is not a link, and no shipping/returns page exists anywhere in `app/` — so every route now surfaces a non-actionable label that reads like it should be clickable.
   evidence: Confirmed via route listing (no matching page) and `website-build-handoff-prd.md:81`, which lists shipping policy/returns copy as planned but not yet built; the text/markup is unchanged from Home's original footer, so this predates this story and building the actual page is a larger scope than this fix.
-
-- source_spec: `_bmad-output/implementation-artifacts/spec-placeholder-garment-photography.md`
-  summary: `nav-header`'s "Shop" link points to `/shop`, which 404s — there is no `app/(site)/shop/page.tsx` (an index of all garment types, distinct from the new `/shop/[type]` and `/shop/[type]/[color]` routes this story added).
-  evidence: Confirmed via `git show` on the baseline commit that `navLinks` already pointed to `/shop` before this story, and no shop-related route existed at baseline; same pre-existing pattern already logged for the "Collections" nav link above (from Story 1.2/1.3).
