@@ -120,6 +120,12 @@ export default function ProductPickerShell({
   const sizeHeadingId = "size-heading";
   const motifHeadingId = "motif-heading";
   const addToBagStatusId = "add-to-bag-status";
+  const descriptionHeadingId = "description-heading";
+  const garmentDetailHeadingId = "garment-detail-heading";
+  const embroideryHeadingId = "embroidery-heading";
+  const fitSizeHeadingId = "fit-size-heading";
+  const careHeadingId = "care-heading";
+  const shippingHeadingId = "shipping-heading";
 
   return (
     <main className="flex flex-col gap-story-gap">
@@ -325,6 +331,104 @@ export default function ProductPickerShell({
             </button>
             <ButtonSecondary href={backHref}>{backLabel}</ButtonSecondary>
           </div>
+        </div>
+
+        {/* Detail sections — fixed order per FR12/Epic 3: emotional
+            description → THE GARMENT → THE EMBROIDERY → fit/size → care →
+            shipping/returns. Flat/static `.section` blocks matching
+            key-product.html, not an accordion. THE GARMENT depends on
+            garmentType, description/THE EMBROIDERY depend on motif — each
+            is omitted when its dependency is unselected. Fit/size, care,
+            and shipping/returns always render. */}
+        <div className="mt-10 divide-y divide-line border-t border-line md:mt-14">
+          {motif && (
+            <section className="py-6" aria-labelledby={descriptionHeadingId}>
+              {/* Reference design has no visible heading for this section
+                  (key-product.html's `.desc` sits heading-less above `.section`
+                  blocks) — heading is visually hidden but still wired via
+                  aria-labelledby to match the other sections' landmark pattern. */}
+              <h2 id={descriptionHeadingId} className="sr-only">
+                Description
+              </h2>
+              <p className="font-body text-body-sm">{motif.emotionalDescription}</p>
+            </section>
+          )}
+
+          {garmentType && (
+            <section className="py-6" aria-labelledby={garmentDetailHeadingId}>
+              <h2
+                id={garmentDetailHeadingId}
+                className="mb-2 font-mono text-label-mono uppercase text-antique-brass"
+              >
+                The Garment
+              </h2>
+              <p className="font-body text-body-sm">{garmentType.garmentBlurb}</p>
+            </section>
+          )}
+
+          {motif && (
+            <section className="py-6" aria-labelledby={embroideryHeadingId}>
+              <h2
+                id={embroideryHeadingId}
+                className="mb-2 font-mono text-label-mono uppercase text-antique-brass"
+              >
+                The Embroidery
+              </h2>
+              {/* Template intentionally drops key-product.html's closing
+                  "a specific landmark, remembered" clause — that phrasing is
+                  landmark-specific and doesn't generalize across all 13
+                  motifs (e.g. Pickleball, Turtle aren't landmarks). */}
+              <p className="font-body text-body-sm">
+                {motif.name} — one motif from the Sea Isle collection. Stitched in navy thread,
+                part of the &quot;PLACE → STORY → MOTIF → OBJECT&quot; line.
+              </p>
+            </section>
+          )}
+
+          <section className="py-6" aria-labelledby={fitSizeHeadingId}>
+            <h2
+              id={fitSizeHeadingId}
+              className="mb-2 font-mono text-label-mono uppercase text-antique-brass"
+            >
+              Fit &amp; Size
+            </h2>
+            {/* TODO: unconfirmed placeholder — replace with real per-garment fit/size copy and measurements before launch. */}
+            <p className="font-body text-body-sm">
+              Runs true to size with a relaxed, easy fit — if you&apos;re between sizes, size up
+              for a roomier feel. Full measurements by size are on the way; reach out before
+              ordering if you have questions about fit.
+            </p>
+          </section>
+
+          <section className="py-6" aria-labelledby={careHeadingId}>
+            <h2
+              id={careHeadingId}
+              className="mb-2 font-mono text-label-mono uppercase text-antique-brass"
+            >
+              Care
+            </h2>
+            {/* TODO: unconfirmed placeholder — replace with real care instructions before launch. */}
+            <p className="font-body text-body-sm">
+              Machine wash cold, inside out, with like colors, and tumble dry low — or lay flat
+              to keep the embroidery looking its best. Full care instructions are pending final
+              spec sheet.
+            </p>
+          </section>
+
+          <section className="py-6" aria-labelledby={shippingHeadingId}>
+            <h2
+              id={shippingHeadingId}
+              className="mb-2 font-mono text-label-mono uppercase text-antique-brass"
+            >
+              Shipping &amp; Returns
+            </h2>
+            {/* TODO: unconfirmed placeholder — replace with confirmed shipping/returns policy before launch. */}
+            <p className="font-body text-body-sm">
+              Orders ship within 7–10 business days of purchase. Returns and exchanges are
+              accepted within 30 days of delivery on unworn, unwashed pieces. Exact shipping
+              timelines and the full returns policy are still being finalized.
+            </p>
+          </section>
         </div>
       </section>
 

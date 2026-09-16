@@ -133,3 +133,11 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-3-2-motif-selection-on-collection-story.md`
   summary: No automated test coverage exists for `getMotif()`'s not-found path, the 13 motif slugs' uniqueness, or `MotifTileLink`'s tap/`aria-current`/modifier-click behavior — the first tap-to-select Client Component pattern in the repo, which later Epic 3 stories are likely to follow.
   evidence: Confirmed repo-wide — no test files, config, or `package.json` script exist anywhere (same pre-existing, project-wide gap logged against nearly every prior story, e.g. `spec-1-5-homepage-email-signup.md`, `spec-1-2-site-wide-navigation.md`); establishing a test framework is a project-level decision bigger than any one story's scope.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-4-product-page-content-accessibility.md`
+  summary: The sticky Add-to-Bag bar keeps the primary Add to Bag button focusable/in the a11y tree (only `aria-hidden`+`tabIndex={-1}`, not fully removed) once the sticky bar appears, exposing two same-named Add to Bag controls to assistive tech simultaneously — flagged in Story 3.3's Review Triage Log as `medium`.
+  evidence: Confirmed at `components/product-picker-shell.tsx:318-321` — no `hidden`/`display:none` toggle tied to `stickyVisible`, only `aria-hidden`. Split off to keep this story's spec focused on one goal (the fixed content sections) and within the token budget; this is a standalone accessibility bugfix on existing 3.3 code, not part of 3.4's new content.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-4-product-page-content-accessibility.md`
+  summary: `generateMetadata` in `app/(site)/shop/[type]/[color]/page.tsx` and `app/(site)/collections/[slug]/[motif]/page.tsx` still ships thin, generic meta descriptions instead of the new, richer `garmentType.garmentBlurb`/`motif.emotionalDescription` copy this story adds — both files already call `getGarmentType`/`getMotif`, so the data is one field-read away.
+  evidence: Confirmed both `generateMetadata` functions predate this diff and are unchanged by it (pre-existing gap, not caused by this story); also outside this story's intent, which is about the page's visible content order (FR12), not `<meta>` tags. A real SEO/share-preview improvement, not a defect.

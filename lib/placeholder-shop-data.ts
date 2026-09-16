@@ -19,6 +19,13 @@ export type GarmentType = {
   name: string;
   /** Integer cents — render only via `lib/format-price.ts`'s `formatPrice()`. */
   price: number;
+  /**
+   * THE GARMENT section copy (Story 3.4). Crewneck Sweatshirt reuses
+   * `key-product.html`'s real reference text verbatim. The other three are
+   * TODO-flagged placeholder blurbs — provisional until real per-garment
+   * copy and a final spec sheet exist.
+   */
+  garmentBlurb: string;
 };
 
 export type Colorway = {
@@ -33,10 +40,38 @@ export type Colorway = {
 export const sizes: string[] = ["S", "M", "L", "XL"];
 
 export const garmentTypes: GarmentType[] = [
-  { slug: "crewneck-sweatshirt", name: "Crewneck Sweatshirt", price: 6800 },
-  { slug: "heavyweight-tee", name: "Heavyweight Tee", price: 3800 },
-  { slug: "lightweight-crewneck", name: "Lightweight Crewneck", price: 5800 },
-  { slug: "long-sleeve-tee", name: "Long Sleeve Tee", price: 4200 },
+  {
+    slug: "crewneck-sweatshirt",
+    name: "Crewneck Sweatshirt",
+    price: 6800,
+    // Real reference copy, reused verbatim from key-product.html:81-137.
+    garmentBlurb:
+      "Comfort Colors garment-dyed crewneck sweatshirt. Soft, broken-in feel from the first wear, generous fit. Fabric weight and care detail pending final spec sheet.",
+  },
+  {
+    slug: "heavyweight-tee",
+    name: "Heavyweight Tee",
+    price: 3800,
+    // TODO: unconfirmed placeholder — replace with real garment copy before launch.
+    garmentBlurb:
+      "Heavyweight cotton tee, garment-dyed for a soft, broken-in feel from the first wear. Substantial without being stiff, cut for an easy, relaxed fit. Fabric weight and care detail pending final spec sheet.",
+  },
+  {
+    slug: "lightweight-crewneck",
+    name: "Lightweight Crewneck",
+    price: 5800,
+    // TODO: unconfirmed placeholder — replace with real garment copy before launch.
+    garmentBlurb:
+      "Lightweight fleece crewneck, easy to layer and just as soft as the rest of the line from the first wear. Built for everyday wear, not just cold mornings. Fabric weight and care detail pending final spec sheet.",
+  },
+  {
+    slug: "long-sleeve-tee",
+    name: "Long Sleeve Tee",
+    price: 4200,
+    // TODO: unconfirmed placeholder — replace with real garment copy before launch.
+    garmentBlurb:
+      "Midweight cotton long sleeve tee, garment-dyed for a soft, broken-in feel from the first wear. Cut for a comfortable, everyday fit. Fabric weight and care detail pending final spec sheet.",
+  },
 ];
 
 export const colorways: Colorway[] = [
