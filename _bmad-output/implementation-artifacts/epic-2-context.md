@@ -10,6 +10,8 @@ The site owner needs real design-listing commerce data (price, inventory, name, 
 
 - Story 2.1: Sync Etsy Catalog Data
 - Story 2.2: Author Motif & Story Content Per Design Listing
+- Story 2.3: Catalog Read Layer
+- Story 2.4: Catalog Registry Drift Check
 
 ## Requirements & Constraints
 
@@ -34,4 +36,6 @@ The site owner needs real design-listing commerce data (price, inventory, name, 
 ## Cross-Story Dependencies
 
 - Story 2.2 depends on Story 2.1 having produced `content/catalog/{listing}/synced.ts` for a listing before `authored.ts` can be authored against it.
+- Story 2.4 depends on 2.3's registry and extends `check:catalog`; until it lands the hand-maintained registry can drift from `listings.json` unnoticed (harmless while both are empty).
+- Story 2.3 depends on 2.1 and 2.2 (the manifest, `synced.ts`, `authored.ts`, `index.ts` convention and `check:catalog`). It is the single server-only module later epics import; the placeholder-driven pages (`lib/placeholder-*.ts`) are not migrated by it, and nothing under `app/` or `components/` imports `content/catalog/` before it lands.
 - Every later epic (Epic 1 collection content, Epic 3 browsing/picker, Epic 4 checkout handoff) reads from the merged `content/catalog/{listing}/index.ts` — Epic 2 is a hard prerequisite for real (non-placeholder) data anywhere else in the app.

@@ -5,7 +5,8 @@ One directory per design listing. `{slug}` is the slug from `listings.json` (low
 ```text
 content/catalog/
   listings.json        # human-owned: slug -> Etsy listing_id (read by the sync)
-  types.ts             # AuthoredContent, the shape of authored.ts
+  types.ts             # AuthoredContent (shape of authored.ts) and the merged-listing types
+  registry.ts          # yours: one import + one key per listing; lib/catalog.ts reads it
   {slug}/
     synced.ts          # owned by `npm run sync:etsy`; overwritten every run — never edit
     authored.ts        # yours: motif name, story copy, collection
@@ -36,7 +37,20 @@ content/catalog/
    export const listing = { ...synced, ...authored } as const;
    ```
 
-4. Run `npm run check:catalog`. It fails if a file is missing, a field is blank, `collection` is not a slug, or `index.ts` is not the exact merge. Also run `npx tsc --noEmit`: only the type checker catches an extra or misspelled field in `authored.ts` (via `satisfies`), and `check:catalog` does not type-check.
+4. Register it in `registry.ts` so the app can read it: import the listing and add it under its slug.
+
+   ```ts
+   import { listing as sicWaterTower } from "./sic-water-tower";
+   import type { CatalogListing } from "./types";
+
+   export const registry = { "sic-water-tower": sicWaterTower } as const satisfies Record<string, CatalogListing>;
+   ```
+
+   `check:catalog` does not verify `registry.ts` yet (Story 2.4), so a listing you forget here is simply not on the site.
+
+5. Run `npm run check:catalog`. It fails if a file is missing, a field is blank, `collection` is not a slug, or `index.ts` is not the exact merge. Also run `npx tsc --noEmit`: only the type checker catches an extra or misspelled field in `authored.ts` (via `satisfies`), and `check:catalog` does not type-check.
+
+App code reads listings only through `lib/catalog.ts` (`getListings`, `getListing(slug)`, `getListingsByCollection`). Only `lib/catalog.ts` is `server-only` (a merged listing carries the Etsy `url`, which must never reach a client bundle), so import `registry.ts` through it and never pass an entry or its `url` as a prop to a Client Component.
 
 Re-running the sync only ever rewrites `synced.ts`; `authored.ts` and `index.ts` are never touched.
 

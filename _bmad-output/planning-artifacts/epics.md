@@ -268,6 +268,50 @@ So that the catalog carries the storytelling the commerce listing doesn't.
 **When** the sync script re-runs and overwrites `synced.ts`
 **Then** `authored.ts` is left completely untouched
 
+### Story 2.3: Catalog Read Layer
+
+As a developer building storefront pages,
+I want one typed, server-only module that returns the merged catalog listings,
+So that pages and the checkout forward read real catalog data from one place instead of each importing per-listing files or placeholder data.
+
+**Acceptance Criteria:**
+
+**Given** the slugs in `content/catalog/listings.json`, each with an `index.ts`
+**When** app code imports the catalog module
+**Then** it can list every merged listing, look one up by its manifest slug, and list the listings in a given collection
+**And** a slug that is not in the catalog returns nothing rather than throwing, so a route can `notFound()`
+
+**Given** an empty `listings.json`
+**When** the catalog module is imported
+**Then** it returns an empty catalog without error, so the app builds before any listing is synced
+
+**Given** a merged listing carries the synced Etsy `url`
+**When** any Client Component tries to import the catalog module
+**Then** the build fails (server-only), so the raw `url` cannot reach a client bundle (NFR8)
+
+**Given** the existing pages that still read `lib/placeholder-*.ts`
+**Then** they are unchanged by this story; moving them onto the catalog is recorded as follow-up work, not done here
+
+### Story 2.4: Catalog Registry Drift Check
+
+As a site owner,
+I want `npm run check:catalog` to fail when the catalog module and the manifest disagree,
+So that a listing I add or rename never silently goes missing from the site.
+
+**Acceptance Criteria:**
+
+**Given** a slug in `content/catalog/listings.json` that the catalog module does not include, or a catalog module entry (or listing directory) with no matching manifest slug or directory
+**When** `npm run check:catalog` runs
+**Then** it fails and names the slug
+
+**Given** a catalog module entry that is not the same listing as its directory's merged `index.ts`
+**When** `npm run check:catalog` runs
+**Then** it fails and names the slug
+
+**Given** the catalog module and the manifest agree
+**When** `npm run check:catalog` runs
+**Then** it passes, and `check:catalog` still never runs from `next build`
+
 ## Epic 3: Garment × Motif Discovery & Picker
 
 A visitor can browse garments (Shop-first) or motifs (Collection-first), select a garment×motif combination with color/size, see it previewed on the Product surface, search across garments/motifs, and hit correct empty/out-of-stock states throughout.

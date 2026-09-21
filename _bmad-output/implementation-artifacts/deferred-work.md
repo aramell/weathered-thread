@@ -160,3 +160,11 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-2-2-author-motif-story-content-per-design-listing.md`
   summary: Validate each listing's authored `collection` against the real collection slugs, so a typo like `sea-isl` fails `check:catalog` instead of silently orphaning the design.
   evidence: `check:catalog` only checks `collection` against the slug pattern, because collections are defined inline in `app/(site)/collections/[slug]/page.tsx` (`sea-isle` only) and the frozen spec rules out a collection registry. Becomes checkable once collections move into `content/` or a second collection exists.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-2-3-catalog-read-layer.md`
+  summary: Extend `check:catalog` to fail when `content/catalog/registry.ts`, `listings.json` and the listing directories disagree (now Story 2.4 in `epics.md`).
+  evidence: Split from Story 2.3 at planning (spec was ~1,900 tokens, over the 1,600 guideline). Until it lands, the hand-maintained registry can drift from the manifest unnoticed, which is harmless while both are empty.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-2-3-catalog-read-layer.md`
+  summary: Give the catalog a client-safe entry shape (an entry type without the Etsy `url`) before any page passes catalog data to a Client Component, and consider guarding `content/catalog/registry.ts` itself.
+  evidence: `server-only` covers `lib/catalog.ts` only, so a Client Component can import `registry.ts` directly, or receive an entry as a prop, and ship the `url` (NFR8). The first real consumer is likely the migration of `components/product-picker-shell.tsx`, which is a Client Component. Not fixed now: it adds public surface and the epic context already fixes the convention that `url` is never passed as a prop.
