@@ -1,10 +1,13 @@
 /**
  * check-catalog — verifies every `content/catalog/{slug}/` directory follows the
- * synced.ts + authored.ts + index.ts convention (Epic 2, Story 2.2). Run with
- * `npm run check:catalog`; it is never part of `next build`.
+ * synced.ts + authored.ts + index.ts convention (Epic 2, Story 2.2), and that
+ * `listings.json`, `registry.ts` and the directories agree on the set of slugs
+ * and on each listing (Story 2.4). Run with `npm run check:catalog`; it is never
+ * part of `next build`.
  *
- * It dynamic-imports each listing's modules, so the merge is proven, not just
- * the presence of files. It only reads; it never writes into the catalog.
+ * It dynamic-imports each listing's modules and the registry, so the merge and
+ * the registry are proven, not just the presence of files. It only reads; it
+ * never writes into the catalog.
  */
 import { promises as fs } from "node:fs";
 import path from "node:path";
@@ -23,9 +26,12 @@ const AUTHORED_FIELDS = Object.keys({
 } satisfies Record<keyof AuthoredContent, true>) as (keyof AuthoredContent)[];
 
 export type CatalogReport = {
-  /** Directories that passed every check. */
+  /**
+   * Slugs with no problem reported. When listings.json or registry.ts is unusable, the
+   * comparisons that need it are skipped (that file's own problem line is reported separately).
+   */
   ok: string[];
-  /** One line per problem, each naming the directory. */
+  /** One line per problem; per-slug lines start `{slug}: `, file-level lines start with the file name. */
   problems: string[];
 };
 
@@ -48,7 +54,30 @@ async function loadExport(file: string, name: string): Promise<Record<string, un
   return isRecord(value) ? value : `${path.basename(file)} must export an object named \`${name}\``;
 }
 
-async function checkListing(catalogDir: string, slug: string): Promise<string[]> {
+/** The manifest's slugs, or one problem line when `listings.json` is unusable. */
+async function loadManifest(file: string): Promise<Set<string> | string> {
+  let text: string;
+  try {
+    text = await fs.readFile(file, "utf8");
+  } catch (error) {
+    return `listings.json could not be read: ${error instanceof Error ? error.message : String(error)}`;
+  }
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(text);
+  } catch (error) {
+    return `listings.json is not valid JSON: ${error instanceof Error ? error.message : String(error)}`;
+  }
+  return isRecord(parsed) ? new Set(Object.keys(parsed)) : "listings.json must be a JSON object mapping slug to Etsy listing id";
+}
+
+type ListingCheck = {
+  problems: string[];
+  /** The directory's `index.ts` `listing`, when it loaded. */
+  listing?: Record<string, unknown>;
+};
+
+async function checkListing(catalogDir: string, slug: string): Promise<ListingCheck> {
   const problems: string[] = [];
   if (!SLUG_PATTERN.test(slug)) {
     problems.push(`directory name must match ${SLUG_PATTERN} (lowercase letters, digits, hyphens)`);
@@ -64,7 +93,7 @@ async function checkListing(catalogDir: string, slug: string): Promise<string[]>
       ? " (a synced listing still needs authored.ts and index.ts)"
       : "";
     problems.push(`missing ${missing.join(", ")}${notAuthored}`);
-    return problems;
+    return { problems };
   }
 
   const [synced, authored, listing] = await Promise.all([
@@ -75,7 +104,8 @@ async function checkListing(catalogDir: string, slug: string): Promise<string[]>
   for (const result of [synced, authored, listing]) {
     if (typeof result === "string") problems.push(result);
   }
-  if (typeof synced === "string" || typeof authored === "string") return problems;
+  const loaded = typeof listing === "string" ? undefined : listing;
+  if (typeof synced === "string" || typeof authored === "string") return { problems, listing: loaded };
 
   for (const field of AUTHORED_FIELDS) {
     const value = authored[field];
@@ -95,19 +125,59 @@ async function checkListing(catalogDir: string, slug: string): Promise<string[]>
   if (typeof listing !== "string" && shared.length === 0 && !isDeepStrictEqual(listing, { ...synced, ...authored })) {
     problems.push("index.ts `listing` must equal { ...synced, ...authored } — every synced and authored field, unchanged");
   }
-  return problems;
+  return { problems, listing: loaded };
 }
 
 export async function checkCatalog(catalogDir: string): Promise<CatalogReport> {
   const report: CatalogReport = { ok: [], problems: [] };
   const entries = await fs.readdir(catalogDir, { withFileTypes: true });
-  const slugs = entries
+  const directories = entries
     .filter((entry) => entry.isDirectory())
-    .map((entry) => entry.name)
-    .sort();
+    .map((entry) => entry.name);
 
+  const [manifestResult, registryResult] = await Promise.all([
+    loadManifest(path.join(catalogDir, "listings.json")),
+    loadExport(path.join(catalogDir, "registry.ts"), "registry"),
+  ]);
+  // A file that cannot be used is one problem; the comparisons that need it are skipped.
+  const manifest = typeof manifestResult === "string" ? null : manifestResult;
+  const registry = typeof registryResult === "string" ? null : registryResult;
+  for (const result of [manifestResult, registryResult]) {
+    if (typeof result === "string") report.problems.push(result);
+  }
+  const registryKeys = registry ? new Set(Object.keys(registry)) : null;
+  const directorySet = new Set(directories);
+
+  const slugs = [...new Set([...directories, ...(manifest ?? []), ...(registryKeys ?? [])])].sort();
   for (const slug of slugs) {
-    const problems = await checkListing(catalogDir, slug);
+    const problems: string[] = [];
+    const inDirectory = directorySet.has(slug);
+    const inManifest = manifest?.has(slug) ?? false;
+    const inRegistry = registryKeys?.has(slug) ?? false;
+
+    let listing: Record<string, unknown> | undefined;
+    if (inDirectory) {
+      const check = await checkListing(catalogDir, slug);
+      problems.push(...check.problems);
+      listing = check.listing;
+    }
+
+    if (registryKeys && !inRegistry && (inManifest || inDirectory)) {
+      problems.push("not in registry.ts, so the site will not show it");
+    }
+    if (manifest && registryKeys && !inManifest && inRegistry) {
+      problems.push("in registry.ts but not in listings.json");
+    }
+    if (manifest && !inManifest && inDirectory) {
+      problems.push("directory has no slug in listings.json");
+    }
+    if (!inDirectory && (inManifest || inRegistry)) {
+      problems.push("has no directory (not yet synced, or a stale entry in listings.json or registry.ts)");
+    }
+    if (registry && inRegistry && listing !== undefined && !isDeepStrictEqual(registry[slug], listing)) {
+      problems.push("registry.ts entry is not the same listing as index.ts `listing`");
+    }
+
     if (problems.length === 0) report.ok.push(slug);
     else report.problems.push(...problems.map((problem) => `${slug}: ${problem}`));
   }

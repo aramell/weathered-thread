@@ -8,7 +8,8 @@
  *   import type { CatalogListing } from "./types";
  *   export const registry = { pickleball } as const satisfies Record<string, CatalogListing>;
  *
- * `npm run check:catalog` does not verify this file yet (Story 2.4).
+ * `npm run check:catalog` verifies this file: every key must be a slug in `listings.json` with a
+ * directory, and each entry must be that directory's `index.ts` `listing`.
  */
 import type { CatalogListing } from "./types";
 

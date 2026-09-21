@@ -46,9 +46,11 @@ content/catalog/
    export const registry = { "sic-water-tower": sicWaterTower } as const satisfies Record<string, CatalogListing>;
    ```
 
-   `check:catalog` does not verify `registry.ts` yet (Story 2.4), so a listing you forget here is simply not on the site.
+   `check:catalog` verifies `registry.ts` against `listings.json` and the directories, so a listing you forget here (or a key with no listing behind it) fails the check instead of silently missing from the site.
 
-5. Run `npm run check:catalog`. It fails if a file is missing, a field is blank, `collection` is not a slug, or `index.ts` is not the exact merge. Also run `npx tsc --noEmit`: only the type checker catches an extra or misspelled field in `authored.ts` (via `satisfies`), and `check:catalog` does not type-check.
+5. Run `npm run check:catalog`. It fails if a file is missing, a field is blank, `collection` is not a slug, `index.ts` is not the exact merge, or `listings.json`, `registry.ts` and the directories disagree on the slugs (or a registry entry is not its directory's `listing`). Also run `npx tsc --noEmit`: only the type checker catches an extra or misspelled field in `authored.ts` (via `satisfies`), and `check:catalog` does not type-check.
+
+Renaming or removing a listing means changing the directory, the `listings.json` key and the `registry.ts` key together; `check:catalog` names whichever slug you missed.
 
 App code reads listings only through `lib/catalog.ts` (`getListings`, `getListing(slug)`, `getListingsByCollection`). Only `lib/catalog.ts` is `server-only` (a merged listing carries the Etsy `url`, which must never reach a client bundle), so import `registry.ts` through it and never pass an entry or its `url` as a prop to a Client Component.
 
