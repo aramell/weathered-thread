@@ -8,6 +8,8 @@ review_loop_iteration: 0
 context: []
 ---
 
+> **STALE — superseded by the Etsy pivot (2026-09-21).** Everything below describes a Squarespace sync and must not be implemented. See `epics.md` Story 2.1 ("Sync Etsy Catalog Data") and `ARCHITECTURE-SPINE.md` AD-1/AD-2; re-plan in the deferred sync goal.
+
 <frozen-after-approval reason="human-owned intent — do not modify unless human renegotiates">
 
 ## Intent
@@ -51,6 +53,7 @@ context: []
 
 ## Open Questions
 
+- **STALE — superseded by the Etsy pivot** — this spec's Squarespace intent (SKU = one garment, motif absent from the commerce source, `shop.` host as the synced URL) is superseded by the Etsy per-design listing model in `epics.md` (Story 2.1, "Sync Etsy Catalog Data") and `ARCHITECTURE-SPINE.md` (AD-1, AD-2). Do not implement this spec as written; re-plan in the deferred sync goal.
 - **Live verification path** — do we have a working `SQUARESPACE_API_KEY` (and confirmed Inventory-API-capable Squarespace plan tier) to run this script against the real API as this story's verification step? — options: **A)** Yes, provide it via `.env.local` now and I'll run a real end-to-end sync as verification (matches the AC's "Given a valid `SQUARESPACE_API_KEY`" precondition directly) / **B)** No key/tier confirmed yet — verify with a local fixture standing in for the Squarespace responses (fetch swapped behind an injectable client for the test run only), and treat the first live run as your own follow-up once credentials exist.
 - **Price-regression handling** — when the script detects a SKU's fetched price is lower than what's on `main`, should it — options: **A)** Warn to stderr but still write the new (lower) price and finish the run (soft warning, sync always completes) / **B)** Skip writing that one SKU (old `synced.ts` stays as-is), continue syncing the rest, exit non-zero listing every skipped SKU / **C)** Abort the entire run and write nothing, identical to an API failure.
 

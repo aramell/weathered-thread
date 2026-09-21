@@ -1,8 +1,8 @@
 ---
 name: Weathered Thread
-description: Coastal heritage embroidery brand — quiet, tactile, place-led storytelling for a custom storefront that hands off to Squarespace only to pay.
+description: Coastal heritage embroidery brand — quiet, tactile, place-led storytelling for a custom storefront that hands off to Etsy only to pay.
 status: final
-updated: 2026-09-14
+updated: 2026-09-21
 colors:
   sailcloth: '#EFEAE0'
   wet-ink: '#2B2A26'
@@ -178,5 +178,5 @@ Visual reference: [`mockups/key-product.html`](mockups/key-product.html) (button
 | Spend Antique Brass on one small, earned moment per screen | Use Antique Brass as a background fill or default button color |
 | Let Deep Harbor cover a full section (hero, story block, footer) | Let Deep Harbor read as "navy" — watch saturation and pairing |
 | Treat garment quality as part of the story (fabric, weight, fit language) | Describe pieces as merely "embroidered shirts" |
-| Keep motion and layout quiet, print-like | Add gradients, hero animations, popups, or effects "because Squarespace offers them" |
+| Keep motion and layout quiet, print-like | Add gradients, hero animations, popups, or effects "because a template offers them" |
 | Show real, tactile photography — actual garments, actual stitching, natural light | Use generic stock imagery to fill a section |

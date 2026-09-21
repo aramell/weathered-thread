@@ -3,8 +3,8 @@
  * browsing flow. Kept structurally separate from Epic 2's real
  * `content/catalog/` sync pipeline: this is the ONLY source of garment-type
  * and colorway data for the homepage Shop grid and the new `/shop/*` routes
- * until real Squarespace-synced inventory lands. Do not write into
- * `content/catalog/{sku}/` or mimic its `synced.ts`/`authored.ts` shape.
+ * until real Etsy-synced inventory lands. Do not write into
+ * `content/catalog/{listing}/` or mimic its `synced.ts`/`authored.ts` shape.
  *
  * All 4 garment types reuse the same 4 colorway photos — there is no real
  * per-type photography or inventory yet. Sizes are a flat, garment- and

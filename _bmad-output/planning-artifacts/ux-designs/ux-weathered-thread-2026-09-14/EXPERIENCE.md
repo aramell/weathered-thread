@@ -3,18 +3,18 @@ name: Weathered Thread
 status: final
 sources:
   - '{planning_artifacts}/ux-designs/ux-weathered-thread-2026-09-14/imports/website-build-handoff-prd.md'
-updated: 2026-09-14
+updated: 2026-09-21
 ---
 
 # Weathered Thread — Experience Spine
 
-> Custom-built storefront (browsing, storytelling, garment+design picker) handing off to Squarespace for payment only — no shared cart/checkout API exists between the two, so "Add to Bag" is a link-out to the matching Squarespace product page, not an embedded cart. Paired with `DESIGN.md`. Launch scope: adult apparel, one collection (Sea Isle), structured so future collections/kids/accessories can be added without a rebuild.
+> Custom-built storefront (browsing, storytelling, garment+design picker) handing off to Etsy for payment only — there is no shared cart between the two, so "Add to Bag" is a link-out (via a `shop.weatheredthread.com` URL that forwards to the design's Etsy listing), not an embedded cart. An Etsy listing URL is per design, so the handoff cannot preselect garment style, color, or size; the Checkout Handoff restates the selection and the visitor confirms it on Etsy. Paired with `DESIGN.md`. Launch scope: adult apparel, one collection (Sea Isle), structured so future collections/kids/accessories can be added without a rebuild.
 
 ## Foundation
 
 Responsive web, mobile-first (the primary purchase surface is a phone), desktop fully supported at wider breakpoints. No third-party UI system — this is a custom-built experience; `DESIGN.md` is the visual identity reference for it.
 
-Two systems make up the full purchase path: this site (everything through "Add to Bag") and Squarespace (payment only, reached by link-out). `DESIGN.md` tokens govern this site's surfaces completely; they're an *aspirational reference* for how the linked Squarespace product pages should be configured to feel continuous, not a guarantee — Squarespace's own theme engine renders that half of the journey and won't hit every token exactly. Don't over-invest in matching it pixel-for-pixel; get palette and type close, and treat the handoff moment (see the Checkout Handoff row in Information Architecture, and the `checkout-handoff` component) as the seam that needs the most design attention, since that's where the brand's control ends.
+Two systems make up the full purchase path: this site (everything through "Add to Bag") and Etsy (payment only, reached by link-out; checkout runs on etsy.com). `DESIGN.md` tokens govern this site's surfaces completely; the Etsy listing and checkout pages are rendered by Etsy, outside this site's design control. Don't try to match them; treat the handoff moment (see the Checkout Handoff row in Information Architecture, and the `checkout-handoff` component) as the seam that needs the most design attention, since that's where the brand's control ends.
 
 ## Information Architecture
 
@@ -28,7 +28,7 @@ Two systems make up the full purchase path: this site (everything through "Add t
 | Product (garment × motif) | From Garment Type List (garment chosen, motif next) **or** from Collection Story (motif chosen, garment next) | The converged, sellable unit — one specific garment + one specific motif |
 | About | Nav: ABOUT | Brand story, philosophy |
 | Search results | Search icon | Text search across garments and motifs |
-| Checkout Handoff | Product → "Add to Bag" | Brief interstitial confirming the selection, then redirect to the matching Squarespace product page to pay |
+| Checkout Handoff | Product → "Add to Bag" | Brief interstitial confirming the selection, then forward (via the `shop.weatheredthread.com` host) to the design's Etsy listing to pay; style, color, and size are confirmed again on Etsy |
 
 Both entry paths (Shop-first and Collection-first) converge on the same Product surface — the garment+motif combination is identical either way, only the order of the two choices differs. No mega-menu, no filtering beyond garment type and collection at launch (brand PRD explicitly excludes complex filtering).
 
@@ -42,7 +42,7 @@ Microcopy only; brand voice and aesthetic posture live in `DESIGN.md.Brand & Sty
 |---|---|
 | "Sea Isle. A story, stitched in." | "🌊 SHOP THE WAVE COLLECTION NOW!!" |
 | "Add to Bag" | "Buy Now!!" / "Grab Yours Today" |
-| "Continuing to checkout." (before the Squarespace redirect) | "Redirecting…" (generic, no sense of continuity) |
+| "Continuing to checkout." (before the Etsy forward) | "Redirecting…" (generic, no sense of continuity) |
 | "This design is currently out of stock in your size." | "Oops! Sold out 😢" |
 | Full sentences, quiet confidence | Exclamation marks, urgency language, countdown/scarcity copy |
 | "The beauty is in the details." | Apologizing for handmade variation as a flaw |
@@ -59,10 +59,10 @@ Behavioral only; visual specs live in `DESIGN.md.Components`.
 | `garment-swatch` | Garment Type List, Product page | Tap selects a color; updates the preview image to that garment color. Disabled (not hidden) swatches for colors with no confirmed inventory, per the PRD's inventory table. |
 | `product-card` | Shop grid, search results | Tap → Product surface for that garment (motif unset, prompts a choice) or that garment+motif pairing if reached from a design-specific context. |
 | `collection-story-block` | Home, Collection Story | Scroll-triggered reveal only (no autoplay, no carousel) — static narrative block, motif gallery below it. |
-| `nav-header` | All surfaces | Sticky on scroll on mobile; SHOP / COLLECTIONS / ABOUT plus search and bag icon always reachable. Bag icon shows no count badge pre-launch (single-item "bag" is really just "proceed to this product's Squarespace page" — see `checkout-handoff`). |
+| `nav-header` | All surfaces | Sticky on scroll on mobile; SHOP / COLLECTIONS / ABOUT plus search and bag icon always reachable. Bag icon shows no count badge pre-launch (single-item "bag" is really just "proceed to this design's Etsy listing" — see `checkout-handoff`). |
 | `button-primary` | One per screen: Add to Bag (Product), Shop the Collection (Home/Collection Story), Continue to Checkout (`checkout-handoff`) | Always the single primary action on its screen — never two `button-primary`s competing. Disabled state (not hidden) when its precondition isn't met (e.g. Add to Bag before a motif is chosen). |
 | `button-secondary` | View Details, Back to Collection | Never used for the primary conversion action; always paired with a `button-primary` elsewhere on the same screen, not standing alone as the only action. A failed-redirect retry reuses the same `button-primary` Continue action (see State Patterns) rather than `button-secondary` — it's still the primary action, just retried. |
-| `checkout-handoff` | Product → Add to Bag | Confirms garment + motif + color/size in plain language, one `button-primary` forward ("Continue to Checkout"), then redirects to the matching Squarespace product page. Not skippable-by-accident — this is a deliberate pause, not a loading spinner. |
+| `checkout-handoff` | Product → Add to Bag | Confirms garment + motif + color/size in plain language, one `button-primary` forward ("Continue to Checkout"), says the visitor confirms that selection again on Etsy (the listing link cannot preselect style, color, or size), then forwards via the `shop.` host to the design's Etsy listing. Not skippable-by-accident — this is a deliberate pause, not a loading spinner. |
 
 ## State Patterns
 
@@ -117,7 +117,7 @@ Behavioral; visual contrast lives in `DESIGN.md`.
 5. Product surface now shows Water Tower on a Blue Jean crewneck (composited placeholder image at this stage), with THE GARMENT / THE EMBROIDERY sections available below if she wants the story and fabric detail.
 6. She selects size, taps **Add to Bag**.
 7. Checkout Handoff interstitial confirms the selection in plain language.
-8. **Climax:** she taps **Continue to Checkout** and lands on the matching Squarespace product page, already knowing exactly what she's paying for — the handoff feels like a continuation, not a jolt to a different site.
+8. **Climax:** she taps **Continue to Checkout** and lands on the design's Etsy listing, having just seen her selection restated, and confirms style, color, and size there — the handoff feels like a continuation as far as the brand can carry it, not a jolt.
 
 Failure path: if the Blue Jean/Large combination is out of stock, step 4's swatch is shown disabled with the out-of-stock microcopy; she's not blocked from browsing, just from adding that exact combination.
 
@@ -128,7 +128,7 @@ Failure path: if the Blue Jean/Large combination is out of stock, step 4's swatc
 3. Product surface loads with no motif selected yet — prompt: "Choose a design for this piece," Add to Bag disabled.
 4. He browses available motifs inline (scoped to Sea Isle, the only live collection) as `motif-tile`s, taps **Lobster Loft**.
 5. Preview updates to show Lobster Loft on the Pepper crewneck; Add to Bag becomes active.
-6. **Climax:** he adds to bag, confirms at the Checkout Handoff, and is routed to Squarespace — arriving at checkout already certain — the garment-first path never made him detour through a story he didn't ask for.
+6. **Climax:** he adds to bag, confirms at the Checkout Handoff, and is routed to Etsy — arriving at checkout already certain of his selection — the garment-first path never made him detour through a story he didn't ask for.
 
 Empty state: if a garment type has no motifs assigned yet (a real near-term possibility per the PRD's open item on garment-to-design assignment), the Product surface should say so plainly rather than show an empty picker — exact copy is an open item, not decided during Discovery.
 

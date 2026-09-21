@@ -5,9 +5,10 @@
  * `lib/placeholder-shop-data.ts`'s shape: this is the ONLY source of
  * motif data for the Sea Isle Collection Story and the new
  * `/collections/[slug]/[motif]` routes until real authored motif content
- * lands in Epic 2's `content/catalog/{sku}/authored.ts` (motifs are
- * repo-authored only and never sync from Squarespace). Do not write into
- * `content/catalog/{sku}/` or mimic its `synced.ts`/`authored.ts` shape.
+ * lands in Epic 2's `content/catalog/{listing}/authored.ts` (motif story
+ * content is repo-authored; only price/inventory/URL come from the Etsy
+ * sync). Do not write into `content/catalog/{listing}/` or mimic its
+ * `synced.ts`/`authored.ts` shape.
  */
 
 export type Motif = {

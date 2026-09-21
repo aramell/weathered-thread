@@ -32,7 +32,7 @@ A visitor can land on the site with the full brand identity applied — colors, 
 - Server-Components-first App Router: every route in this epic renders as a Server Component by default; no client-side interactivity needed here (email signup posts to a Server Action).
 - No global client store; no accounts, login, personalization, or session state anywhere on the site.
 - Every email-capture entry point posts to exactly one Server Action, `subscribeEmail` (`app/(site)/actions.ts`) — never a route handler or second implementation.
-- Catalog/narrative content (motif names, story copy) is repo-authored TypeScript/JSON under `content/`, not a database. Story 1.3's motif list is authored content, never synced from Squarespace.
+- Catalog/narrative content (motif names, story copy) is repo-authored TypeScript/JSON under `content/`, not a database. Story 1.3's motif list is authored content in the repo, not taken from the Etsy sync.
 - Design tokens (colors, typography, spacing, radii) should be real, reusable tokens per `DESIGN.md`, not one-off hardcoded values, since Epics 2–4 build on the same system.
 
 ## UX & Interaction Patterns

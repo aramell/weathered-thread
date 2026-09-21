@@ -24,13 +24,13 @@ FR4: Visitor can select a garment from the Shop grid, then choose a motif (scope
 FR5: The Product surface shows the selected garment × motif combination, including an on-garment preview image (composited placeholder until real photography exists).
 FR6: Visitor can select garment color and size on the Product surface; unavailable combinations show disabled with out-of-stock messaging, never hidden entirely.
 FR7: Visitor can add the selected garment × motif × color × size combination to bag, advancing to a Checkout Handoff interstitial.
-FR8: The Checkout Handoff confirms the selection in plain language and links out to the exact matching Squarespace product page (at `shop.weatheredthread.com`) to complete payment.
+FR8: The Checkout Handoff confirms the selection in plain language and links out, via a `shop.weatheredthread.com` URL that forwards to the design's Etsy listing, to complete payment on Etsy. An Etsy listing URL is per design, so the handoff cannot preselect style, color, or size; the interstitial restates the selection and tells the visitor to confirm it on Etsy.
 FR9: Visitor can sign up for email updates from the homepage; submissions send via Resend.
 FR10: Visitor can navigate via SHOP | COLLECTIONS | ABOUT plus search and bag icon from any surface.
 FR11: Visitor can search text across garments and motifs; empty results show a plain "No matches" state, no fallback suggestions.
 FR12: Product page renders, in fixed order: product images → name/price → color/size selectors → Add to Bag → emotional description → "THE GARMENT" → "THE EMBROIDERY" → fit/size → care → shipping/returns.
-FR13: Catalog data (price, inventory, SKU, product name, Squarespace product URL) is synced from Squarespace's Products/Inventory API into the site's static content via a manually-run sync script.
-FR14: Motif, story, and collection-grouping content is authored directly in the repo, keyed to synced garment data by SKU.
+FR13: Catalog data (price, inventory, name, Etsy listing URL) is synced from Etsy's Open API v3 into the site's static content via a manually-run sync script. The catalog is one Etsy listing per design (motif), with three variation axes: garment style (long-sleeve tee, short-sleeve tee, heavyweight crew, lightweight crew), color (ivory, pepper, blue jean), and size (S/M/L on tees).
+FR14: Story and collection-grouping content, plus motif details, is authored directly in the repo and joined to each design's synced Etsy listing data (join key: open architecture item, see Additional Requirements).
 FR15: Homepage renders, in fixed order: Hero → Sea Isle feature → brand idea/story → shop/product grid → product philosophy → embroidery/detail section → lifestyle imagery → email signup → footer.
 
 ### NonFunctional Requirements
@@ -41,19 +41,21 @@ NFR3: Text/background contrast for Wet Ink-on-Sailcloth and Sailcloth-on-Deep-Ha
 NFR4: Motif tiles, garment swatches, and all interactive elements carry a text label (never color/image-only identification); screen readers announce selection-state changes.
 NFR5: No accounts, login, personalization, or session state (explicit launch exclusion).
 NFR6: No carousels, popups, discount modals, countdown timers, or scarcity UI (explicit launch exclusion / brand voice rule).
-NFR7: Catalog price/inventory/SKU displayed on the custom site never diverges from what Squarespace actually charges (sync integrity).
-NFR8: The Checkout Handoff link always resolves to a URL on the `shop.weatheredthread.com` host — never Squarespace's default domain.
+NFR7: Catalog price/inventory displayed on the custom site never diverges from what Etsy actually charges (sync integrity).
+NFR8: Checkout Handoff links always use the `shop.weatheredthread.com` host, never a raw etsy.com URL in site markup. Checkout itself runs on etsy.com.
 NFR9: Vercel Pro plan required (commercial project; Hobby plan disallowed for revenue-generating use).
-NFR10: The site renders entirely from static/build-time-synced content at request time — no live runtime calls to Squarespace from a visitor-facing request.
+NFR10: The site renders entirely from static/build-time-synced content at request time — no live runtime calls to Etsy from a visitor-facing request.
 
 ### Additional Requirements
 
 - No starter template needed — the repo is already a `create-next-app` Next.js 16.3.5 App Router scaffold (ratified, not re-derived). Epic 1 Story 1 must NOT scaffold a new app; it builds on what exists.
-- Sync script (`scripts/sync-squarespace.ts`) pulling from Squarespace's Products + Inventory API (`SQUARESPACE_API_KEY`), run manually (local/CI) — never invoked from `next build`. Writes `content/catalog/{sku}/synced.ts` only; never touches `content/catalog/{sku}/authored.ts`.
+- Sync script (`scripts/sync-etsy.ts`) pulling from Etsy's Open API v3, run manually (local/CI) — never invoked from `next build`. Every call sends `x-api-key: <keystring>:<shared_secret>`; the public read-only endpoints it uses need no OAuth. The credential is `ETSY_API_KEY`, holding that full string; it stays out of Vercel build/runtime env. Writes `content/catalog/{listing}/synced.ts` only; never touches `content/catalog/{listing}/authored.ts`.
 - Resend email integration (`RESEND_API_KEY`, Vercel Marketplace) wired through one Server Action, `subscribeEmail` — no route handler, no second implementation.
-- Domain/DNS split: `weatheredthread.com` registrar at Squarespace; app domain DNS → Vercel; `shop.weatheredthread.com` → Squarespace store.
+- Domain/DNS split: `weatheredthread.com` registrar/DNS at Squarespace (registrar only); app domain DNS → Vercel; `shop.weatheredthread.com` DNS → the same Vercel app, which serves the forward to the design's Etsy listing. Checkout runs on etsy.com.
 - Vercel Pro hosting; automatic per-branch preview deployments (no extra setup).
-- Catalog data structure: `content/catalog/{sku}/{synced.ts, authored.ts, index.ts}`; SKU = one Squarespace `garment` (color/size variant) only, never a motif combination; `product` (garment × motif) assembled in-repo.
+- Catalog data structure: `content/catalog/{listing}/{synced.ts, authored.ts, index.ts}`, one directory per Etsy listing. One Etsy listing per design (motif), with three variation axes: garment style (long-sleeve tee, short-sleeve tee, heavyweight crew, lightweight crew), color (ivory, pepper, blue jean), and size (S/M/L on tees). A listing URL is per design, so a `product` (garment × motif) is assembled in-repo and shares its motif's listing URL.
+- Open architecture item (for the sync story): the join key between a repo motif and its Etsy listing, and how per-combination price/inventory map into the synced shape. The same item also covers the catalog-model details the per-design listing implies: what identifies a `product` in its route (a listing key alone identifies only the design, not style/color); where garment-level content (`swatchImage`, style/color) lives now that catalog directories are per listing; which name is displayed (the authored motif name or the synced listing title); how a style/color a design is not offered in appears in the picker; whether per-combination price/inventory are readable without OAuth; and how the existing placeholder garment types, colorways and sizes (`lib/placeholder-shop-data.ts`, Story 3.1 — e.g. bay, XL, crewneck-sweatshirt) reconcile with the Etsy "garment style" axis.
+- Open items: Etsy app approval/access tier; the Etsy API Terms limits on storing listing data (etsy.com/legal/api was unreadable, so unverified); crew size options unconfirmed.
 - Single `ProductPickerShell` Client Component owns all picker state (motif, color, size); `motif-tile`, `garment-swatch`, sticky CTA are presentational islands underneath it.
 - Closed image-field set: `garment.swatchImage`, `product.previewImage`, `motif.motifIcon` — no other ad hoc image fields.
 - Next.js 16 `cacheComponents` flag stays off for v1 (no per-request dynamic data).
@@ -67,7 +69,7 @@ UX-DR4: Implement `motif-tile` — Paper Raised surface, caption-mono motif-name
 UX-DR5: Implement `garment-swatch` — small circular (`rounded.full`) color swatch, Line border at rest / Wet Ink border selected; disabled (not hidden) for colors with no confirmed inventory.
 UX-DR6: Implement `product-card` — Paper Raised surface, body-type title, price-mono price, `rounded.DEFAULT` corners; used in the Shop grid and search results.
 UX-DR7: Implement `collection-story-block` — Deep Harbor surface, Sailcloth text, `display-lg` heading; scroll-triggered reveal only, no autoplay/carousel — the one place Deep Harbor covers a full section by design.
-UX-DR8: Implement the `checkout-handoff` interstitial — Sailcloth surface, headline/body-sm text, confirms garment + motif + color/size in plain language, one `button-primary` forward ("Continue to Checkout"); not skippable-by-accident.
+UX-DR8: Implement the `checkout-handoff` interstitial — Sailcloth surface, headline/body-sm text, confirms garment + motif + color/size in plain language and says the visitor confirms that selection again on Etsy (the listing link cannot preselect it), one `button-primary` forward ("Continue to Checkout"); not skippable-by-accident.
 UX-DR9: Implement the 5-color brand palette + 2 supporting tones as real design tokens, exact hex values: Sailcloth `#EFEAE0`, Wet Ink `#2B2A26`, Deep Harbor `#2F4858`, Marsh Sage `#7C8567`, Antique Brass `#A8823C`, Paper Raised `#F7F4EC`, Line `#D9D2C2`.
 UX-DR10: Implement typography tokens as real webfonts — Fraunces (display/headline) + Libre Franklin (body) + IBM Plex Mono (label/price/caption) — replacing the system-font fallback used in the offline mockups.
 UX-DR11: Implement spacing/radius tokens per `DESIGN.md`: spacing scale 1–7 plus `gutter-mobile`/`gutter-desktop`/`story-gap`; radii `sm`/`DEFAULT`/`md`/`full`.
@@ -87,13 +89,13 @@ FR4: Epic 3 - Select garment then motif (garment-first)
 FR5: Epic 3 - Product surface shows selected combination
 FR6: Epic 3 - Color/size selection with out-of-stock states
 FR7: Epic 4 - Add to bag advances to Checkout Handoff
-FR8: Epic 4 - Checkout Handoff links to matching Squarespace product
+FR8: Epic 4 - Checkout Handoff forwards, via the `shop.` host, to the design's Etsy listing
 FR9: Epic 1 - Homepage email signup via Resend
 FR10: Epic 1 - Site navigation (SHOP/COLLECTIONS/ABOUT/search/bag)
 FR11: Epic 3 - Search across garments and motifs
 FR12: Epic 3 - Product page fixed content sequence
-FR13: Epic 2 - Squarespace catalog sync (price/inventory/SKU/URL)
-FR14: Epic 2 - Repo-authored motif/story content keyed by SKU
+FR13: Epic 2 - Etsy catalog sync (price/inventory/listing URL)
+FR14: Epic 2 - Repo-authored motif/story content joined to synced listing data
 FR15: Epic 1 - Homepage fixed section order
 
 ## Epic List
@@ -103,15 +105,15 @@ A visitor can land on the site with the full brand identity applied, navigate SH
 **FRs covered:** FR2, FR9, FR10, FR15
 
 ### Epic 2: Catalog Data Pipeline
-The site owner can sync real garment data (price, inventory, SKU, Squarespace URL) from Squarespace and author motif/story content alongside it — producing the structured catalog every later epic renders from.
+The site owner can sync real design-listing data (price, inventory, Etsy listing URL) from Etsy and author motif/story content alongside it — producing the structured catalog every later epic renders from.
 **FRs covered:** FR13, FR14
 
 ### Epic 3: Garment × Motif Discovery & Picker
 A visitor can browse garments (Shop-first) or motifs (Collection-first), select a garment×motif combination with color/size, see it previewed on the Product surface, search across garments/motifs, and hit correct empty/out-of-stock states throughout.
 **FRs covered:** FR1, FR3, FR4, FR5, FR6, FR11, FR12
 
-### Epic 4: Checkout Handoff to Squarespace
-A visitor can add a selection to bag, review it in plain language, and get handed to the exact matching Squarespace product page to pay — always landing on the correct branded subdomain.
+### Epic 4: Checkout Handoff to Etsy
+A visitor can add a selection to bag, review it in plain language, and get handed to the matching design's Etsy listing to pay — always through the branded `shop.` subdomain, and told to confirm style, color, and size on Etsy.
 **FRs covered:** FR7, FR8
 
 ## Epic 1: Site Foundation, Brand System & Storytelling
@@ -217,51 +219,52 @@ So that I can hear about new collections without creating an account.
 
 ## Epic 2: Catalog Data Pipeline
 
-The site owner can sync real garment data (price, inventory, SKU, Squarespace URL) from Squarespace and author motif/story content alongside it — producing the structured catalog every later epic renders from.
+The site owner can sync real design-listing data (price, inventory, Etsy listing URL) from Etsy and author motif/story content alongside it — producing the structured catalog every later epic renders from.
 
-### Story 2.1: Sync Squarespace Garment Data
+### Story 2.1: Sync Etsy Catalog Data
 
 As a site owner,
-I want to pull real garment data (price, inventory, SKU, name, product URL) from Squarespace into the site,
+I want to pull real listing data (price, inventory, name, listing URL) for each design from Etsy into the site,
 So that the storefront always reflects real commerce facts without hand-typing them.
 
 **Acceptance Criteria:**
 
-**Given** a valid `SQUARESPACE_API_KEY` in the local/CI environment
-**When** the site owner runs `scripts/sync-squarespace.ts`
-**Then** it fetches price, inventory, SKU, name, and product URL for every garment from Squarespace's Products + Inventory API
-**And** it writes exactly one `content/catalog/{sku}/synced.ts` per garment, fully overwriting any prior version
-**And** it never writes to `content/catalog/{sku}/authored.ts`
+**Given** a valid `ETSY_API_KEY` (the full `<keystring>:<shared_secret>` string) in the local/CI environment
+**When** the site owner runs `scripts/sync-etsy.ts`
+**Then** it calls Etsy's Open API v3, sending `x-api-key: <keystring>:<shared_secret>` on every call, and fetches price, inventory, name, and listing URL for every design listing (one per motif, across the style, color, and size variations)
+**And** it writes exactly one `content/catalog/{listing}/synced.ts` per listing, fully overwriting any prior version
+**And** it never writes to `content/catalog/{listing}/authored.ts`
+**And** the join key between a repo motif and its listing is decided in this story (open architecture item)
 
-**Given** any Squarespace API call fails during a run
+**Given** any Etsy API call fails during a run
 **When** the script encounters the error
 **Then** it writes nothing (all-or-nothing) rather than a partial file, and exits with a clear error message
 
-**Given** a garment's returned product URL
+**Given** a listing's returned URL
 **When** the script validates it
-**Then** it verifies the host is `shop.weatheredthread.com` and fails loudly, writing nothing, if any URL resolves to a different host
+**Then** it verifies the host is etsy.com (or a subdomain of it) and fails loudly, writing nothing, if any URL resolves to a different host — the site never renders this raw URL in markup (NFR8); only Story 4.2's `shop.` forward uses it
 
 **Given** the repo's `package.json`
-**Then** `sync-squarespace.ts` is never referenced from the `build` script — it only runs as a standalone command, never from `next build` or any Vercel build/runtime step
+**Then** `sync-etsy.ts` is never referenced from the `build` script — it only runs as a standalone command, never from `next build` or any Vercel build/runtime step, and `ETSY_API_KEY` is never set in Vercel build/runtime env
 
 **Given** synced data already exists on `main`
 **When** a new sync run would regress a previously-synced field (e.g. an older price)
 **Then** the script warns before writing, rather than silently overwriting with stale data
 
-### Story 2.2: Author Motif & Story Content Per Garment
+### Story 2.2: Author Motif & Story Content Per Design Listing
 
 As a site owner,
-I want to write motif name, story copy, and collection grouping for each synced garment,
-So that the catalog carries the storytelling Squarespace has no model for.
+I want to write motif name, story copy, and collection grouping for each synced design listing,
+So that the catalog carries the storytelling the commerce listing doesn't.
 
 **Acceptance Criteria:**
 
-**Given** a garment's `content/catalog/{sku}/synced.ts` exists
-**When** the site owner creates or edits `content/catalog/{sku}/authored.ts`
-**Then** they can set motif name, place/story copy, and collection grouping for that garment
-**And** `content/catalog/{sku}/index.ts` re-exports the merge of `synced.ts` and `authored.ts` as one object
+**Given** a listing's `content/catalog/{listing}/synced.ts` exists
+**When** the site owner creates or edits `content/catalog/{listing}/authored.ts`
+**Then** they can set motif name, place/story copy, and collection grouping for that listing's design
+**And** `content/catalog/{listing}/index.ts` re-exports the merge of `synced.ts` and `authored.ts` as one object
 
-**Given** `authored.ts` already has content for a garment
+**Given** `authored.ts` already has content for a listing
 **When** the sync script re-runs and overwrites `synced.ts`
 **Then** `authored.ts` is left completely untouched
 
@@ -375,9 +378,9 @@ So that I can jump straight to what I'm looking for.
 **When** results render
 **Then** a plain "No matches." message shows, with no fallback suggestions
 
-## Epic 4: Checkout Handoff to Squarespace
+## Epic 4: Checkout Handoff to Etsy
 
-A visitor can add a selection to bag, review it in plain language, and get handed to the exact matching Squarespace product page to pay — always landing on the correct branded subdomain.
+A visitor can add a selection to bag, review it in plain language, and get handed to the matching design's Etsy listing to pay — always through the branded `shop.` subdomain, and told to confirm style, color, and size on Etsy.
 
 ### Story 4.1: Add to Bag Advances to Checkout Handoff
 
@@ -392,21 +395,26 @@ So that I can review it before paying.
 **Then** they advance to the Checkout Handoff interstitial
 
 **Given** the Checkout Handoff renders
-**Then** it shows a Sailcloth surface with headline/body-sm text confirming garment + motif + color/size in plain language, and one `button-primary` forward ("Continue to Checkout")
+**Then** it shows a Sailcloth surface with headline/body-sm text confirming garment + motif + color/size in plain language, says they'll confirm that selection again on Etsy, and one `button-primary` forward ("Continue to Checkout")
 **And** it is not skippable-by-accident — a deliberate pause, not a spinner or auto-redirect
 
-### Story 4.2: Checkout Handoff Links to the Correct Squarespace Product
+### Story 4.2: Checkout Handoff Forwards to the Correct Etsy Listing
 
 As a visitor,
-I want to be sent to the exact matching Squarespace product page,
-So that I can pay for the exact item I selected.
+I want to be sent to the matching design's Etsy listing,
+So that I can pay for the item I selected, confirming style, color, and size there.
 
 **Acceptance Criteria:**
 
 **Given** a visitor is on Checkout Handoff and taps "Continue to Checkout"
 **When** the tap registers
-**Then** they're redirected to that product's stored `url` field (from synced Squarespace data), rendered as-is — never constructed or rewritten client-side
-**And** that URL's host is always `shop.weatheredthread.com` (validated at sync time in Epic 2)
+**Then** they're sent to a `shop.weatheredthread.com` URL, served by this Vercel app, that forwards to that design's synced Etsy listing URL (validated at sync time in Epic 2) — the forward is resolved from stored synced data, never constructed or rewritten client-side
+**And** the link in site markup always uses the `shop.` host, never a raw etsy.com URL (NFR8)
+**And** the URL shape of the forward is decided in this story
+
+**Given** an Etsy listing URL is per design
+**When** the visitor lands on Etsy
+**Then** style, color, and size are not preselected — the interstitial (Story 4.1) has already restated the selection so the visitor can confirm it on Etsy
 
 **Given** the redirect fails (network error, broken link)
 **When** the failure occurs
