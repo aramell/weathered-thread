@@ -156,3 +156,7 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-2-1-sync-etsy-catalog-data.md`
   summary: Sync per-variation (style/color/size) price and quantity from Etsy via OAuth `listings_r` and `getListingInventory`.
   evidence: Verified live 2026-09-21 that `getListingInventory` returns 401 "requires scope: listings_r" with the API key alone; Story 2.1 ships listing-level data only and the owner deferred OAuth.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-2-2-author-motif-story-content-per-design-listing.md`
+  summary: Validate each listing's authored `collection` against the real collection slugs, so a typo like `sea-isl` fails `check:catalog` instead of silently orphaning the design.
+  evidence: `check:catalog` only checks `collection` against the slug pattern, because collections are defined inline in `app/(site)/collections/[slug]/page.tsx` (`sea-isle` only) and the frozen spec rules out a collection registry. Becomes checkable once collections move into `content/` or a second collection exists.

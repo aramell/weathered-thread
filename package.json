@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "sync:etsy": "tsx --env-file-if-exists=.env.local scripts/sync-etsy.ts",
-    "test:sync": "tsx --test scripts/sync-etsy.test.ts"
+    "test:sync": "tsx --test scripts/sync-etsy.test.ts",
+    "check:catalog": "tsx scripts/check-catalog.ts",
+    "test:catalog": "tsx --test scripts/check-catalog.test.ts"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
