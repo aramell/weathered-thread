@@ -153,3 +153,6 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-etsy-docs-pivot.md`
   summary: The Etsy sync story (deferred rewrite of Story 2.1) must define Etsy-specific failure cases and price semantics: a listing with no repo motif or a motif with no listing, inactive/draft/sold-out listings, pagination, an unapproved app (401/403), price-regression checks per variation combination, and what NFR7 means when Etsy adds shipping, tax, currency conversion, sale prices and per-variation price modifiers (base vs from-price).
   evidence: Raised by review of the pivot diff: Story 2.1's ACs only carry the generic "any Etsy API call fails" clause and NFR7 was carried over from the Squarespace wording. Belongs to the sync story's own planning, which the earlier deferred entry already schedules.
+- source_spec: `_bmad-output/implementation-artifacts/spec-2-1-sync-etsy-catalog-data.md`
+  summary: Sync per-variation (style/color/size) price and quantity from Etsy via OAuth `listings_r` and `getListingInventory`.
+  evidence: Verified live 2026-09-21 that `getListingInventory` returns 401 "requires scope: listings_r" with the API key alone; Story 2.1 ships listing-level data only and the owner deferred OAuth.
