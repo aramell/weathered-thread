@@ -168,3 +168,7 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-2-3-catalog-read-layer.md`
   summary: Give the catalog a client-safe entry shape (an entry type without the Etsy `url`) before any page passes catalog data to a Client Component, and consider guarding `content/catalog/registry.ts` itself.
   evidence: `server-only` covers `lib/catalog.ts` only, so a Client Component can import `registry.ts` directly, or receive an entry as a prop, and ship the `url` (NFR8). The first real consumer is likely the migration of `components/product-picker-shell.tsx`, which is a Client Component. Not fixed now: it adds public surface and the epic context already fixes the convention that `url` is never passed as a prop.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-1-shop-garment-browsing.md`
+  summary: Story 3.1's "colors sourced from real synced inventory" AC is unmet: `/shop`, `/shop/[type]`, `/shop/[type]/[color]`, the homepage Shop grid and `components/product-picker-shell.tsx` still read `lib/placeholder-shop-data.ts`. Move them onto the catalog once per-variation inventory can be synced (the OAuth `listings_r` entry above), and give the catalog a url-free entry shape before `ProductPickerShell` consumes it.
+  evidence: Owner chose on 2026-09-21 to close 3.1 on the placeholder pages. Synced data is listing-level only (`priceCents`, `quantity`, `state`), `listings.json` is `{}`, and the garment-style/color taxonomy has no home in `content/` yet.
