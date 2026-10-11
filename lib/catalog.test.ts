@@ -23,6 +23,7 @@ const listing = (over: Partial<CatalogListing> = {}): CatalogListing => ({
   state: "active",
   priceCents: 3200,
   quantity: 12,
+  variations: [],
   motifName: "Pickleball",
   story: "The paddle that took over the courts.",
   collection: "sea-isle",

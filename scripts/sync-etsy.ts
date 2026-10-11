@@ -2,11 +2,15 @@
  * sync-etsy — manually-run catalog sync (Epic 2, Story 2.1).
  *
  * Reads the human-owned manifest `content/catalog/listings.json`
- * (motif slug -> Etsy listing_id), fetches each listing from Etsy Open API
- * v3 (`getListing` only — per-variation inventory needs OAuth), and writes
- * `content/catalog/{slug}/synced.ts`. Run with
+ * (motif slug -> Etsy listing_id), fetches each listing (`getListing`) and its
+ * per-variation inventory (`getListingInventory`, OAuth `listings_r`) from Etsy
+ * Open API v3, and writes `content/catalog/{slug}/synced.ts`. Run with
  * `npm run sync:etsy`; it is never part of `next build` and the site never
  * calls Etsy at build or request time.
+ *
+ * OAuth: run `npm run auth:etsy` once to store ETSY_REFRESH_TOKEN in .env.local.
+ * Each sync exchanges it for a short-lived access token and persists the rotated
+ * refresh token (even if the sync later fails) so the next run still works.
  *
  * All-or-nothing: any failure aborts before a single file is written. The
  * script fully owns `synced.ts` and never creates, reads or writes
@@ -17,6 +21,8 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import { promisify } from "node:util";
 
+import { clientIdFromApiKey, OAuthError, refreshAccessToken, upsertEnvVar } from "./etsy-oauth";
+
 const execFileAsync = promisify(execFile);
 
 const API_BASE = "https://openapi.etsy.com/v3/application";
@@ -25,6 +31,16 @@ const REQUEST_TIMEOUT_MS = 30_000;
 
 export class SyncError extends Error {}
 
+/** One purchasable style/color/size combination from the listing's inventory. */
+export type SyncedVariation = {
+  productId: number;
+  /** Etsy property name -> chosen value, e.g. `{ "Size": "M", "Primary color": "Sage" }`. */
+  options: Readonly<Record<string, string>>;
+  priceCents: number;
+  /** 0 when the offering is disabled. */
+  quantity: number;
+};
+
 export type SyncedListing = {
   listingId: number;
   name: string;
@@ -32,11 +48,16 @@ export type SyncedListing = {
   state: string;
   priceCents: number;
   quantity: number;
+  variations: readonly SyncedVariation[];
 };
 
 export type SyncDeps = {
   /** `<keystring>:<shared_secret>`; undefined/blank fails before any call. */
   apiKey: string | undefined;
+  /** From `npm run auth:etsy`; undefined/blank fails before any call. */
+  refreshToken: string | undefined;
+  /** Persist a rotated refresh token (called as soon as Etsy returns one). */
+  saveRefreshToken: (token: string) => Promise<void>;
   fetch: typeof fetch;
   /** Repo root; `content/catalog/` is resolved beneath it. */
   repoRoot: string;
@@ -156,11 +177,21 @@ async function readManifest(catalogDir: string): Promise<Manifest> {
   });
 }
 
-async function etsyGet(deps: SyncDeps, apiKey: string, apiPath: string, what: string): Promise<unknown> {
+async function etsyGet(
+  deps: SyncDeps,
+  apiKey: string,
+  apiPath: string,
+  what: string,
+  accessToken?: string,
+): Promise<unknown> {
   let response: Response;
   try {
     response = await deps.fetch(`${API_BASE}${apiPath}`, {
-      headers: { "x-api-key": apiKey, accept: "application/json" },
+      headers: {
+        "x-api-key": apiKey,
+        accept: "application/json",
+        ...(accessToken ? { authorization: `Bearer ${accessToken}` } : {}),
+      },
       signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     });
   } catch (error) {
@@ -169,7 +200,7 @@ async function etsyGet(deps: SyncDeps, apiKey: string, apiPath: string, what: st
   if (!response.ok) {
     const hint =
       response.status === 401 || response.status === 403
-        ? " (key rejected, app not approved for this endpoint, or the endpoint needs OAuth)"
+        ? " (key or access token rejected, or the app is not approved for this endpoint)"
         : response.status === 429
           ? " (rate limited)"
           : response.status === 404
@@ -185,9 +216,55 @@ async function etsyGet(deps: SyncDeps, apiKey: string, apiPath: string, what: st
   }
 }
 
+async function fetchVariations(
+  deps: SyncDeps,
+  apiKey: string,
+  accessToken: string,
+  slug: string,
+  listingId: number,
+): Promise<SyncedVariation[]> {
+  const what = `listing "${slug}" (${listingId}) GET /listings/${listingId}/inventory`;
+  const inventory = expectRecord(
+    await etsyGet(deps, apiKey, `/listings/${listingId}/inventory`, what, accessToken),
+    what,
+  );
+  if (!Array.isArray(inventory.products)) throw new SyncError(`${what}: malformed response (expected products[])`);
+
+  const variations: SyncedVariation[] = [];
+  for (const raw of inventory.products) {
+    const product = expectRecord(raw, `${what} product`);
+    if (product.is_deleted === true) continue;
+    const productId = expectCount(product.product_id, `${what} product_id`);
+    const offerings = Array.isArray(product.offerings) ? product.offerings : [];
+    const offering = offerings
+      .map((entry) => expectRecord(entry, `${what} product ${productId} offering`))
+      .find((entry) => entry.is_deleted !== true);
+    if (!offering) continue;
+
+    const options: Record<string, string> = {};
+    for (const rawValue of Array.isArray(product.property_values) ? product.property_values : []) {
+      const property = expectRecord(rawValue, `${what} product ${productId} property`);
+      const values = Array.isArray(property.values) ? property.values.filter((v): v is string => typeof v === "string") : [];
+      const name =
+        typeof property.property_name === "string" && property.property_name
+          ? property.property_name
+          : `property ${String(property.property_id)}`;
+      options[name] = values.join(", ");
+    }
+    variations.push({
+      productId,
+      options,
+      priceCents: moneyToCents(offering.price, `${what} product ${productId}`),
+      quantity: offering.is_enabled === false ? 0 : expectCount(offering.quantity, `${what} product ${productId} quantity`),
+    });
+  }
+  return variations;
+}
+
 async function fetchListing(
   deps: SyncDeps,
   apiKey: string,
+  accessToken: string,
   slug: string,
   listingId: number,
 ): Promise<SyncedListing> {
@@ -206,6 +283,7 @@ async function fetchListing(
     state: expectString(listing.state, `${listingWhat} state`),
     priceCents: moneyToCents(listing.price, listingWhat),
     quantity: expectCount(listing.quantity, `${listingWhat} quantity`),
+    variations: await fetchVariations(deps, apiKey, accessToken, slug, listingId),
   };
 }
 
@@ -295,13 +373,29 @@ export async function runSync(deps: SyncDeps): Promise<SyncResult> {
     throw new SyncError("ETSY_API_KEY is not set. Put `<keystring>:<shared_secret>` in .env.local and re-run.");
   }
 
+  const refreshToken = deps.refreshToken?.trim();
+  if (!refreshToken) {
+    throw new SyncError("ETSY_REFRESH_TOKEN is not set. Run `npm run auth:etsy` once to authorize, then re-run.");
+  }
+
   const catalogDir = path.join(deps.repoRoot, "content", "catalog");
   const manifest = await readManifest(catalogDir);
+
+  let accessToken: string;
+  try {
+    const tokens = await refreshAccessToken(deps.fetch, { clientId: clientIdFromApiKey(apiKey), refreshToken });
+    accessToken = tokens.accessToken;
+    if (tokens.refreshToken !== refreshToken) await deps.saveRefreshToken(tokens.refreshToken);
+  } catch (error) {
+    throw new SyncError(
+      error instanceof OAuthError ? error.message : `token refresh failed: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
 
   const listings: { slug: string; listing: SyncedListing }[] = [];
   for (const { slug, listingId } of manifest) {
     deps.log(`fetching ${slug} (${listingId})…`);
-    listings.push({ slug, listing: await fetchListing(deps, apiKey, slug, listingId) });
+    listings.push({ slug, listing: await fetchListing(deps, apiKey, accessToken, slug, listingId) });
   }
 
   const warnings: string[] = [];
@@ -347,6 +441,8 @@ async function main(): Promise<void> {
   try {
     await runSync({
       apiKey: process.env.ETSY_API_KEY,
+      refreshToken: process.env.ETSY_REFRESH_TOKEN,
+      saveRefreshToken: (token) => upsertEnvVar(path.join(process.cwd(), ".env.local"), "ETSY_REFRESH_TOKEN", token),
       fetch,
       repoRoot: process.cwd(),
       readMainFile: readMainFileFromGit,

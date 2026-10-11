@@ -33,13 +33,47 @@ let stubs: Map<string, Stub>;
 let mainFiles: Map<string, string>;
 let warnings: string[];
 let logs: string[];
+let saved: string[];
+let tokenCalls: string[];
+let tokenStub: Stub;
+
+function inventoryBody() {
+  const product = (id: number, size: string, cents: number, quantity: number, extra: Record<string, unknown> = {}) => ({
+    product_id: id,
+    is_deleted: false,
+    property_values: [
+      { property_id: 100, property_name: "Primary color", values: ["Sage"] },
+      { property_id: 62809790453, property_name: "Size", values: [size] },
+    ],
+    offerings: [{ offering_id: id * 10, quantity, is_enabled: true, is_deleted: false, price: { amount: cents, divisor: 100, currency_code: "USD" } }],
+    ...extra,
+  });
+  return {
+    products: [
+      product(1, "S", 3200, 5),
+      product(2, "M", 3400, 0, { offerings: [{ offering_id: 20, quantity: 9, is_enabled: false, is_deleted: false, price: { amount: 3400, divisor: 100, currency_code: "USD" } }] }),
+      product(3, "L", 3600, 7, { is_deleted: true }),
+    ],
+  };
+}
 
 function deps(overrides: Partial<SyncDeps> = {}): SyncDeps {
   return {
     apiKey: KEY,
+    refreshToken: "rt-old",
+    saveRefreshToken: async (token) => {
+      saved.push(token);
+    },
     repoRoot: root,
     fetch: (async (input: RequestInfo | URL, init?: RequestInit) => {
       const url = String(input);
+      if (url === "https://api.etsy.com/v3/public/oauth/token") {
+        calls.push({ url, key: null });
+        tokenCalls.push(String(init?.body));
+        if (tokenStub instanceof Error) throw tokenStub;
+        const body = tokenStub.body ?? { access_token: "at-1", refresh_token: "rt-old" };
+        return new Response(JSON.stringify(body), { status: tokenStub.status ?? 200 });
+      }
       calls.push({ url, key: new Headers(init?.headers).get("x-api-key") });
       const stub = stubs.get(url.replace("https://openapi.etsy.com/v3/application", ""));
       if (stub === undefined) return new Response("not stubbed", { status: 404 });
@@ -56,6 +90,7 @@ function deps(overrides: Partial<SyncDeps> = {}): SyncDeps {
 
 function stubListing(id: number, overrides: Record<string, unknown> = {}) {
   stubs.set(`/listings/${id}`, { body: listingBody(id, overrides) });
+  stubs.set(`/listings/${id}/inventory`, { body: inventoryBody() });
 }
 
 async function writeManifest(manifest: unknown) {
@@ -95,6 +130,9 @@ beforeEach(async () => {
   mainFiles = new Map();
   warnings = [];
   logs = [];
+  saved = [];
+  tokenCalls = [];
+  tokenStub = {};
 });
 
 afterEach(async () => {
@@ -113,7 +151,10 @@ describe("happy path", () => {
     const result = await runSync(deps());
 
     assert.deepEqual(result.written, ["content/catalog/pickleball/synced.ts", "content/catalog/beach-day/synced.ts"]);
-    assert.ok(calls.length === 2 && calls.every((c) => c.key === KEY && !c.url.includes("/inventory")));
+    const apiCalls = calls.filter((c) => c.key !== null);
+    assert.equal(apiCalls.length, 4, "listing + inventory per listing");
+    assert.ok(apiCalls.every((c) => c.key === KEY));
+    assert.equal(tokenCalls.length, 1);
     assert.equal(await fs.readFile(authored, "utf8"), "// human-edited\n");
     assert.deepEqual(await listWrittenFiles(), [
       "content/catalog/beach-day/synced.ts",
@@ -130,6 +171,10 @@ describe("happy path", () => {
     assert.equal(synced.priceCents, 3200);
     assert.equal(synced.quantity, 12);
     assert.equal(synced.state, "active");
+    assert.deepEqual(synced.variations, [
+      { productId: 1, options: { "Primary color": "Sage", Size: "S" }, priceCents: 3200, quantity: 5 },
+      { productId: 2, options: { "Primary color": "Sage", Size: "M" }, priceCents: 3400, quantity: 0 },
+    ]);
     assert.equal(text, renderSynced(synced), "output is deterministic");
   });
 });
@@ -148,7 +193,7 @@ describe("failure rows write nothing", () => {
     await writeManifest({ pickleball: 111, "beach-day": 222 });
     const cases: [Stub, RegExp][] = [
       [{ status: 401, body: { error: "bad key" } }, /HTTP 401/],
-      [{ status: 403 }, /HTTP 403.*OAuth/],
+      [{ status: 403 }, /HTTP 403.*rejected/],
       [{ status: 429 }, /HTTP 429.*rate limited/],
       [{ status: 500 }, /HTTP 500/],
       [new TypeError("fetch failed"), /network error: fetch failed/],
@@ -226,6 +271,81 @@ describe("failure rows write nothing", () => {
   });
 });
 
+describe("OAuth", () => {
+  it("missing refresh token: no calls, points at auth:etsy", async () => {
+    await writeManifest({ pickleball: 111 });
+    for (const refreshToken of [undefined, "", "  "]) {
+      await assertRejects(runSync(deps({ refreshToken })), /ETSY_REFRESH_TOKEN is not set.*auth:etsy/);
+    }
+    assert.equal(calls.length, 0);
+  });
+
+  it("refreshes with the keystring as client_id, sends the bearer token, and persists a rotated refresh token", async () => {
+    await writeManifest({ pickleball: 111 });
+    stubListing(111);
+    tokenStub = { body: { access_token: "at-new", refresh_token: "rt-new" } };
+    let auth: string | null = null;
+    const base = deps();
+    await runSync({
+      ...base,
+      fetch: (async (input: RequestInfo | URL, init?: RequestInit) => {
+        if (String(input).endsWith("/inventory")) auth = new Headers(init?.headers).get("authorization");
+        return base.fetch(input, init);
+      }) as typeof fetch,
+    });
+    const form = new URLSearchParams(tokenCalls[0]);
+    assert.equal(form.get("grant_type"), "refresh_token");
+    assert.equal(form.get("client_id"), KEY.split(":")[0]);
+    assert.equal(form.get("refresh_token"), "rt-old");
+    assert.equal(auth, "Bearer at-new");
+    assert.deepEqual(saved, ["rt-new"]);
+  });
+
+  it("unchanged refresh token is not re-saved", async () => {
+    await writeManifest({ pickleball: 111 });
+    stubListing(111);
+    await runSync(deps());
+    assert.deepEqual(saved, []);
+  });
+
+  it("rotated token is saved even when a later listing fails, and nothing is written", async () => {
+    await writeManifest({ pickleball: 111 });
+    stubListing(111);
+    stubs.set("/listings/111/inventory", { status: 500 });
+    tokenStub = { body: { access_token: "at-new", refresh_token: "rt-new" } };
+    await assertRejects(runSync(deps()), /inventory: HTTP 500/);
+    assert.deepEqual(saved, ["rt-new"]);
+    assert.equal(await exists(syncedPath("pickleball")), false);
+  });
+
+  it("token endpoint failures abort with no files and never echo tokens", async () => {
+    await writeManifest({ pickleball: 111 });
+    stubListing(111);
+    for (const [stub, pattern] of [
+      [{ status: 400, body: { error: "invalid_grant" } }, /token refresh: HTTP 400.*auth:etsy/],
+      [new TypeError("fetch failed"), /token refresh: network error/],
+      [{ body: { access_token: "x" } }, /malformed token response/],
+    ] as [Stub, RegExp][]) {
+      tokenStub = stub;
+      await assertRejects(runSync(deps()), pattern);
+    }
+    assert.equal(await exists(syncedPath("pickleball")), false);
+  });
+
+  it("inventory 401 and malformed inventory abort the run", async () => {
+    await writeManifest({ pickleball: 111 });
+    for (const [stub, pattern] of [
+      [{ status: 401 }, /inventory: HTTP 401/],
+      [{ body: {} }, /expected products/],
+    ] as [Stub, RegExp][]) {
+      stubListing(111);
+      stubs.set("/listings/111/inventory", stub);
+      await assertRejects(runSync(deps()), pattern);
+    }
+    assert.equal(await exists(syncedPath("pickleball")), false);
+  });
+});
+
 describe("warning rows still write", () => {
   it("inactive listing: written with state recorded, warning printed", async () => {
     await writeManifest({ pickleball: 111 });
@@ -241,7 +361,7 @@ describe("warning rows still write", () => {
     stubListing(111, { price: { amount: 2500, divisor: 100, currency_code: "USD" } });
     mainFiles.set(
       "content/catalog/pickleball/synced.ts",
-      renderSynced({ listingId: 111, name: "x", url: "https://www.etsy.com/listing/111", state: "active", priceCents: 3200, quantity: 1 }),
+      renderSynced({ listingId: 111, name: "x", url: "https://www.etsy.com/listing/111", state: "active", priceCents: 3200, quantity: 1, variations: [] }),
     );
     await runSync(deps());
     assert.equal(warnings.length, 1);
@@ -254,7 +374,7 @@ describe("warning rows still write", () => {
     stubListing(111, { price: { amount: 3600, divisor: 100, currency_code: "USD" } });
     mainFiles.set(
       "content/catalog/pickleball/synced.ts",
-      renderSynced({ listingId: 111, name: "x", url: "https://www.etsy.com/listing/111", state: "active", priceCents: 3200, quantity: 1 }),
+      renderSynced({ listingId: 111, name: "x", url: "https://www.etsy.com/listing/111", state: "active", priceCents: 3200, quantity: 1, variations: [] }),
     );
     await runSync(deps());
     assert.deepEqual(warnings, []);

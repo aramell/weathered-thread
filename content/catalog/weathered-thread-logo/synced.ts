@@ -7,5 +7,487 @@ export const synced = {
   "url": "https://www.etsy.com/listing/4590111844/weathered-thread-embroidered-crewneck",
   "state": "active",
   "priceCents": 3200,
-  "quantity": 195
+  "quantity": 195,
+  "variations": [
+    {
+      "productId": 34754273651,
+      "options": {
+        "Style": "Heavyweight Tee",
+        "Primary color": "Ivory",
+        "Size": "S"
+      },
+      "priceCents": 3200,
+      "quantity": 5
+    },
+    {
+      "productId": 34754273649,
+      "options": {
+        "Style": "Heavyweight Tee",
+        "Primary color": "Ivory",
+        "Size": "M"
+      },
+      "priceCents": 3200,
+      "quantity": 5
+    },
+    {
+      "productId": 35133758538,
+      "options": {
+        "Style": "Heavyweight Tee",
+        "Primary color": "Ivory",
+        "Size": "L"
+      },
+      "priceCents": 3200,
+      "quantity": 5
+    },
+    {
+      "productId": 35133758536,
+      "options": {
+        "Style": "Heavyweight Tee",
+        "Primary color": "Blue Jean",
+        "Size": "S"
+      },
+      "priceCents": 3200,
+      "quantity": 5
+    },
+    {
+      "productId": 34754273647,
+      "options": {
+        "Style": "Heavyweight Tee",
+        "Primary color": "Blue Jean",
+        "Size": "M"
+      },
+      "priceCents": 3200,
+      "quantity": 5
+    },
+    {
+      "productId": 35133758534,
+      "options": {
+        "Style": "Heavyweight Tee",
+        "Primary color": "Blue Jean",
+        "Size": "L"
+      },
+      "priceCents": 3200,
+      "quantity": 5
+    },
+    {
+      "productId": 35133758532,
+      "options": {
+        "Style": "Heavyweight Tee",
+        "Primary color": "Pepper",
+        "Size": "S"
+      },
+      "priceCents": 3200,
+      "quantity": 5
+    },
+    {
+      "productId": 35133758530,
+      "options": {
+        "Style": "Heavyweight Tee",
+        "Primary color": "Pepper",
+        "Size": "M"
+      },
+      "priceCents": 3200,
+      "quantity": 5
+    },
+    {
+      "productId": 34754273645,
+      "options": {
+        "Style": "Heavyweight Tee",
+        "Primary color": "Pepper",
+        "Size": "L"
+      },
+      "priceCents": 3200,
+      "quantity": 5
+    },
+    {
+      "productId": 35133758528,
+      "options": {
+        "Style": "Heavyweight Tee",
+        "Primary color": "Bay",
+        "Size": "S"
+      },
+      "priceCents": 3200,
+      "quantity": 5
+    },
+    {
+      "productId": 34754273643,
+      "options": {
+        "Style": "Heavyweight Tee",
+        "Primary color": "Bay",
+        "Size": "M"
+      },
+      "priceCents": 3200,
+      "quantity": 5
+    },
+    {
+      "productId": 35133758526,
+      "options": {
+        "Style": "Heavyweight Tee",
+        "Primary color": "Bay",
+        "Size": "L"
+      },
+      "priceCents": 3200,
+      "quantity": 5
+    },
+    {
+      "productId": 34754273641,
+      "options": {
+        "Style": "Long Sleeve Tee",
+        "Primary color": "Ivory",
+        "Size": "S"
+      },
+      "priceCents": 3800,
+      "quantity": 5
+    },
+    {
+      "productId": 35133758524,
+      "options": {
+        "Style": "Long Sleeve Tee",
+        "Primary color": "Ivory",
+        "Size": "M"
+      },
+      "priceCents": 3800,
+      "quantity": 5
+    },
+    {
+      "productId": 34754273639,
+      "options": {
+        "Style": "Long Sleeve Tee",
+        "Primary color": "Ivory",
+        "Size": "L"
+      },
+      "priceCents": 3800,
+      "quantity": 5
+    },
+    {
+      "productId": 35133758522,
+      "options": {
+        "Style": "Long Sleeve Tee",
+        "Primary color": "Blue Jean",
+        "Size": "S"
+      },
+      "priceCents": 3800,
+      "quantity": 5
+    },
+    {
+      "productId": 34754273637,
+      "options": {
+        "Style": "Long Sleeve Tee",
+        "Primary color": "Blue Jean",
+        "Size": "M"
+      },
+      "priceCents": 3800,
+      "quantity": 5
+    },
+    {
+      "productId": 34754273635,
+      "options": {
+        "Style": "Long Sleeve Tee",
+        "Primary color": "Blue Jean",
+        "Size": "L"
+      },
+      "priceCents": 3800,
+      "quantity": 5
+    },
+    {
+      "productId": 35133758520,
+      "options": {
+        "Style": "Long Sleeve Tee",
+        "Primary color": "Pepper",
+        "Size": "S"
+      },
+      "priceCents": 3800,
+      "quantity": 5
+    },
+    {
+      "productId": 34754273633,
+      "options": {
+        "Style": "Long Sleeve Tee",
+        "Primary color": "Pepper",
+        "Size": "M"
+      },
+      "priceCents": 3800,
+      "quantity": 5
+    },
+    {
+      "productId": 34754273631,
+      "options": {
+        "Style": "Long Sleeve Tee",
+        "Primary color": "Pepper",
+        "Size": "L"
+      },
+      "priceCents": 3800,
+      "quantity": 5
+    },
+    {
+      "productId": 35133758518,
+      "options": {
+        "Style": "Long Sleeve Tee",
+        "Primary color": "Bay",
+        "Size": "S"
+      },
+      "priceCents": 3200,
+      "quantity": 0
+    },
+    {
+      "productId": 34754273629,
+      "options": {
+        "Style": "Long Sleeve Tee",
+        "Primary color": "Bay",
+        "Size": "M"
+      },
+      "priceCents": 3200,
+      "quantity": 0
+    },
+    {
+      "productId": 35133758516,
+      "options": {
+        "Style": "Long Sleeve Tee",
+        "Primary color": "Bay",
+        "Size": "L"
+      },
+      "priceCents": 3200,
+      "quantity": 0
+    },
+    {
+      "productId": 34754273627,
+      "options": {
+        "Style": "Lightweight Crewneck",
+        "Primary color": "Ivory",
+        "Size": "S"
+      },
+      "priceCents": 5000,
+      "quantity": 5
+    },
+    {
+      "productId": 34754273625,
+      "options": {
+        "Style": "Lightweight Crewneck",
+        "Primary color": "Ivory",
+        "Size": "M"
+      },
+      "priceCents": 5000,
+      "quantity": 5
+    },
+    {
+      "productId": 35133758514,
+      "options": {
+        "Style": "Lightweight Crewneck",
+        "Primary color": "Ivory",
+        "Size": "L"
+      },
+      "priceCents": 5000,
+      "quantity": 5
+    },
+    {
+      "productId": 34754273623,
+      "options": {
+        "Style": "Lightweight Crewneck",
+        "Primary color": "Blue Jean",
+        "Size": "S"
+      },
+      "priceCents": 5000,
+      "quantity": 5
+    },
+    {
+      "productId": 35133758512,
+      "options": {
+        "Style": "Lightweight Crewneck",
+        "Primary color": "Blue Jean",
+        "Size": "M"
+      },
+      "priceCents": 5000,
+      "quantity": 5
+    },
+    {
+      "productId": 34754273621,
+      "options": {
+        "Style": "Lightweight Crewneck",
+        "Primary color": "Blue Jean",
+        "Size": "L"
+      },
+      "priceCents": 5000,
+      "quantity": 5
+    },
+    {
+      "productId": 34754273619,
+      "options": {
+        "Style": "Lightweight Crewneck",
+        "Primary color": "Pepper",
+        "Size": "S"
+      },
+      "priceCents": 5000,
+      "quantity": 5
+    },
+    {
+      "productId": 35133758510,
+      "options": {
+        "Style": "Lightweight Crewneck",
+        "Primary color": "Pepper",
+        "Size": "M"
+      },
+      "priceCents": 5000,
+      "quantity": 5
+    },
+    {
+      "productId": 34754273617,
+      "options": {
+        "Style": "Lightweight Crewneck",
+        "Primary color": "Pepper",
+        "Size": "L"
+      },
+      "priceCents": 5000,
+      "quantity": 5
+    },
+    {
+      "productId": 35133758508,
+      "options": {
+        "Style": "Lightweight Crewneck",
+        "Primary color": "Bay",
+        "Size": "S"
+      },
+      "priceCents": 3200,
+      "quantity": 0
+    },
+    {
+      "productId": 35133758506,
+      "options": {
+        "Style": "Lightweight Crewneck",
+        "Primary color": "Bay",
+        "Size": "M"
+      },
+      "priceCents": 3200,
+      "quantity": 0
+    },
+    {
+      "productId": 34754273615,
+      "options": {
+        "Style": "Lightweight Crewneck",
+        "Primary color": "Bay",
+        "Size": "L"
+      },
+      "priceCents": 3200,
+      "quantity": 0
+    },
+    {
+      "productId": 35133758504,
+      "options": {
+        "Style": "Heavyweight Crewneck",
+        "Primary color": "Ivory",
+        "Size": "S"
+      },
+      "priceCents": 5400,
+      "quantity": 5
+    },
+    {
+      "productId": 34754273613,
+      "options": {
+        "Style": "Heavyweight Crewneck",
+        "Primary color": "Ivory",
+        "Size": "M"
+      },
+      "priceCents": 5400,
+      "quantity": 5
+    },
+    {
+      "productId": 35133758502,
+      "options": {
+        "Style": "Heavyweight Crewneck",
+        "Primary color": "Ivory",
+        "Size": "L"
+      },
+      "priceCents": 5400,
+      "quantity": 5
+    },
+    {
+      "productId": 34754273611,
+      "options": {
+        "Style": "Heavyweight Crewneck",
+        "Primary color": "Blue Jean",
+        "Size": "S"
+      },
+      "priceCents": 5400,
+      "quantity": 5
+    },
+    {
+      "productId": 34754273609,
+      "options": {
+        "Style": "Heavyweight Crewneck",
+        "Primary color": "Blue Jean",
+        "Size": "M"
+      },
+      "priceCents": 5400,
+      "quantity": 5
+    },
+    {
+      "productId": 34754273607,
+      "options": {
+        "Style": "Heavyweight Crewneck",
+        "Primary color": "Blue Jean",
+        "Size": "L"
+      },
+      "priceCents": 5400,
+      "quantity": 5
+    },
+    {
+      "productId": 34754273605,
+      "options": {
+        "Style": "Heavyweight Crewneck",
+        "Primary color": "Pepper",
+        "Size": "S"
+      },
+      "priceCents": 5400,
+      "quantity": 5
+    },
+    {
+      "productId": 34754273603,
+      "options": {
+        "Style": "Heavyweight Crewneck",
+        "Primary color": "Pepper",
+        "Size": "M"
+      },
+      "priceCents": 5400,
+      "quantity": 5
+    },
+    {
+      "productId": 35133758500,
+      "options": {
+        "Style": "Heavyweight Crewneck",
+        "Primary color": "Pepper",
+        "Size": "L"
+      },
+      "priceCents": 5400,
+      "quantity": 5
+    },
+    {
+      "productId": 35133758498,
+      "options": {
+        "Style": "Heavyweight Crewneck",
+        "Primary color": "Bay",
+        "Size": "S"
+      },
+      "priceCents": 3200,
+      "quantity": 0
+    },
+    {
+      "productId": 34754273601,
+      "options": {
+        "Style": "Heavyweight Crewneck",
+        "Primary color": "Bay",
+        "Size": "M"
+      },
+      "priceCents": 3200,
+      "quantity": 0
+    },
+    {
+      "productId": 35133758496,
+      "options": {
+        "Style": "Heavyweight Crewneck",
+        "Primary color": "Bay",
+        "Size": "L"
+      },
+      "priceCents": 3200,
+      "quantity": 0
+    }
+  ]
 } as const;

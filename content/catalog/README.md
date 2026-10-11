@@ -15,7 +15,7 @@ content/catalog/
 
 ## Adding a listing
 
-1. Add `"{slug}": <listing_id>` to `listings.json` and run `npm run sync:etsy`. This writes `{slug}/synced.ts`.
+1. Add `"{slug}": <listing_id>` to `listings.json` and run `npm run sync:etsy`. This writes `{slug}/synced.ts`, including per-variation inventory. The sync needs `ETSY_REFRESH_TOKEN` in `.env.local`: run `npm run auth:etsy` once (it opens Etsy consent; register `http://localhost:3003/callback` as a redirect URI on the Etsy app first). The sync rotates the token in `.env.local` on every run; if you go ~90 days without syncing, re-run `auth:etsy`.
 2. Create `{slug}/authored.ts`:
 
    ```ts

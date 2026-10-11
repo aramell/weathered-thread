@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "sync:etsy": "tsx --env-file-if-exists=.env.local scripts/sync-etsy.ts",
-    "test:sync": "tsx --test scripts/sync-etsy.test.ts",
+    "auth:etsy": "tsx --env-file-if-exists=.env.local scripts/etsy-auth.ts",
+    "test:sync": "tsx --test scripts/sync-etsy.test.ts scripts/etsy-oauth.test.ts",
     "check:catalog": "tsx scripts/check-catalog.ts",
     "test:catalog": "tsx --conditions react-server --test scripts/check-catalog.test.ts lib/catalog.test.ts"
   },
