@@ -7,21 +7,16 @@ import ButtonSecondary from "@/components/button-secondary";
 import GarmentSwatch from "@/components/garment-swatch";
 import MotifTile from "@/components/motif-tile";
 import ProductCard from "@/components/product-card";
-import { formatPrice } from "@/lib/format-price";
 import { getMotif, motifs } from "@/lib/placeholder-motif-data";
-import {
-  colorways,
-  garmentTypes,
-  getColorway,
-  getGarmentType,
-  sizes,
-} from "@/lib/placeholder-shop-data";
+import { derivePicker, getColor, priceLabel, type Shop } from "@/lib/shop-types";
 
 type ProductPickerSeed =
   | { kind: "garment"; garmentTypeSlug: string; colorSlug: string }
   | { kind: "motif"; motifSlug: string };
 
 type ProductPickerShellProps = {
+  /** Url-free Shop model built on the server from the synced catalog (NFR8). */
+  shop: Shop;
   seed: ProductPickerSeed;
   /** Origin surface to return to — Shop's garment-type list or the Collection Story. */
   backHref: string;
@@ -42,6 +37,7 @@ type ProductPickerShellProps = {
  * on the same always-editable picker.
  */
 export default function ProductPickerShell({
+  shop,
   seed,
   backHref,
   backLabel,
@@ -52,19 +48,20 @@ export default function ProductPickerShell({
   const [colorSlug, setColorSlug] = useState<string | null>(
     seed.kind === "garment" ? seed.colorSlug : null,
   );
-  const [sizeSlug, setSizeSlug] = useState<string | null>(null);
+  const [sizeName, setSizeName] = useState<string | null>(null);
   const [motifSlug, setMotifSlug] = useState<string | null>(
     seed.kind === "motif" ? seed.motifSlug : null,
   );
 
-  const garmentType = garmentTypeSlug ? getGarmentType(garmentTypeSlug) : undefined;
-  const colorway = colorSlug ? getColorway(colorSlug) : undefined;
+  const { garmentTypes } = shop;
   const motif = motifSlug ? getMotif(motifSlug) : undefined;
-
-  const isAddToBagEnabled = Boolean(
-    garmentType && colorway && colorway.inStock && sizeSlug && motif,
-  );
-  const price = garmentType ? formatPrice(garmentType.price) : null;
+  const { garmentType, colorway, size, priceCents, isAddToBagEnabled } = derivePicker(shop, {
+    garmentTypeSlug,
+    colorSlug,
+    sizeName,
+    hasMotif: Boolean(motif),
+  });
+  const price = garmentType && priceCents !== null ? priceLabel(priceCents) : null;
 
   const heading = motif
     ? garmentType
@@ -81,7 +78,7 @@ export default function ProductPickerShell({
       ? `${colorway.name} is currently out of stock in this style.`
       : null;
   const missingSizePrompt =
-    garmentType && colorway && colorway.inStock && !sizeSlug
+    garmentType && colorway && colorway.inStock && !size
       ? "Choose a size for this piece."
       : null;
   const missingMotifPrompt = garmentType && !motif ? "Choose a design for this piece." : null;
@@ -94,7 +91,7 @@ export default function ProductPickerShell({
       missingSizePrompt ??
       missingMotifPrompt);
 
-  const outOfStockColorways = colorways.filter((c) => !c.inStock);
+  const outOfStockColorways = garmentType?.colors.filter((c) => !c.inStock) ?? [];
   const outOfStockColorwayNames = outOfStockColorways.map((c) => c.name).join(", ");
 
   const addToBagRef = useRef<HTMLButtonElement>(null);
@@ -137,7 +134,7 @@ export default function ProductPickerShell({
         <div className="md:grid md:grid-cols-2 md:items-start md:gap-10">
           <div>
             <div className="relative mb-3 aspect-square overflow-hidden rounded bg-paper-raised">
-              {colorway ? (
+              {colorway?.frontImage ? (
                 <Image
                   src={colorway.frontImage}
                   alt={
@@ -179,14 +176,17 @@ export default function ProductPickerShell({
                   Color
                 </p>
                 <div role="list" aria-labelledby={colorHeadingId} className="flex gap-3">
-                  {colorways.map((c) => (
+                  {garmentType.colors.map((c) => (
                     <div key={c.slug} role="listitem">
                       <GarmentSwatch
                         name={c.name}
                         swatchColor={c.swatchColor}
                         selected={c.slug === colorSlug}
                         inStock={c.inStock}
-                        onSelect={() => setColorSlug(c.slug)}
+                        onSelect={() => {
+                          setColorSlug(c.slug);
+                          if (!c.sizes.some((s) => s.name === sizeName && s.inStock)) setSizeName(null);
+                        }}
                       />
                     </div>
                   ))}
@@ -264,13 +264,17 @@ export default function ProductPickerShell({
                     <div key={type.slug} role="listitem">
                       <button
                         type="button"
-                        onClick={() => setGarmentTypeSlug(type.slug)}
+                        onClick={() => {
+                          setGarmentTypeSlug(type.slug);
+                          const color = colorSlug ? getColor(type, colorSlug) : undefined;
+                          if (!color?.sizes.some((s) => s.name === sizeName && s.inStock)) setSizeName(null);
+                        }}
                         aria-pressed={selected}
                         className={`block w-full rounded border-2 text-left ${
                           selected ? "border-wet-ink" : "border-transparent"
                         }`}
                       >
-                        <ProductCard name={type.name} price={formatPrice(type.price)} />
+                        <ProductCard name={type.name} price={priceLabel(type.priceCents)} />
                       </button>
                     </div>
                   );
@@ -278,7 +282,7 @@ export default function ProductPickerShell({
               </div>
             </div>
 
-            {garmentType && (
+            {garmentType && colorway && (
               <div className="mb-6">
                 {missingSizePrompt && (
                   <p className="mb-4 font-body text-body">{missingSizePrompt}</p>
@@ -290,21 +294,23 @@ export default function ProductPickerShell({
                   Size
                 </span>
                 <div role="list" aria-labelledby={sizeHeadingId} className="flex gap-2">
-                  {sizes.map((size) => {
-                    const selected = size === sizeSlug;
+                  {(colorway?.sizes ?? []).map((s) => {
+                    const selected = s.name === size?.name;
                     return (
-                      <div key={size} role="listitem">
+                      <div key={s.name} role="listitem">
                         <button
                           type="button"
-                          onClick={() => setSizeSlug(size)}
+                          onClick={() => setSizeName(s.name)}
+                          disabled={!s.inStock}
                           aria-pressed={selected}
-                          className={`flex h-11 w-11 items-center justify-center rounded border font-mono text-label-mono ${
+                          aria-label={s.inStock ? s.name : `${s.name} — out of stock`}
+                          className={`flex h-11 w-11 items-center justify-center rounded border font-mono text-label-mono disabled:cursor-not-allowed disabled:opacity-40 ${
                             selected
                               ? "border-wet-ink bg-wet-ink text-sailcloth"
                               : "border-line text-wet-ink"
                           }`}
                         >
-                          {size}
+                          {s.name}
                         </button>
                       </div>
                     );

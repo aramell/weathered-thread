@@ -1,8 +1,6 @@
 /**
  * format-price — the one place integer-cents prices become a display
- * string. Epic 3 Story 3.3 migrates `placeholder-shop-data.ts`'s prices
- * from hand-typed dollar strings to integer cents (matching the real
- * Etsy-synced shape this stands in for); every surface that shows a
+ * string. Prices are integer cents (the Etsy-synced shape); every surface that shows a
  * price renders it through this function instead of formatting inline.
  */
 export function formatPrice(cents: number): string {

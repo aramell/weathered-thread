@@ -155,6 +155,7 @@
   evidence: Raised by review of the pivot diff: Story 2.1's ACs only carry the generic "any Etsy API call fails" clause and NFR7 was carried over from the Squarespace wording. Belongs to the sync story's own planning, which the earlier deferred entry already schedules.
 - source_spec: `_bmad-output/implementation-artifacts/spec-2-1-sync-etsy-catalog-data.md`
   summary: Sync per-variation (style/color/size) price and quantity from Etsy via OAuth `listings_r` and `getListingInventory`.
+  resolved: 2026-10-11 — owner chose OAuth; `npm run auth:etsy` + the refresh-token sync now write per-variation `variations` into `synced.ts`.
   evidence: Verified live 2026-09-21 that `getListingInventory` returns 401 "requires scope: listings_r" with the API key alone; Story 2.1 ships listing-level data only and the owner deferred OAuth.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-2-2-author-motif-story-content-per-design-listing.md`
@@ -171,4 +172,13 @@
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-3-1-shop-garment-browsing.md`
   summary: Story 3.1's "colors sourced from real synced inventory" AC is unmet: `/shop`, `/shop/[type]`, `/shop/[type]/[color]`, the homepage Shop grid and `components/product-picker-shell.tsx` still read `lib/placeholder-shop-data.ts`. Move them onto the catalog once per-variation inventory can be synced (the OAuth `listings_r` entry above), and give the catalog a url-free entry shape before `ProductPickerShell` consumes it.
+  resolved: 2026-10-11 — see `spec-3-1-shop-on-synced-catalog.md`: the Shop pages, homepage grid and picker read `lib/shop.ts`; `lib/placeholder-shop-data.ts` is deleted. Motifs still use `lib/placeholder-motif-data.ts`.
   evidence: Owner chose on 2026-09-21 to close 3.1 on the placeholder pages. Synced data is listing-level only (`priceCents`, `quantity`, `state`), `listings.json` is `{}`, and the garment-style/color taxonomy has no home in `content/` yet.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-1-shop-on-synced-catalog.md`
+  summary: Move motifs onto the catalog. The picker's 13 Design tiles, the Collection Story and `/collections/[slug]/[motif]` still read `lib/placeholder-motif-data.ts`, so choosing a motif does not select a listing; only the Stacked Logo listing is synced.
+  evidence: Out of scope for the Shop swap. Needs each motif's Etsy listing in `listings.json` plus authored content, and a decision on which listing's variations apply when a motif is chosen.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-1-shop-on-synced-catalog.md`
+  summary: Every garment style shows the same four colorway photos (`/images/garments/{color}-front.jpg`), so the Long Sleeve Tee, tees and crewnecks look identical until real per-style photography exists.
+  evidence: Carried over from the placeholder shop data; `lib/shop-presentation.ts` keys photos by color only. Displayed price and stock also ignore the chosen motif until motifs move onto the catalog.

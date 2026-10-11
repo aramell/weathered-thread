@@ -1,12 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ProductPickerShell from "@/components/product-picker-shell";
-import {
-  colorways,
-  garmentTypes,
-  getColorway,
-  getGarmentType,
-} from "@/lib/placeholder-shop-data";
+import { getShop } from "@/lib/shop";
+import { getColor, getGarmentType } from "@/lib/shop-types";
 
 /**
  * Product-surface entry point, garment-first (Story 3.1 AC3). Renders the
@@ -16,8 +12,8 @@ import {
  * `ProductPickerShell`.
  */
 export function generateStaticParams() {
-  return garmentTypes.flatMap((type) =>
-    colorways.map((colorway) => ({ type: type.slug, color: colorway.slug })),
+  return getShop().garmentTypes.flatMap((type) =>
+    type.colors.map((color) => ({ type: type.slug, color: color.slug })),
   );
 }
 
@@ -25,8 +21,9 @@ export async function generateMetadata({
   params,
 }: PageProps<"/shop/[type]/[color]">): Promise<Metadata> {
   const { type, color } = await params;
-  const garmentType = getGarmentType(type);
-  const colorway = getColorway(color);
+  const shop = getShop();
+  const garmentType = getGarmentType(shop, type);
+  const colorway = garmentType && getColor(garmentType, color);
 
   if (!garmentType || !colorway) {
     return {};
@@ -42,8 +39,9 @@ export default async function GarmentColorPage({
   params,
 }: PageProps<"/shop/[type]/[color]">) {
   const { type, color } = await params;
-  const garmentType = getGarmentType(type);
-  const colorway = getColorway(color);
+  const shop = getShop();
+  const garmentType = getGarmentType(shop, type);
+  const colorway = garmentType && getColor(garmentType, color);
 
   if (!garmentType || !colorway) {
     notFound();
@@ -51,6 +49,7 @@ export default async function GarmentColorPage({
 
   return (
     <ProductPickerShell
+      shop={shop}
       seed={{ kind: "garment", garmentTypeSlug: garmentType.slug, colorSlug: colorway.slug }}
       backHref={`/shop/${garmentType.slug}`}
       backLabel="Back to Shop"

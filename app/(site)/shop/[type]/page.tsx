@@ -3,18 +3,23 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import ButtonSecondary from "@/components/button-secondary";
 import ProductCard from "@/components/product-card";
-import { formatPrice } from "@/lib/format-price";
-import { colorways, garmentTypes, getGarmentType } from "@/lib/placeholder-shop-data";
+import { getShop } from "@/lib/shop";
+import { getGarmentType, priceLabel } from "@/lib/shop-types";
+
+function colorNames(names: string[]): string {
+  if (names.length < 3) return names.join(" and ");
+  return `${names.slice(0, -1).join(", ")}, and ${names[names.length - 1]}`;
+}
 
 export function generateStaticParams() {
-  return garmentTypes.map((type) => ({ type: type.slug }));
+  return getShop().garmentTypes.map((type) => ({ type: type.slug }));
 }
 
 export async function generateMetadata({
   params,
 }: PageProps<"/shop/[type]">): Promise<Metadata> {
   const { type } = await params;
-  const garmentType = getGarmentType(type);
+  const garmentType = getGarmentType(getShop(), type);
 
   if (!garmentType) {
     return {};
@@ -22,7 +27,7 @@ export async function generateMetadata({
 
   return {
     title: `${garmentType.name} — Weathered Thread`,
-    description: `Shop the ${garmentType.name} in Pepper, Ivory, Blue Jean, and Bay.`,
+    description: `Shop the ${garmentType.name} in ${colorNames(garmentType.colors.map((color) => color.name))}.`,
   };
 }
 
@@ -30,7 +35,7 @@ export default async function GarmentTypePage({
   params,
 }: PageProps<"/shop/[type]">) {
   const { type } = await params;
-  const garmentType = getGarmentType(type);
+  const garmentType = getGarmentType(getShop(), type);
 
   if (!garmentType) {
     notFound();
@@ -53,15 +58,26 @@ export default async function GarmentTypePage({
           aria-labelledby={colorsHeadingId}
           className="grid grid-cols-2 gap-4 md:grid-cols-3"
         >
-          {colorways.map((colorway) => (
+          {garmentType.colors.map((colorway) => (
             <div key={colorway.slug} role="listitem">
-              <Link href={`/shop/${garmentType.slug}/${colorway.slug}`}>
-                <ProductCard
-                  name={colorway.name}
-                  price={formatPrice(garmentType.price)}
-                  image={colorway.frontImage}
-                />
-              </Link>
+              {colorway.inStock ? (
+                <Link href={`/shop/${garmentType.slug}/${colorway.slug}`}>
+                  <ProductCard
+                    name={colorway.name}
+                    price={priceLabel(colorway.priceCents)}
+                    image={colorway.frontImage ?? undefined}
+                  />
+                </Link>
+              ) : (
+                // Disabled, never hidden: an out-of-stock color stays visible but is not a link.
+                <div aria-disabled="true" className="opacity-50">
+                  <ProductCard
+                    name={`${colorway.name} — out of stock`}
+                    price={priceLabel(colorway.priceCents)}
+                    image={colorway.frontImage ?? undefined}
+                  />
+                </div>
+              )}
             </div>
           ))}
         </div>

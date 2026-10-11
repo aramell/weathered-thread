@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import ProductCard from "@/components/product-card";
-import { formatPrice } from "@/lib/format-price";
-import { garmentTypes } from "@/lib/placeholder-shop-data";
+import { getShop } from "@/lib/shop";
+import { priceLabel } from "@/lib/shop-types";
 
 export const metadata: Metadata = {
   title: "Shop — Weathered Thread",
@@ -10,6 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default function ShopPage() {
+  const { garmentTypes } = getShop();
   const typesHeadingId = "types-heading";
 
   return (
@@ -26,7 +27,7 @@ export default function ShopPage() {
           {garmentTypes.map((type) => (
             <div key={type.slug} role="listitem">
               <Link href={`/shop/${type.slug}`}>
-                <ProductCard name={type.name} price={formatPrice(type.price)} />
+                <ProductCard name={type.name} price={priceLabel(type.priceCents)} />
               </Link>
             </div>
           ))}

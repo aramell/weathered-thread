@@ -1,8 +1,7 @@
 /**
  * placeholder-motif-data — stand-in motif data for Epic 3 Story 3.2's
  * motif-first Collection Story entry point. Kept structurally separate
- * from Epic 2's real `content/catalog/` sync pipeline, mirroring
- * `lib/placeholder-shop-data.ts`'s shape: this is the ONLY source of
+ * from Epic 2's real `content/catalog/` sync pipeline: this is the ONLY source of
  * motif data for the Sea Isle Collection Story and the new
  * `/collections/[slug]/[motif]` routes until real authored motif content
  * lands in Epic 2's `content/catalog/{listing}/authored.ts` (motif story
