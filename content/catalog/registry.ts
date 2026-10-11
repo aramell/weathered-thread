@@ -11,6 +11,9 @@
  * `npm run check:catalog` verifies this file: every key must be a slug in `listings.json` with a
  * directory, and each entry must be that directory's `index.ts` `listing`.
  */
+import { listing as weatheredThreadLogo } from "./weathered-thread-logo";
 import type { CatalogListing } from "./types";
 
-export const registry = {} as const satisfies Record<string, CatalogListing>;
+export const registry = {
+  "weathered-thread-logo": weatheredThreadLogo,
+} as const satisfies Record<string, CatalogListing>;
