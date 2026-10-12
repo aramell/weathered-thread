@@ -46,6 +46,7 @@ jobs:
       - name: Check the catalog and types
         run: |
           npm run check:catalog
+          npx next typegen   # generates the global PageProps/LayoutProps types tsc needs
           npx tsc --noEmit
 
       - name: Commit changes
