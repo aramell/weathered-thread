@@ -1,0 +1,59 @@
+# Keeps content/catalog/*/synced.ts in step with Etsy. Runs the same `npm run sync:etsy` you run
+# locally; if the synced files changed, commits them to main, which triggers a Vercel deploy.
+# Needs repo secrets ETSY_API_KEY and ETSY_REFRESH_TOKEN (see content/catalog/README.md).
+name: Sync Etsy catalog
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# One sync at a time; a queued run waits rather than racing a push.
+concurrency:
+  group: sync-etsy
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      # Fails the job (and GitHub emails you) on any Etsy/token error; nothing is committed then.
+      # The sync also rewrites ETSY_REFRESH_TOKEN into a throwaway, gitignored .env.local here.
+      - name: Sync from Etsy
+        env:
+          ETSY_API_KEY: ${{ secrets.ETSY_API_KEY }}
+          ETSY_REFRESH_TOKEN: ${{ secrets.ETSY_REFRESH_TOKEN }}
+        run: npm run sync:etsy
+
+      - name: Check the catalog and types
+        run: |
+          npm run check:catalog
+          npx tsc --noEmit
+
+      - name: Commit changes
+        run: |
+          if git diff --quiet -- content/catalog; then
+            echo "Catalog already in sync; nothing to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add content/catalog
+          git commit -m "Sync Etsy catalog"
+          git push origin main

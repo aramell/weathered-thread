@@ -57,3 +57,10 @@ App code reads listings only through `lib/catalog.ts` (`getListings`, `getListin
 Re-running the sync only ever rewrites `synced.ts`; `authored.ts` and `index.ts` are never touched.
 
 `motifName` is deliberately not called `name`: the synced Etsy title is `name`, and the merge must not shadow it. Which one the site displays is decided where it is rendered.
+
+## Automatic sync
+
+`.github/workflows/sync-etsy.yml` runs `npm run sync:etsy` every 6 hours (and on demand from the Actions tab), then commits any change to `content/catalog/` to `main`; the push triggers the Vercel deploy. It needs two repo secrets, `ETSY_API_KEY` and `ETSY_REFRESH_TOKEN`, set with `gh secret set` (never in Vercel).
+
+Etsy issues a new refresh token on every refresh, but an earlier one keeps working until its own ~90-day expiry. The job does not write the rotated token back, so the `ETSY_REFRESH_TOKEN` secret stops working about 90 days after you created it. When the job starts failing with a token error, run `npm run auth:etsy` locally and `gh secret set ETSY_REFRESH_TOKEN < <(grep ^ETSY_REFRESH_TOKEN= .env.local | cut -d= -f2-)`.
+
