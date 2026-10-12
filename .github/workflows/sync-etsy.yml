@@ -31,7 +31,9 @@ jobs:
           node-version: 24
           cache: npm
 
-      - run: npm ci
+      # `npm ci` rejects this macOS-generated lockfile (missing Linux-only optional @emnapi entries);
+      # Vercel installs with `npm install` too.
+      - run: npm install --no-audit --no-fund
 
       # Fails the job (and GitHub emails you) on any Etsy/token error; nothing is committed then.
       # The sync also rewrites ETSY_REFRESH_TOKEN into a throwaway, gitignored .env.local here.
