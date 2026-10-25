@@ -3,7 +3,7 @@
 
 export const synced = {
   "listingId": 4590111844,
-  "name": "Weathered Thread Embroidered Crewneck | Stacked Logo Sweatshirt |. Comfort Colors",
+  "name": "Weathered Thread Embroidered Crewneck | Stacked Logo | Comfort Colors | Boutique Apparel | Variety of Colors and Styles",
   "url": "https://www.etsy.com/listing/4590111844/weathered-thread-embroidered-crewneck",
   "state": "active",
   "priceCents": 3200,
@@ -136,7 +136,7 @@ export const synced = {
         "Primary color": "Ivory",
         "Size": "S"
       },
-      "priceCents": 3800,
+      "priceCents": 3400,
       "quantity": 5
     },
     {
@@ -146,7 +146,7 @@ export const synced = {
         "Primary color": "Ivory",
         "Size": "M"
       },
-      "priceCents": 3800,
+      "priceCents": 3400,
       "quantity": 5
     },
     {
@@ -156,7 +156,7 @@ export const synced = {
         "Primary color": "Ivory",
         "Size": "L"
       },
-      "priceCents": 3800,
+      "priceCents": 3400,
       "quantity": 5
     },
     {
@@ -166,7 +166,7 @@ export const synced = {
         "Primary color": "Blue Jean",
         "Size": "S"
       },
-      "priceCents": 3800,
+      "priceCents": 3400,
       "quantity": 5
     },
     {
@@ -176,7 +176,7 @@ export const synced = {
         "Primary color": "Blue Jean",
         "Size": "M"
       },
-      "priceCents": 3800,
+      "priceCents": 3400,
       "quantity": 5
     },
     {
@@ -186,7 +186,7 @@ export const synced = {
         "Primary color": "Blue Jean",
         "Size": "L"
       },
-      "priceCents": 3800,
+      "priceCents": 3400,
       "quantity": 5
     },
     {
@@ -196,7 +196,7 @@ export const synced = {
         "Primary color": "Pepper",
         "Size": "S"
       },
-      "priceCents": 3800,
+      "priceCents": 3400,
       "quantity": 5
     },
     {
@@ -206,7 +206,7 @@ export const synced = {
         "Primary color": "Pepper",
         "Size": "M"
       },
-      "priceCents": 3800,
+      "priceCents": 3400,
       "quantity": 5
     },
     {
@@ -216,7 +216,7 @@ export const synced = {
         "Primary color": "Pepper",
         "Size": "L"
       },
-      "priceCents": 3800,
+      "priceCents": 3400,
       "quantity": 5
     },
     {
@@ -276,7 +276,7 @@ export const synced = {
         "Primary color": "Ivory",
         "Size": "L"
       },
-      "priceCents": 5000,
+      "priceCents": 4400,
       "quantity": 5
     },
     {
@@ -286,7 +286,7 @@ export const synced = {
         "Primary color": "Blue Jean",
         "Size": "S"
       },
-      "priceCents": 5000,
+      "priceCents": 4400,
       "quantity": 5
     },
     {
@@ -296,7 +296,7 @@ export const synced = {
         "Primary color": "Blue Jean",
         "Size": "M"
       },
-      "priceCents": 5000,
+      "priceCents": 4400,
       "quantity": 5
     },
     {
@@ -306,7 +306,7 @@ export const synced = {
         "Primary color": "Blue Jean",
         "Size": "L"
       },
-      "priceCents": 5000,
+      "priceCents": 4400,
       "quantity": 5
     },
     {
@@ -316,7 +316,7 @@ export const synced = {
         "Primary color": "Pepper",
         "Size": "S"
       },
-      "priceCents": 5000,
+      "priceCents": 4400,
       "quantity": 5
     },
     {
@@ -326,7 +326,7 @@ export const synced = {
         "Primary color": "Pepper",
         "Size": "M"
       },
-      "priceCents": 5000,
+      "priceCents": 4400,
       "quantity": 5
     },
     {
@@ -336,7 +336,7 @@ export const synced = {
         "Primary color": "Pepper",
         "Size": "L"
       },
-      "priceCents": 5000,
+      "priceCents": 4400,
       "quantity": 5
     },
     {
@@ -376,7 +376,7 @@ export const synced = {
         "Primary color": "Ivory",
         "Size": "S"
       },
-      "priceCents": 5400,
+      "priceCents": 5200,
       "quantity": 5
     },
     {
@@ -386,7 +386,7 @@ export const synced = {
         "Primary color": "Ivory",
         "Size": "M"
       },
-      "priceCents": 5400,
+      "priceCents": 5200,
       "quantity": 5
     },
     {
@@ -396,7 +396,7 @@ export const synced = {
         "Primary color": "Ivory",
         "Size": "L"
       },
-      "priceCents": 5400,
+      "priceCents": 5200,
       "quantity": 5
     },
     {
@@ -406,7 +406,7 @@ export const synced = {
         "Primary color": "Blue Jean",
         "Size": "S"
       },
-      "priceCents": 5400,
+      "priceCents": 5200,
       "quantity": 5
     },
     {
@@ -416,7 +416,7 @@ export const synced = {
         "Primary color": "Blue Jean",
         "Size": "M"
       },
-      "priceCents": 5400,
+      "priceCents": 5200,
       "quantity": 5
     },
     {
@@ -426,7 +426,7 @@ export const synced = {
         "Primary color": "Blue Jean",
         "Size": "L"
       },
-      "priceCents": 5400,
+      "priceCents": 5200,
       "quantity": 5
     },
     {
@@ -436,7 +436,7 @@ export const synced = {
         "Primary color": "Pepper",
         "Size": "S"
       },
-      "priceCents": 5400,
+      "priceCents": 5200,
       "quantity": 5
     },
     {
@@ -446,7 +446,7 @@ export const synced = {
         "Primary color": "Pepper",
         "Size": "M"
       },
-      "priceCents": 5400,
+      "priceCents": 5200,
       "quantity": 5
     },
     {
@@ -456,7 +456,7 @@ export const synced = {
         "Primary color": "Pepper",
         "Size": "L"
       },
-      "priceCents": 5400,
+      "priceCents": 5200,
       "quantity": 5
     },
     {
