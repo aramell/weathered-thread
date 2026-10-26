@@ -3,7 +3,7 @@
 
 export const synced = {
   "listingId": 4590111844,
-  "name": "Weathered Thread Embroidered Crewneck | Stacked Logo | Comfort Colors | Boutique Apparel | Variety of Colors and Styles",
+  "name": "Weathered Thread Embroidered Tee or Crewneck | Comfort Colors | Stacked Logo | Boutique Apparel | Variety of Colors and Styles",
   "url": "https://www.etsy.com/listing/4590111844/weathered-thread-embroidered-crewneck",
   "state": "active",
   "priceCents": 3200,
