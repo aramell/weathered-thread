@@ -53,6 +53,7 @@ function etsyStub(options: { refreshStatus?: number; inventoryStatus?: number } 
 }
 
 const deps = (over: Partial<Parameters<typeof createLiveEtsy>[0]>) => ({
+  sleep: async () => {},
   apiKey: "key:secret",
   seedRefreshToken: "seed-rt",
   fetch: etsyStub().stub,
@@ -133,6 +134,50 @@ describe("live Etsy inventory", () => {
     await assert.rejects(live.fetchVariations(7), /HTTP 401/);
 
     assert.equal(memory.current()?.obtainedAt, 0);
+  });
+});
+
+describe("live Etsy pacing", () => {
+  it("shares one request between concurrent reads of the same listing", async () => {
+    const etsy = etsyStub();
+    const live = createLiveEtsy(deps({ fetch: etsy.stub }));
+
+    await Promise.all([live.fetchVariations(7), live.fetchVariations(7), live.fetchVariations(7)]);
+
+    assert.equal(etsy.calls.filter((call) => call.url.includes("/listings/7/")).length, 1);
+  });
+
+  it("retries once after a 429 and then succeeds", async () => {
+    let inventoryCalls = 0;
+    const base = etsyStub().stub;
+    const stub = (async (input: RequestInfo | URL, init?: RequestInit) =>
+      String(input).includes("/inventory") && ++inventoryCalls === 1
+        ? new Response("slow down", { status: 429 })
+        : base(input, init)) as typeof fetch;
+    const live = createLiveEtsy(deps({ fetch: stub }));
+
+    const variations = await live.fetchVariations(7);
+
+    assert.equal(variations.length, 1);
+    assert.equal(inventoryCalls, 2);
+  });
+
+  it("gives up with the status after a second 429", async () => {
+    const base = etsyStub().stub;
+    const stub = (async (input: RequestInfo | URL, init?: RequestInit) =>
+      String(input).includes("/inventory") ? new Response("no", { status: 429 }) : base(input, init)) as typeof fetch;
+    const live = createLiveEtsy(deps({ fetch: stub }));
+
+    await assert.rejects(live.fetchVariations(7), /HTTP 429/);
+  });
+
+  it("spaces requests out", async () => {
+    const gaps: number[] = [];
+    const live = createLiveEtsy(deps({ sleep: async (ms) => void gaps.push(ms) }));
+
+    await Promise.all([live.fetchVariations(1), live.fetchVariations(2)]);
+
+    assert.ok(gaps.filter((ms) => ms >= 300).length >= 2);
   });
 });
 
