@@ -2,29 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import CollectionStoryBlock from "@/components/collection-story-block";
 import MotifTileLink from "@/components/motif-tile-link";
-import { motifs } from "@/lib/placeholder-motif-data";
-
-type Collection = {
-  slug: string;
-  eyebrow: string;
-  heading: string;
-  story: string[];
-};
-
-const collections: Collection[] = [
-  {
-    slug: "sea-isle",
-    eyebrow: "Collection",
-    heading: "Sea Isle",
-    story: [
-      "A water tower on the skyline, a life ring at the marina, the exit you take when you're almost there — thirteen small landmarks, stitched onto garment-dyed cotton built to soften with wear.",
-    ],
-  },
-];
-
-export function getCollection(slug: string) {
-  return collections.find((collection) => collection.slug === slug);
-}
+import { collections, getCollection } from "@/lib/collections";
+import { getMotifsByCollection } from "@/lib/motifs";
 
 export function generateStaticParams() {
   return collections.map((collection) => ({ slug: collection.slug }));
@@ -56,6 +35,7 @@ export default async function CollectionPage({
     notFound();
   }
 
+  const motifs = getMotifsByCollection(collection.slug);
   const motifsHeadingId = "motifs-heading";
 
   return (

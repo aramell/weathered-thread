@@ -7,7 +7,8 @@ import ButtonSecondary from "@/components/button-secondary";
 import GarmentSwatch from "@/components/garment-swatch";
 import MotifTile from "@/components/motif-tile";
 import ProductCard from "@/components/product-card";
-import { getMotif, motifs } from "@/lib/placeholder-motif-data";
+import { getCollection } from "@/lib/collections";
+import type { Motif } from "@/lib/motif-types";
 import { derivePicker, getColor, priceLabel, type Shop } from "@/lib/shop-types";
 
 type ProductPickerSeed =
@@ -17,6 +18,8 @@ type ProductPickerSeed =
 type ProductPickerShellProps = {
   /** Url-free Shop model built on the server from the synced catalog (NFR8). */
   shop: Shop;
+  /** Url-free motifs built on the server from the catalog's authored content. */
+  motifs: Motif[];
   seed: ProductPickerSeed;
   /** Origin surface to return to — Shop's garment-type list or the Collection Story. */
   backHref: string;
@@ -38,6 +41,7 @@ type ProductPickerShellProps = {
  */
 export default function ProductPickerShell({
   shop,
+  motifs,
   seed,
   backHref,
   backLabel,
@@ -54,7 +58,7 @@ export default function ProductPickerShell({
   );
 
   const { garmentTypes } = shop;
-  const motif = motifSlug ? getMotif(motifSlug) : undefined;
+  const motif = motifs.find((m) => m.slug === motifSlug);
   const { garmentType, colorway, size, priceCents, isAddToBagEnabled } = derivePicker(shop, {
     garmentTypeSlug,
     colorSlug,
@@ -356,7 +360,7 @@ export default function ProductPickerShell({
               <h2 id={descriptionHeadingId} className="sr-only">
                 Description
               </h2>
-              <p className="font-body text-body-sm">{motif.emotionalDescription}</p>
+              <p className="font-body text-body-sm">{motif.story}</p>
             </section>
           )}
 
@@ -382,10 +386,10 @@ export default function ProductPickerShell({
               </h2>
               {/* Template intentionally drops key-product.html's closing
                   "a specific landmark, remembered" clause — that phrasing is
-                  landmark-specific and doesn't generalize across all 13
-                  motifs (e.g. Pickleball, Turtle aren't landmarks). */}
+                  landmark-specific and doesn't generalize across every
+                  motif (e.g. the logo designs aren't landmarks). */}
               <p className="font-body text-body-sm">
-                {motif.name} — one motif from the Sea Isle collection. Stitched in navy thread,
+                {motif.name} — one motif from the {getCollection(motif.collection)?.name ?? "Weathered Thread"} collection. Stitched in navy thread,
                 part of the &quot;PLACE → STORY → MOTIF → OBJECT&quot; line.
               </p>
             </section>

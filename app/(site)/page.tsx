@@ -3,6 +3,7 @@ import ButtonPrimary from "@/components/button-primary";
 import CollectionStoryBlock from "@/components/collection-story-block";
 import EmailSignupForm from "@/components/email-signup-form";
 import ProductCard from "@/components/product-card";
+import { getCollection } from "@/lib/collections";
 import { getShop } from "@/lib/shop";
 import { priceLabel } from "@/lib/shop-types";
 
@@ -27,11 +28,7 @@ export default function Home() {
 
       {/* Sea Isle feature */}
       <CollectionStoryBlock eyebrow="Launch Collection" heading="Sea Isle">
-        <p>
-          A water tower on the skyline, a life ring at the marina, the exit
-          you take when you&apos;re almost there — thirteen small landmarks,
-          stitched onto garment-dyed cotton built to soften with wear.
-        </p>
+        <p>{getCollection("sea-isle")?.story[0]}</p>
         <ButtonPrimary href="/collections/sea-isle">Shop Sea Isle</ButtonPrimary>
       </CollectionStoryBlock>
 

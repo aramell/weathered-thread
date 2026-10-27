@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ProductPickerShell from "@/components/product-picker-shell";
-import { getCollection } from "@/app/(site)/collections/[slug]/page";
-import { getMotif, motifs } from "@/lib/placeholder-motif-data";
+import { getCollection } from "@/lib/collections";
+import { getMotif, getMotifs } from "@/lib/motifs";
 import { getShop } from "@/lib/shop";
 
 /**
@@ -14,7 +14,7 @@ import { getShop } from "@/lib/shop";
  * `ProductPickerShell`.
  */
 export function generateStaticParams() {
-  return motifs.map((motif) => ({ motif: motif.slug }));
+  return getMotifs().map((motif) => ({ slug: motif.collection, motif: motif.slug }));
 }
 
 export async function generateMetadata({
@@ -23,7 +23,7 @@ export async function generateMetadata({
   const { slug, motif: motifSlug } = await params;
   const motif = getMotif(motifSlug);
 
-  if (!motif || !getCollection(slug)) {
+  if (!motif || motif.collection !== slug || !getCollection(slug)) {
     return {};
   }
 
@@ -40,13 +40,14 @@ export default async function MotifGarmentPage({
   const motif = getMotif(motifSlug);
   const collection = getCollection(slug);
 
-  if (!motif || !collection) {
+  if (!motif || !collection || motif.collection !== collection.slug) {
     notFound();
   }
 
   return (
     <ProductPickerShell
       shop={getShop()}
+      motifs={getMotifs()}
       seed={{ kind: "motif", motifSlug: motif.slug }}
       backHref={`/collections/${collection.slug}`}
       backLabel="Back to Collection"

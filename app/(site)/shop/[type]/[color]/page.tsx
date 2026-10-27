@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ProductPickerShell from "@/components/product-picker-shell";
+import { getMotifs } from "@/lib/motifs";
 import { getShop } from "@/lib/shop";
 import { getColor, getGarmentType } from "@/lib/shop-types";
 
@@ -50,6 +51,7 @@ export default async function GarmentColorPage({
   return (
     <ProductPickerShell
       shop={shop}
+      motifs={getMotifs()}
       seed={{ kind: "garment", garmentTypeSlug: garmentType.slug, colorSlug: colorway.slug }}
       backHref={`/shop/${garmentType.slug}`}
       backLabel="Back to Shop"
