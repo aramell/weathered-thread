@@ -489,5 +489,63 @@ export const synced = {
       "priceCents": 3200,
       "quantity": 0
     }
+  ],
+  "images": [
+    {
+      "url": "https://i.etsystatic.com/68094452/r/il/0c7c77/8790011833/il_570xN.8790011833_mejv.jpg",
+      "fullUrl": "https://i.etsystatic.com/68094452/r/il/0c7c77/8790011833/il_fullxfull.8790011833_mejv.jpg",
+      "width": 2250,
+      "height": 3000,
+      "alt": ""
+    },
+    {
+      "url": "https://i.etsystatic.com/68094452/r/il/4043d5/8790011607/il_570xN.8790011607_264s.jpg",
+      "fullUrl": "https://i.etsystatic.com/68094452/r/il/4043d5/8790011607/il_fullxfull.8790011607_264s.jpg",
+      "width": 2000,
+      "height": 2000,
+      "alt": ""
+    },
+    {
+      "url": "https://i.etsystatic.com/68094452/r/il/8a3c7f/8790011645/il_570xN.8790011645_g2zx.jpg",
+      "fullUrl": "https://i.etsystatic.com/68094452/r/il/8a3c7f/8790011645/il_fullxfull.8790011645_g2zx.jpg",
+      "width": 2000,
+      "height": 2000,
+      "alt": ""
+    },
+    {
+      "url": "https://i.etsystatic.com/68094452/r/il/2ff824/8790011671/il_570xN.8790011671_6iv4.jpg",
+      "fullUrl": "https://i.etsystatic.com/68094452/r/il/2ff824/8790011671/il_fullxfull.8790011671_6iv4.jpg",
+      "width": 2000,
+      "height": 2000,
+      "alt": ""
+    },
+    {
+      "url": "https://i.etsystatic.com/68094452/r/il/1808cd/8790011655/il_570xN.8790011655_70e5.jpg",
+      "fullUrl": "https://i.etsystatic.com/68094452/r/il/1808cd/8790011655/il_fullxfull.8790011655_70e5.jpg",
+      "width": 2000,
+      "height": 2000,
+      "alt": ""
+    },
+    {
+      "url": "https://i.etsystatic.com/68094452/r/il/417b6e/8742185610/il_570xN.8742185610_8fw0.jpg",
+      "fullUrl": "https://i.etsystatic.com/68094452/r/il/417b6e/8742185610/il_fullxfull.8742185610_8fw0.jpg",
+      "width": 2000,
+      "height": 2000,
+      "alt": ""
+    },
+    {
+      "url": "https://i.etsystatic.com/68094452/r/il/d2ed41/8682501247/il_570xN.8682501247_2w92.jpg",
+      "fullUrl": "https://i.etsystatic.com/68094452/r/il/d2ed41/8682501247/il_fullxfull.8682501247_2w92.jpg",
+      "width": 1254,
+      "height": 1254,
+      "alt": ""
+    },
+    {
+      "url": "https://i.etsystatic.com/68094452/r/il/6d9f3f/8682501399/il_570xN.8682501399_gx0c.jpg",
+      "fullUrl": "https://i.etsystatic.com/68094452/r/il/6d9f3f/8682501399/il_fullxfull.8682501399_gx0c.jpg",
+      "width": 1254,
+      "height": 1254,
+      "alt": ""
+    }
   ]
 } as const;

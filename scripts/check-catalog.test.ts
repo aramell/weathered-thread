@@ -25,6 +25,7 @@ const SYNCED = renderSynced({
   priceCents: 3200,
   quantity: 12,
   variations: [],
+  images: [],
 });
 
 const authoredSource = (fields: Record<string, string> = {}) => {

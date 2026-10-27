@@ -3,8 +3,8 @@
  *
  * Reads the human-owned manifest `content/catalog/listings.json`
  * (motif slug -> Etsy listing_id), fetches each listing (`getListing`) and its
- * per-variation inventory (`getListingInventory`, OAuth `listings_r`) from Etsy
- * Open API v3, and writes `content/catalog/{slug}/synced.ts`. Run with
+ * per-variation inventory (`getListingInventory`, OAuth `listings_r`) and photos
+ * (`getListingImages`, public) from Etsy Open API v3, and writes `content/catalog/{slug}/synced.ts`. Run with
  * `npm run sync:etsy`; it is never part of `next build` and the site never
  * calls Etsy at build or request time.
  *
@@ -41,6 +41,18 @@ export type SyncedVariation = {
   quantity: number;
 };
 
+/** One listing photo, in Etsy's rank order. Public CDN URLs (i.etsystatic.com), unlike the listing `url`. */
+export type SyncedImage = {
+  /** 570px-wide rendition, for tiles and galleries. */
+  url: string;
+  /** Full-size original. */
+  fullUrl: string;
+  width: number;
+  height: number;
+  /** Seller-written alt text; empty when none was set. */
+  alt: string;
+};
+
 export type SyncedListing = {
   listingId: number;
   name: string;
@@ -49,6 +61,7 @@ export type SyncedListing = {
   priceCents: number;
   quantity: number;
   variations: readonly SyncedVariation[];
+  images: readonly SyncedImage[];
 };
 
 export type SyncDeps = {
@@ -261,6 +274,44 @@ async function fetchVariations(
   return variations;
 }
 
+/** A returned image URL must be https on etsystatic.com or a subdomain (Etsy's image CDN). */
+function assertEtsyImageUrl(url: string, what: string): void {
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch {
+    throw new SyncError(`${what}: returned image url is not a valid URL: ${url}`);
+  }
+  const host = parsed.hostname.toLowerCase();
+  if (parsed.protocol !== "https:" || (host !== "etsystatic.com" && !host.endsWith(".etsystatic.com"))) {
+    throw new SyncError(`${what}: returned image url is not https on etsystatic.com: ${url}`);
+  }
+}
+
+/** Public endpoint (API key only): the listing's photos, best-ranked first. */
+async function fetchImages(deps: SyncDeps, apiKey: string, slug: string, listingId: number): Promise<SyncedImage[]> {
+  const what = `listing "${slug}" (${listingId}) GET /listings/${listingId}/images`;
+  const body = expectRecord(await etsyGet(deps, apiKey, `/listings/${listingId}/images`, what), what);
+  if (!Array.isArray(body.results)) throw new SyncError(`${what}: malformed response (expected results[])`);
+
+  return body.results
+    .map((raw) => expectRecord(raw, `${what} image`))
+    .sort((a, b) => expectCount(a.rank, `${what} rank`) - expectCount(b.rank, `${what} rank`))
+    .map((image) => {
+      const url = expectString(image.url_570xN, `${what} url_570xN`);
+      const fullUrl = expectString(image.url_fullxfull, `${what} url_fullxfull`);
+      assertEtsyImageUrl(url, what);
+      assertEtsyImageUrl(fullUrl, what);
+      return {
+        url,
+        fullUrl,
+        width: expectCount(image.full_width, `${what} full_width`),
+        height: expectCount(image.full_height, `${what} full_height`),
+        alt: typeof image.alt_text === "string" ? decodeEntities(image.alt_text) : "",
+      };
+    });
+}
+
 async function fetchListing(
   deps: SyncDeps,
   apiKey: string,
@@ -284,6 +335,7 @@ async function fetchListing(
     priceCents: moneyToCents(listing.price, listingWhat),
     quantity: expectCount(listing.quantity, `${listingWhat} quantity`),
     variations: await fetchVariations(deps, apiKey, accessToken, slug, listingId),
+    images: await fetchImages(deps, apiKey, slug, listingId),
   };
 }
 

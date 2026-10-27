@@ -57,6 +57,21 @@ function inventoryBody() {
   };
 }
 
+function imagesBody() {
+  const image = (id: number, rank: number, extra: Record<string, unknown> = {}) => ({
+    listing_image_id: id,
+    rank,
+    url_570xN: `https://i.etsystatic.com/1/r/il/a/${id}/il_570xN.${id}.jpg`,
+    url_fullxfull: `https://i.etsystatic.com/1/r/il/a/${id}/il_fullxfull.${id}.jpg`,
+    full_width: 2250,
+    full_height: 3000,
+    alt_text: null,
+    ...extra,
+  });
+  // Deliberately out of rank order: the sync must sort.
+  return { count: 2, results: [image(20, 2, { alt_text: "Back &amp; side" }), image(10, 1)] };
+}
+
 function deps(overrides: Partial<SyncDeps> = {}): SyncDeps {
   return {
     apiKey: KEY,
@@ -91,6 +106,7 @@ function deps(overrides: Partial<SyncDeps> = {}): SyncDeps {
 function stubListing(id: number, overrides: Record<string, unknown> = {}) {
   stubs.set(`/listings/${id}`, { body: listingBody(id, overrides) });
   stubs.set(`/listings/${id}/inventory`, { body: inventoryBody() });
+  stubs.set(`/listings/${id}/images`, { body: imagesBody() });
 }
 
 async function writeManifest(manifest: unknown) {
@@ -152,7 +168,7 @@ describe("happy path", () => {
 
     assert.deepEqual(result.written, ["content/catalog/pickleball/synced.ts", "content/catalog/beach-day/synced.ts"]);
     const apiCalls = calls.filter((c) => c.key !== null);
-    assert.equal(apiCalls.length, 4, "listing + inventory per listing");
+    assert.equal(apiCalls.length, 6, "listing + inventory + images per listing");
     assert.ok(apiCalls.every((c) => c.key === KEY));
     assert.equal(tokenCalls.length, 1);
     assert.equal(await fs.readFile(authored, "utf8"), "// human-edited\n");
@@ -175,6 +191,26 @@ describe("happy path", () => {
       { productId: 1, options: { "Primary color": "Sage", Size: "S" }, priceCents: 3200, quantity: 5 },
       { productId: 2, options: { "Primary color": "Sage", Size: "M" }, priceCents: 3400, quantity: 0 },
     ]);
+    assert.deepEqual(
+      synced.images,
+      [
+        {
+          url: "https://i.etsystatic.com/1/r/il/a/10/il_570xN.10.jpg",
+          fullUrl: "https://i.etsystatic.com/1/r/il/a/10/il_fullxfull.10.jpg",
+          width: 2250,
+          height: 3000,
+          alt: "",
+        },
+        {
+          url: "https://i.etsystatic.com/1/r/il/a/20/il_570xN.20.jpg",
+          fullUrl: "https://i.etsystatic.com/1/r/il/a/20/il_fullxfull.20.jpg",
+          width: 2250,
+          height: 3000,
+          alt: "Back & side",
+        },
+      ],
+      "photos are rank-ordered and alt text is entity-decoded",
+    );
     assert.equal(text, renderSynced(synced), "output is deterministic");
   });
 });
@@ -346,6 +382,24 @@ describe("OAuth", () => {
   });
 });
 
+describe("image failures write nothing", () => {
+  it("HTTP errors, malformed bodies and non-Etsy image hosts abort the run", async () => {
+    await writeManifest({ pickleball: 111 });
+    const evil = imagesBody();
+    evil.results[0].url_570xN = "https://evil.example.com/x.jpg";
+    for (const [stub, pattern] of [
+      [{ status: 500 }, /images: HTTP 500/],
+      [{ body: {} }, /expected results/],
+      [{ body: evil }, /not https on etsystatic\.com/],
+    ] as [Stub, RegExp][]) {
+      stubListing(111);
+      stubs.set("/listings/111/images", stub);
+      await assertRejects(runSync(deps()), pattern);
+    }
+    assert.equal(await exists(syncedPath("pickleball")), false);
+  });
+});
+
 describe("warning rows still write", () => {
   it("inactive listing: written with state recorded, warning printed", async () => {
     await writeManifest({ pickleball: 111 });
@@ -361,7 +415,7 @@ describe("warning rows still write", () => {
     stubListing(111, { price: { amount: 2500, divisor: 100, currency_code: "USD" } });
     mainFiles.set(
       "content/catalog/pickleball/synced.ts",
-      renderSynced({ listingId: 111, name: "x", url: "https://www.etsy.com/listing/111", state: "active", priceCents: 3200, quantity: 1, variations: [] }),
+      renderSynced({ listingId: 111, name: "x", url: "https://www.etsy.com/listing/111", state: "active", priceCents: 3200, quantity: 1, variations: [], images: [] }),
     );
     await runSync(deps());
     assert.equal(warnings.length, 1);
@@ -374,7 +428,7 @@ describe("warning rows still write", () => {
     stubListing(111, { price: { amount: 3600, divisor: 100, currency_code: "USD" } });
     mainFiles.set(
       "content/catalog/pickleball/synced.ts",
-      renderSynced({ listingId: 111, name: "x", url: "https://www.etsy.com/listing/111", state: "active", priceCents: 3200, quantity: 1, variations: [] }),
+      renderSynced({ listingId: 111, name: "x", url: "https://www.etsy.com/listing/111", state: "active", priceCents: 3200, quantity: 1, variations: [], images: [] }),
     );
     await runSync(deps());
     assert.deepEqual(warnings, []);
