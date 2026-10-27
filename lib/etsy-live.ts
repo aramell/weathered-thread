@@ -63,7 +63,9 @@ export function createLiveEtsy(deps: LiveEtsyDeps) {
 
   async function renew(): Promise<string> {
     const clientId = clientIdFromApiKey(deps.apiKey);
-    const stored = await deps.store.read();
+    const read = await deps.store.read();
+    // A rotated pair this instance failed to persist is newer than what the store holds.
+    const stored = memo && (!read || memo.obtainedAt > read.obtainedAt) ? memo : read;
     if (stored && isFresh(stored)) {
       memo = stored;
       return stored.accessToken;
@@ -84,7 +86,11 @@ export function createLiveEtsy(deps: LiveEtsyDeps) {
       throw new LiveEtsyError(error instanceof OAuthError ? error.message : `token refresh failed: ${String(error)}`);
     }
     memo = { ...tokens, obtainedAt: deps.now() };
-    await deps.store.write(memo);
+    // The token is good and Etsy has already rotated the old one, so a failed save must not
+    // fail the read; `memo` carries the new pair until a later renew persists it.
+    await deps.store.write(memo).catch((error) => {
+      console.error("could not store the rotated Etsy token pair:", error);
+    });
     return memo.accessToken;
   }
 

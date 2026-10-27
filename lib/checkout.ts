@@ -24,9 +24,24 @@ export function handoffPath(motifSlug: string, selection: CheckoutSelection, fai
   return `/checkout/${encodeURIComponent(motifSlug)}?${params}`;
 }
 
+/**
+ * The origin to forward through: `SHOP_ORIGIN` when it is an https origin (http only for
+ * localhost), else the default. An empty or malformed value must not turn the link relative.
+ */
+export function shopOrigin(raw?: string): string {
+  try {
+    const url = new URL(raw?.trim() ?? "");
+    const local = url.hostname === "localhost" || url.hostname === "127.0.0.1";
+    if (url.protocol === "https:" || (url.protocol === "http:" && local)) return url.origin;
+  } catch {
+    // not a URL: fall through to the default
+  }
+  return DEFAULT_SHOP_ORIGIN;
+}
+
 /** The link the Continue button points at: always the shop host, never etsy.com. */
-export function forwardHref(motifSlug: string, selection: CheckoutSelection, origin = DEFAULT_SHOP_ORIGIN): string {
-  return `${origin}/go/${encodeURIComponent(motifSlug)}?${selectionQuery(selection)}`;
+export function forwardHref(motifSlug: string, selection: CheckoutSelection, origin?: string): string {
+  return `${shopOrigin(origin)}/go/${encodeURIComponent(motifSlug)}?${selectionQuery(selection)}`;
 }
 
 /** Reads style/color/size from search params; null unless all three are present single values. */

@@ -186,3 +186,9 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-design-first-picker-caricature-garments.md`
   summary: Gallery swipe may fight programmatic scrollTo mid-gesture on touch devices.
   evidence: `components/picker-gallery.tsx` onScroll updates the index and the effect then scrollTo's the rounded slide; unverified without a device. Unverified severity: medium. Try swiping slowly on a phone-width viewport to settle it.
+
+## Deferred from: code review of epic-4 checkout handoff + live inventory, commits a12c060..b652ef0 (2026-10-27)
+
+- source_spec: `_bmad-output/planning-artifacts/epics.md` (Stories 4.1, 4.2)
+  summary: The picker's Add to Bag wiring (`addToBag` in `components/product-picker-shell.tsx`, `onAddToBag` in `components/add-to-bag-bar.tsx`) has no test. Swapping style/color or sending `size.slug` instead of `size.name` would make the Handoff show "That piece isn't available" for every pick.
+  evidence: deferred — no component-test harness exists (node:test on lib/scripts only); `resolveSelection` and `handoffPath` are covered separately. Extracting the push target into a pure helper and testing it would close most of the gap.

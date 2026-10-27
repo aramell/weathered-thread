@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { forwardHref, handoffPath, parseSelection, resolveSelection } from "./checkout";
+import { forwardHref, handoffPath, parseSelection, resolveSelection, shopOrigin } from "./checkout";
 import type { Shop } from "./shop-types";
 
 const shop: Shop = {
@@ -71,5 +71,19 @@ describe("checkout selection", () => {
     );
     assert.ok(!forwardHref("sic-wave", selection).includes("etsy.com"));
     assert.equal(handoffPath("sic-wave", selection, true), "/checkout/sic-wave?style=heavyweight-tee&color=ivory&size=M&failed=1");
+  });
+
+  it("keeps the forward on the shop host whatever SHOP_ORIGIN holds", () => {
+    const selection = { style: "a", color: "b", size: "M" };
+    const fallback = "https://shop.weatheredthread.com";
+    assert.equal(shopOrigin(undefined), fallback);
+    assert.equal(shopOrigin(""), fallback);
+    assert.equal(shopOrigin("shop.weatheredthread.com"), fallback);
+    assert.equal(shopOrigin("http://shop.example.com"), fallback);
+    assert.equal(shopOrigin("https://shop.example.com/"), "https://shop.example.com");
+    assert.equal(shopOrigin(" https://shop.example.com/extra "), "https://shop.example.com");
+    assert.equal(shopOrigin("http://localhost:3000"), "http://localhost:3000");
+    assert.ok(forwardHref("x", selection, "").startsWith(`${fallback}/go/x?`));
+    assert.ok(forwardHref("x", selection, "https://shop.example.com/").startsWith("https://shop.example.com/go/x?"));
   });
 });

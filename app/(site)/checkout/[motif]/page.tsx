@@ -15,8 +15,10 @@ export const metadata: Metadata = {
 
 /**
  * Checkout Handoff (Epic 4 Story 4.1): the deliberate pause between Add to Bag and Etsy. It
- * restates the selection in plain language and re-checks it against current stock, then
- * offers one Continue link on the `shop.` host. Etsy can't preselect style, color or size, so
+ * restates the selection in plain language and re-checks it against Etsy's inventory as of
+ * the last few minutes (the synced catalog if Etsy can't be reached), then offers one
+ * Continue link on the `shop.` host. A design that is no longer active gets the unavailable
+ * page rather than a 404, so a bounce from `/go/[slug]` still lands somewhere with the retry copy. Etsy can't preselect style, color or size, so
  * the copy tells the visitor to confirm them there.
  */
 export default async function CheckoutHandoffPage({
@@ -26,11 +28,18 @@ export default async function CheckoutHandoffPage({
   const { motif: motifSlug } = await params;
   const query = await searchParams;
   const listing = await getLiveListing(motifSlug);
-  if (!listing || listing.state !== "active") notFound();
+  if (!listing) notFound();
 
-  const selection = parseSelection(query);
+  const active = listing.state === "active";
+  const selection = active ? parseSelection(query) : null;
   const resolved = selection ? resolveSelection(buildShop([listing]), selection) : null;
-  const backHref = `/collections/${listing.collection}/${listing.slug}`;
+  const backHref = active ? `/collections/${listing.collection}/${listing.slug}` : `/collections/${listing.collection}`;
+  const failedNotice =
+    query.failed === "1" ? (
+      <p role="alert" className="mb-4 font-body text-body">
+        That didn&apos;t go through — try again.
+      </p>
+    ) : null;
   const collectionName = getCollection(listing.collection)?.name ?? "Weathered Thread";
 
   return (
@@ -40,7 +49,7 @@ export default async function CheckoutHandoffPage({
           <>
             <p className="mb-4 font-mono text-label-mono uppercase text-marsh-sage">{collectionName}</p>
             <h1 className="mb-4 font-display text-headline">Almost there.</h1>
-            <p className="mb-2 font-body text-body">
+            <p className="mb-2 font-body text-body-sm">
               {listing.motifName} — {resolved.garment}, {resolved.color}, size {resolved.size}.
             </p>
             <p className="mb-6 font-mono text-price-mono">{formatPrice(resolved.priceCents)}</p>
@@ -48,11 +57,7 @@ export default async function CheckoutHandoffPage({
               Payment happens on Etsy. You&apos;ll choose style, color, and size there again, so
               pick {resolved.garment}, {resolved.color}, size {resolved.size} to match.
             </p>
-            {query.failed === "1" && (
-              <p role="alert" className="mb-4 font-body text-body">
-                That didn&apos;t go through — try again.
-              </p>
-            )}
+            {failedNotice}
             <div className="mb-4">
               <ButtonPrimary href={forwardHref(listing.slug, selection, process.env.SHOP_ORIGIN)}>
                 Continue to Checkout
@@ -62,13 +67,16 @@ export default async function CheckoutHandoffPage({
           </>
         ) : (
           <>
+            {failedNotice}
             <h1 className="mb-4 font-display text-headline">
               {resolved?.ok === false && resolved.reason === "sold-out" ? "That one just sold out." : "That piece isn’t available."}
             </h1>
             <p className="mb-6 font-body text-body">
-              Choose another size or color for {listing.motifName} and we&apos;ll take it from there.
+              {active
+                ? `Choose another size or color for ${listing.motifName} and we’ll take it from there.`
+                : `${listing.motifName} isn’t available right now. Have a look at the rest of the collection.`}
             </p>
-            <ButtonSecondary href={backHref}>Back to {listing.motifName}</ButtonSecondary>
+            <ButtonSecondary href={backHref}>{active ? `Back to ${listing.motifName}` : "Back to the collection"}</ButtonSecondary>
           </>
         )}
       </section>

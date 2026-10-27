@@ -37,11 +37,13 @@ function memoryStore(initial: StoredTokens | null = null) {
 function etsyStub(options: { refreshStatus?: number; inventoryStatus?: number } = {}) {
   const calls: { url: string; auth: string | null }[] = [];
   let refreshes = 0;
+  const refreshTokensSent: (string | null)[] = [];
   const stub = (async (input: RequestInfo | URL, init?: RequestInit) => {
     const url = String(input);
     calls.push({ url, auth: new Headers(init?.headers).get("authorization") });
     if (url.includes("/oauth/token")) {
       refreshes += 1;
+      refreshTokensSent.push(new URLSearchParams(String(init?.body)).get("refresh_token"));
       if (options.refreshStatus) return new Response("nope", { status: options.refreshStatus });
       return Response.json({ access_token: `at-${refreshes}`, refresh_token: `rt-${refreshes}` });
     }
@@ -49,7 +51,7 @@ function etsyStub(options: { refreshStatus?: number; inventoryStatus?: number } 
       ? new Response("no", { status: options.inventoryStatus })
       : Response.json(inventoryBody);
   }) as typeof fetch;
-  return { stub, calls, refreshCount: () => refreshes };
+  return { stub, calls, refreshCount: () => refreshes, refreshTokensSent };
 }
 
 const deps = (over: Partial<Parameters<typeof createLiveEtsy>[0]>) => ({
@@ -119,6 +121,25 @@ describe("live Etsy inventory", () => {
     await live.fetchVariations(7);
 
     assert.equal(etsy.calls.at(-1)?.auth, "Bearer peer-at");
+  });
+
+  it("still serves the read when saving the rotated pair fails, and refreshes from that pair next time", async () => {
+    const etsy = etsyStub();
+    let now = NOW;
+    const store: TokenStore = {
+      read: async () => ({ accessToken: "old", refreshToken: "stale-rt", obtainedAt: 0 }),
+      write: async () => {
+        throw new Error("blob down");
+      },
+    };
+    const live = createLiveEtsy(deps({ fetch: etsy.stub, store, now: () => now }));
+
+    const variations = await live.fetchVariations(7);
+    assert.equal(variations[0].quantity, 4);
+
+    now += 60 * 60_000;
+    await live.fetchVariations(8);
+    assert.deepEqual(etsy.refreshTokensSent, ["stale-rt", "rt-1"]);
   });
 
   it("throws when no refresh token exists anywhere", async () => {

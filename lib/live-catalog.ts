@@ -1,9 +1,9 @@
 /**
  * live-catalog — the synced catalog with each listing's variations (colors, sizes, stock,
  * price) replaced by Etsy's current inventory. Everything that doesn't change by the minute
- * (name, photos, url, story) still comes from the synced files. Any failure to reach Etsy, or
- * missing credentials (local dev), falls back to the synced variations for that listing, so
- * a page never breaks because Etsy is slow.
+ * (name, photos, url, story) still comes from the synced files. Any failure to reach Etsy falls
+ * back to the last live read, then the synced variations (see `live-merge.ts`); missing
+ * credentials (local dev) mean synced data throughout. A page never breaks because Etsy is slow.
  *
  * Etsy allows about 5,000 calls a day; one call per listing per `LIVE_REVALIDATE_SECONDS`
  * keeps even constant traffic well under that.
@@ -16,7 +16,7 @@ import { unstable_cache } from "next/cache";
 import type { CatalogEntry } from "@/content/catalog/types";
 import { getListings } from "./catalog";
 import { createLiveEtsy, type StoredTokens, type TokenStore } from "./etsy-live";
-import { livePrice } from "./etsy-inventory";
+import { createLiveMerge } from "./live-merge";
 
 export const LIVE_REVALIDATE_SECONDS = 300;
 const TOKEN_PATHNAME = "etsy/live-token.json";
@@ -72,22 +72,7 @@ const cachedVariations = (listingId: number) =>
     { revalidate: LIVE_REVALIDATE_SECONDS, tags: ["etsy-inventory"] },
   )();
 
-async function withLiveInventory(entry: CatalogEntry): Promise<CatalogEntry> {
-  if (!live || entry.state !== "active") return entry;
-  try {
-    const variations = await cachedVariations(entry.listingId);
-    if (variations.length === 0) return entry;
-    return Object.freeze({
-      ...entry,
-      variations,
-      priceCents: livePrice(variations, entry.priceCents),
-      quantity: variations.reduce((total, variation) => total + variation.quantity, 0),
-    });
-  } catch (error) {
-    console.error(`live inventory for "${entry.slug}" unavailable, using synced data:`, error);
-    return entry;
-  }
-}
+const withLiveInventory = createLiveMerge(live ? cachedVariations : null);
 
 export const getLiveListings = (): Promise<CatalogEntry[]> => Promise.all(getListings().map(withLiveInventory));
 
