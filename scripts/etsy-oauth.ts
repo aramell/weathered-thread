@@ -1,7 +1,8 @@
 /**
  * Etsy OAuth 2.0 (authorization code + PKCE) helpers shared by `scripts/etsy-auth.ts`
- * (one-time consent) and `scripts/sync-etsy.ts` (refresh on every run). Local scripts
- * only — nothing under `app/` or `components/` may import this.
+ * (one-time consent), `scripts/sync-etsy.ts` (refresh on every run) and the server-only
+ * `lib/etsy-live.ts` (refresh at request time). Nothing under `app/` or `components/` may import
+ * this, and it never reaches a client bundle.
  */
 import { createHash, randomBytes } from "node:crypto";
 import { promises as fs } from "node:fs";

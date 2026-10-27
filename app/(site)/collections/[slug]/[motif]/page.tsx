@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ProductPickerShell from "@/components/product-picker-shell";
 import { getCollection } from "@/lib/collections";
-import { getMotif, getMotifs } from "@/lib/motifs";
-import { getMotifShops, getShop } from "@/lib/shop";
+import { getLiveMotifs, getMotif, getMotifs } from "@/lib/motifs";
+import { getLiveMotifShops, getLiveShop } from "@/lib/shop";
+
+/** Rebuilt in the background at most this often, so stock and prices follow Etsy (see `lib/live-catalog.ts`). */
+export const revalidate = 300;
 
 /**
  * Product-surface entry point, motif-first (Story 3.2 AC2) — the
@@ -46,9 +49,9 @@ export default async function MotifGarmentPage({
 
   return (
     <ProductPickerShell
-      shop={getShop()}
-      motifShops={getMotifShops()}
-      motifs={getMotifs()}
+      shop={await getLiveShop()}
+      motifShops={await getLiveMotifShops()}
+      motifs={await getLiveMotifs()}
       seed={{ kind: "motif", motifSlug: motif.slug }}
       backHref={`/collections/${collection.slug}`}
       backLabel="Back to Collection"

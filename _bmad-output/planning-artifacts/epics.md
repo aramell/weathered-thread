@@ -44,12 +44,12 @@ NFR6: No carousels, popups, discount modals, countdown timers, or scarcity UI (e
 NFR7: Catalog price/inventory displayed on the custom site never diverges from what Etsy actually charges (sync integrity).
 NFR8: Checkout Handoff links always use the `shop.weatheredthread.com` host, never a raw etsy.com URL in site markup. Checkout itself runs on etsy.com.
 NFR9: Vercel Pro plan required (commercial project; Hobby plan disallowed for revenue-generating use).
-NFR10: The site renders entirely from static/build-time-synced content at request time — no live runtime calls to Etsy from a visitor-facing request.
+NFR10: Pages render from the synced catalog plus Etsy's current per-variation inventory (colors, sizes, stock, price), read server-side at most every 5 minutes (ISR + data cache) and falling back to the synced catalog when Etsy is unreachable. Visitors' browsers never call Etsy.
 
 ### Additional Requirements
 
 - No starter template needed — the repo is already a `create-next-app` Next.js 16.3.5 App Router scaffold (ratified, not re-derived). Epic 1 Story 1 must NOT scaffold a new app; it builds on what exists.
-- Sync script (`scripts/sync-etsy.ts`) pulling from Etsy's Open API v3, run manually (local/CI) — never invoked from `next build`. Every call sends `x-api-key: <keystring>:<shared_secret>`; the public read-only endpoints it uses need no OAuth. The credential is `ETSY_API_KEY`, holding that full string; it stays out of Vercel build/runtime env. Writes `content/catalog/{listing}/synced.ts` only; never touches `content/catalog/{listing}/authored.ts`.
+- Sync script (`scripts/sync-etsy.ts`) pulling from Etsy's Open API v3, run manually (local/CI) — never invoked from `next build`. Every call sends `x-api-key: <keystring>:<shared_secret>`; the public read-only endpoints it uses need no OAuth. The credential is `ETSY_API_KEY`, holding that full string; the sync never runs in Vercel, but the same key is set there for live inventory reads (`lib/etsy-live.ts`, with its own `ETSY_LIVE_REFRESH_TOKEN` chain). Writes `content/catalog/{listing}/synced.ts` only; never touches `content/catalog/{listing}/authored.ts`.
 - Resend email integration (`RESEND_API_KEY`, Vercel Marketplace) wired through one Server Action, `subscribeEmail` — no route handler, no second implementation.
 - Domain/DNS split: `weatheredthread.com` registrar/DNS at Squarespace (registrar only); app domain DNS → Vercel; `shop.weatheredthread.com` DNS → the same Vercel app, which serves the forward to the design's Etsy listing. Checkout runs on etsy.com.
 - Vercel Pro hosting; automatic per-branch preview deployments (no extra setup).
@@ -245,7 +245,7 @@ So that the storefront always reflects real commerce facts without hand-typing t
 **Then** it verifies the host is etsy.com (or a subdomain of it) and fails loudly, writing nothing, if any URL resolves to a different host — the site never renders this raw URL in markup (NFR8); only Story 4.2's `shop.` forward uses it
 
 **Given** the repo's `package.json`
-**Then** `sync-etsy.ts` is never referenced from the `build` script — it only runs as a standalone command, never from `next build` or any Vercel build/runtime step, and `ETSY_API_KEY` is never set in Vercel build/runtime env
+**Then** `sync-etsy.ts` is never referenced from the `build` script — it only runs as a standalone command, never from `next build` or any Vercel build/runtime step
 
 **Given** synced data already exists on `main`
 **When** a new sync run would regress a previously-synced field (e.g. an older price)

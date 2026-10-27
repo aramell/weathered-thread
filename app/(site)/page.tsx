@@ -6,11 +6,14 @@ import EmailSignupForm from "@/components/email-signup-form";
 import ProductCard from "@/components/product-card";
 import { getCollection } from "@/lib/collections";
 import { formatPrice } from "@/lib/format-price";
-import { getMotifs } from "@/lib/motifs";
+import { getLiveMotifs } from "@/lib/motifs";
 
-export default function Home() {
+/** Rebuilt in the background at most this often, so stock and prices follow Etsy (see `lib/live-catalog.ts`). */
+export const revalidate = 300;
+
+export default async function Home() {
   // Newest designs first: all of them up to 8, else the newest 6 plus "See all designs".
-  const allMotifs = getMotifs();
+  const allMotifs = await getLiveMotifs();
   const motifs = allMotifs.length > 8 ? allMotifs.slice(0, 6) : allMotifs;
   const shopHeadingId = "shop-heading";
 

@@ -21,7 +21,18 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import { promisify } from "node:util";
 
+import {
+  EtsyDataError,
+  expectCount,
+  expectRecord,
+  isRecord,
+  moneyToCents,
+  parseInventory,
+  type SyncedVariation,
+} from "../lib/etsy-inventory";
 import { clientIdFromApiKey, OAuthError, refreshAccessToken, upsertEnvVar } from "./etsy-oauth";
+
+export type { SyncedVariation };
 
 const execFileAsync = promisify(execFile);
 
@@ -29,17 +40,7 @@ const API_BASE = "https://openapi.etsy.com/v3/application";
 const SLUG_PATTERN = /^[a-z0-9-]+$/;
 const REQUEST_TIMEOUT_MS = 30_000;
 
-export class SyncError extends Error {}
-
-/** One purchasable style/color/size combination from the listing's inventory. */
-export type SyncedVariation = {
-  productId: number;
-  /** Etsy property name -> chosen value, e.g. `{ "Size": "M", "Primary color": "Sage" }`. */
-  options: Readonly<Record<string, string>>;
-  priceCents: number;
-  /** 0 when the offering is disabled. */
-  quantity: number;
-};
+export class SyncError extends EtsyDataError {}
 
 /** One listing photo, in Etsy's rank order. Public CDN URLs (i.etsystatic.com), unlike the listing `url`. */
 export type SyncedImage = {
@@ -86,24 +87,8 @@ export type SyncResult = { written: string[]; warnings: string[] };
 
 type Manifest = { slug: string; listingId: number }[];
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-function expectRecord(value: unknown, what: string): Record<string, unknown> {
-  if (!isRecord(value)) throw new SyncError(`${what}: malformed response (expected an object)`);
-  return value;
-}
-
 function expectString(value: unknown, what: string): string {
   if (typeof value !== "string") throw new SyncError(`${what}: malformed response (expected a string)`);
-  return value;
-}
-
-function expectCount(value: unknown, what: string): number {
-  if (typeof value !== "number" || !Number.isInteger(value) || value < 0) {
-    throw new SyncError(`${what}: malformed response (expected a non-negative integer)`);
-  }
   return value;
 }
 
@@ -125,25 +110,6 @@ function decodeEntities(text: string): string {
     }
     return NAMED_ENTITIES[body.toLowerCase()] ?? match;
   });
-}
-
-/** Etsy `{amount, divisor, currency_code}` -> integer USD cents. */
-function moneyToCents(value: unknown, what: string): number {
-  const money = expectRecord(value, `${what} price`);
-  const { amount, divisor, currency_code: currency } = money;
-  if (currency !== "USD") {
-    throw new SyncError(`${what}: unsupported currency ${JSON.stringify(currency)} (USD only)`);
-  }
-  if (typeof amount !== "number" || !Number.isInteger(amount) || amount < 0) {
-    throw new SyncError(`${what}: malformed price amount`);
-  }
-  if (typeof divisor !== "number" || !Number.isInteger(divisor) || divisor <= 0) {
-    throw new SyncError(`${what}: malformed price divisor`);
-  }
-  if ((amount * 100) % divisor !== 0) {
-    throw new SyncError(`${what}: price ${amount}/${divisor} is not a whole number of cents`);
-  }
-  return (amount * 100) / divisor;
 }
 
 /** A returned listing URL must be https on etsy.com or a subdomain. */
@@ -239,41 +205,8 @@ async function fetchVariations(
   listingId: number,
 ): Promise<SyncedVariation[]> {
   const what = `listing "${slug}" (${listingId}) GET /listings/${listingId}/inventory`;
-  const inventory = expectRecord(
-    await etsyGet(deps, apiKey, `/listings/${listingId}/inventory`, what, accessToken),
-    what,
-  );
-  if (!Array.isArray(inventory.products)) throw new SyncError(`${what}: malformed response (expected products[])`);
-
-  const variations: SyncedVariation[] = [];
-  for (const raw of inventory.products) {
-    const product = expectRecord(raw, `${what} product`);
-    if (product.is_deleted === true) continue;
-    const productId = expectCount(product.product_id, `${what} product_id`);
-    const offerings = Array.isArray(product.offerings) ? product.offerings : [];
-    const offering = offerings
-      .map((entry) => expectRecord(entry, `${what} product ${productId} offering`))
-      .find((entry) => entry.is_deleted !== true);
-    if (!offering) continue;
-
-    const options: Record<string, string> = {};
-    for (const rawValue of Array.isArray(product.property_values) ? product.property_values : []) {
-      const property = expectRecord(rawValue, `${what} product ${productId} property`);
-      const values = Array.isArray(property.values) ? property.values.filter((v): v is string => typeof v === "string") : [];
-      const name =
-        typeof property.property_name === "string" && property.property_name
-          ? property.property_name
-          : `property ${String(property.property_id)}`;
-      options[name] = values.join(", ");
-    }
-    variations.push({
-      productId,
-      options,
-      priceCents: moneyToCents(offering.price, `${what} product ${productId}`),
-      quantity: offering.is_enabled === false ? 0 : expectCount(offering.quantity, `${what} product ${productId} quantity`),
-    });
-  }
-  return variations;
+  const body = await etsyGet(deps, apiKey, `/listings/${listingId}/inventory`, what, accessToken);
+  return parseInventory(body, what);
 }
 
 /** A returned image URL must be https on etsystatic.com or a subdomain (Etsy's image CDN). */
@@ -450,7 +383,13 @@ export async function runSync(deps: SyncDeps): Promise<SyncResult> {
   const listings: { slug: string; listing: SyncedListing }[] = [];
   for (const { slug, listingId } of manifest) {
     deps.log(`fetching ${slug} (${listingId})…`);
-    listings.push({ slug, listing: await fetchListing(deps, apiKey, accessToken, slug, listingId) });
+    try {
+      listings.push({ slug, listing: await fetchListing(deps, apiKey, accessToken, slug, listingId) });
+    } catch (error) {
+      // The shared parsers throw EtsyDataError; callers of the sync see one error type.
+      if (error instanceof EtsyDataError && !(error instanceof SyncError)) throw new SyncError(error.message);
+      throw error;
+    }
   }
 
   const warnings: string[] = [];

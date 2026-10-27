@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import AddToBagBar from "@/components/add-to-bag-bar";
 import ButtonSecondary from "@/components/button-secondary";
@@ -8,6 +9,7 @@ import MotifTile from "@/components/motif-tile";
 import DesignSummary from "@/components/design-summary";
 import GarmentOption from "@/components/garment-option";
 import PickerGallery from "@/components/picker-gallery";
+import { handoffPath } from "@/lib/checkout";
 import { getCollection } from "@/lib/collections";
 import { garmentArtKind } from "@/lib/garment-art";
 import type { Motif } from "@/lib/motif-types";
@@ -92,6 +94,12 @@ export default function ProductPickerShell({
     hasMotif: Boolean(motif),
   });
   const price = garmentType && priceCents !== null ? priceLabel(priceCents) : null;
+
+  const router = useRouter();
+  const addToBag = () => {
+    if (!isAddToBagEnabled || !motif || !garmentType || !colorway || !size) return;
+    router.push(handoffPath(motif.slug, { style: garmentType.slug, color: colorway.slug, size: size.name }));
+  };
 
   const heading = motif
     ? garmentType
@@ -397,6 +405,7 @@ export default function ProductPickerShell({
               ref={addToBagRef}
               type="button"
               disabled={!isAddToBagEnabled}
+              onClick={addToBag}
               aria-hidden={stickyVisible}
               tabIndex={stickyVisible ? -1 : undefined}
               aria-describedby={
@@ -517,6 +526,7 @@ export default function ProductPickerShell({
         price={price ?? "—"}
         disabled={!isAddToBagEnabled}
         visible={stickyVisible}
+        onAddToBag={addToBag}
       />
     </main>
   );

@@ -9,6 +9,7 @@ import "server-only";
 
 import type { CatalogEntry } from "@/content/catalog/types";
 import { getListings } from "./catalog";
+import { getLiveListings } from "./live-catalog";
 import { COLOR_ORDER, colorPresentation, garmentBlurb } from "./shop-presentation";
 import type { Shop, ShopColor, ShopGarmentType, ShopSize } from "./shop-types";
 
@@ -103,5 +104,9 @@ export function buildMotifShops(listings: readonly CatalogEntry[]): Record<strin
   return Object.fromEntries(listings.map((listing) => [listing.slug, buildShop([listing])]));
 }
 
+/** Synced snapshot: enough for static params, which only need which styles and colors exist. */
 export const getShop = (): Shop => buildShop(getListings());
-export const getMotifShops = (): Record<string, Shop> => buildMotifShops(getListings());
+
+/** Etsy's current colors, sizes, stock and prices (see `lib/live-catalog.ts`). */
+export const getLiveShop = async (): Promise<Shop> => buildShop(await getLiveListings());
+export const getLiveMotifShops = async (): Promise<Record<string, Shop>> => buildMotifShops(await getLiveListings());

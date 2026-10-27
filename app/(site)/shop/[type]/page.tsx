@@ -5,8 +5,11 @@ import ButtonSecondary from "@/components/button-secondary";
 import GarmentArt from "@/components/garment-art";
 import ProductCard from "@/components/product-card";
 import { garmentArtKind } from "@/lib/garment-art";
-import { getShop } from "@/lib/shop";
+import { getLiveShop, getShop } from "@/lib/shop";
 import { getGarmentType, priceLabel } from "@/lib/shop-types";
+
+/** Rebuilt in the background at most this often, so stock and prices follow Etsy (see `lib/live-catalog.ts`). */
+export const revalidate = 300;
 
 function colorNames(names: string[]): string {
   if (names.length < 3) return names.join(" and ");
@@ -21,7 +24,7 @@ export async function generateMetadata({
   params,
 }: PageProps<"/shop/[type]">): Promise<Metadata> {
   const { type } = await params;
-  const garmentType = getGarmentType(getShop(), type);
+  const garmentType = getGarmentType(await getLiveShop(), type);
 
   if (!garmentType) {
     return {};
@@ -37,7 +40,7 @@ export default async function GarmentTypePage({
   params,
 }: PageProps<"/shop/[type]">) {
   const { type } = await params;
-  const garmentType = getGarmentType(getShop(), type);
+  const garmentType = getGarmentType(await getLiveShop(), type);
 
   if (!garmentType) {
     notFound();
