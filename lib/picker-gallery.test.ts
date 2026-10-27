@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { buildGallerySlides, defaultPhotoIndex, previewSlideIndex, slideLabel } from "./picker-gallery";
+import { buildGallerySlides, defaultPhotoIndex, slideLabel } from "./picker-gallery";
 
 const images = [
   { url: "a.jpg", alt: "A" },
@@ -22,17 +22,6 @@ describe("buildGallerySlides", () => {
 
   it("is empty with no photos and no preview", () => {
     assert.deepEqual(buildGallerySlides([], null), []);
-  });
-});
-
-describe("previewSlideIndex", () => {
-  it("is the last slide when a preview exists", () => {
-    assert.equal(previewSlideIndex(4, true), 4);
-    assert.equal(previewSlideIndex(0, true), 0);
-  });
-
-  it("is null without a preview, so the index is left alone", () => {
-    assert.equal(previewSlideIndex(4, false), null);
   });
 });
 

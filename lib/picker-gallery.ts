@@ -15,11 +15,6 @@ export function buildGallerySlides(images: GalleryImage[], previewUrl: string | 
   return slides;
 }
 
-/** Slide to jump to when a color is picked: the preview (last) slide, or null when there is none. */
-export function previewSlideIndex(imageCount: number, hasPreview: boolean): number | null {
-  return hasPreview ? imageCount : null;
-}
-
 /** Slide a chosen design opens on: Etsy's second photo is the zoomed-in design; else the only photo. */
 export function defaultPhotoIndex(imageCount: number): number {
   return imageCount > 1 ? 1 : 0;

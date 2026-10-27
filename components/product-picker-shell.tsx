@@ -11,7 +11,7 @@ import PickerGallery from "@/components/picker-gallery";
 import { getCollection } from "@/lib/collections";
 import { garmentArtKind } from "@/lib/garment-art";
 import type { Motif } from "@/lib/motif-types";
-import { buildGallerySlides, defaultPhotoIndex, previewSlideIndex } from "@/lib/picker-gallery";
+import { buildGallerySlides, defaultPhotoIndex } from "@/lib/picker-gallery";
 import { derivePicker, getColor, priceLabel, type Shop } from "@/lib/shop-types";
 
 type ProductPickerSeed =
@@ -335,8 +335,6 @@ export default function ProductPickerShell({
                         inStock={c.inStock}
                         onSelect={() => {
                           setColorSlug(c.slug);
-                          const jump = previewSlideIndex(motif?.images.length ?? 0, Boolean(c.frontImage));
-                          if (jump !== null) setGalleryIndex(jump);
                           if (!c.sizes.some((s) => s.name === sizeName && s.inStock)) setSizeName(null);
                         }}
                       />

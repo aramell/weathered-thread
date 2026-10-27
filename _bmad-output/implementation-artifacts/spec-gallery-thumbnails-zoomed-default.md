@@ -31,3 +31,7 @@ review_loop_iteration: 0
 - false: stale gallery index on other motif paths — design pick is the only place `motifSlug` changes after mount.
 - false: eager thumbnail loading — `next/image` lazy-loads by default.
 - rejected low: active-thumbnail contrast (ring plus `aria-current`); strip component tests (repo has no component harness).
+
+## Follow-up (owner decision, 2026-10-27)
+
+Picking a color no longer jumps the hero to the garment preview. The design photo stays; the garment preview appears as the last thumbnail once a garment and color are chosen. `previewSlideIndex` removed.

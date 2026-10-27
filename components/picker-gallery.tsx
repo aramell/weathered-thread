@@ -20,7 +20,7 @@ const buttonClass =
 /**
  * picker-gallery — user-driven hero gallery (never autoplay): a scroll-snap track that swipes
  * on touch, with visible previous/next buttons as the non-swipe alternative. The parent owns
- * the active index so it can jump to the preview slide when a color is picked. Position is
+ * the active index; the garment preview is just the last thumbnail, never auto-selected. Position is
  * announced politely as "Photo i of M".
  */
 export default function PickerGallery({ slides, index, onIndexChange, previewAlt, previewCaption }: PickerGalleryProps) {
