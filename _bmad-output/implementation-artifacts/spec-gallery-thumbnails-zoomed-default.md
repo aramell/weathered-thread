@@ -35,3 +35,5 @@ review_loop_iteration: 0
 ## Follow-up (owner decision, 2026-10-27)
 
 Picking a color no longer jumps the hero to the garment preview. The design photo stays; the garment preview appears as the last thumbnail once a garment and color are chosen. `previewSlideIndex` removed.
+
+Color-pick feedback added: the preview thumbnail is captioned "Your garment", and picking a color scrolls it into view and flashes a brass ring (skipped under reduced motion).

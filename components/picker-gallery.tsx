@@ -29,17 +29,37 @@ export default function PickerGallery({ slides, index, onIndexChange, previewAlt
   const total = slides.length;
   const active = Math.min(index, total - 1);
 
-  // Keep the active thumbnail visible in the strip without scrolling the page.
-  useEffect(() => {
+  const scrollThumbIntoView = (i: number) => {
     const strip = stripRef.current;
-    const thumb = strip?.children[active] as HTMLElement | undefined;
+    const thumb = strip?.children[i] as HTMLElement | undefined;
     if (!strip || !thumb) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     strip.scrollTo({
       left: thumb.offsetLeft - (strip.clientWidth - thumb.clientWidth) / 2,
       behavior: reduce ? "instant" : "smooth",
     });
+  };
+
+  // Keep the active thumbnail visible in the strip without scrolling the page.
+  useEffect(() => {
+    scrollThumbIntoView(active);
   }, [active, total]);
+
+  // Picking a garment color changes the preview slide but not the hero, so acknowledge it in
+  // the strip: bring the preview thumbnail into view and flash a brass ring around it.
+  const previewIndex = slides.findIndex((slide) => slide.kind === "preview");
+  const previewUrl = previewIndex >= 0 ? slides[previewIndex].url : null;
+  const previewThumbRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!previewUrl) return;
+    scrollThumbIntoView(previewIndex);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    previewThumbRef.current?.animate(
+      [{ boxShadow: "0 0 0 3px var(--color-antique-brass)" }, { boxShadow: "0 0 0 3px transparent" }],
+      { duration: 1400, easing: "ease-out" },
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [previewUrl]);
 
   // Bring the track to the requested slide (instant: it should feel like a photo swap).
   useEffect(() => {
@@ -109,9 +129,10 @@ export default function PickerGallery({ slides, index, onIndexChange, previewAlt
       {total > 1 && (
         <ul ref={stripRef} aria-label="Choose photo" className="relative mt-2 flex gap-2 overflow-x-auto p-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {slides.map((slide, i) => (
-            <li key={`${i}-${slide.kind}-${slide.url}`} className="shrink-0">
+            <li key={`${i}-${slide.kind}-${slide.url}`} className="flex shrink-0 flex-col items-center gap-1">
               <button
                 type="button"
+                ref={slide.kind === "preview" ? previewThumbRef : undefined}
                 onClick={() => onIndexChange(i)}
                 aria-label={`Show ${slideLabel(i, total).toLowerCase()}`}
                 aria-current={i === active ? "true" : undefined}
@@ -121,6 +142,11 @@ export default function PickerGallery({ slides, index, onIndexChange, previewAlt
               >
                 <Image src={slide.url} alt="" fill sizes="56px" className="object-cover" />
               </button>
+              {slide.kind === "preview" && (
+                <span aria-hidden="true" className="font-mono text-caption-mono text-marsh-sage">
+                  Your garment
+                </span>
+              )}
             </li>
           ))}
         </ul>
