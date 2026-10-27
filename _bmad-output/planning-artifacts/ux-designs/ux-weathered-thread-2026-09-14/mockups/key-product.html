@@ -2,140 +2,222 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Weathered Thread — Product (Key Screen Mock)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Weathered Thread — Picker v2 (Key Screen Mock)</title>
 <style>
 /*
-  Governs: DESIGN.md Colors, Typography, Components (button-primary, garment-swatch,
-  motif-tile selected state), Shapes, Elevation.
-  EXPERIENCE.md: Component Patterns (garment-swatch, button-primary rows),
-  State Patterns (motif preview placeholder, out-of-stock), Key Flow 1 steps 3-5.
-  Fonts: Fraunces / IBM Plex Mono are the brand typefaces; this offline mock uses
-  system serif/mono fallbacks (Georgia / ui-monospace) since it must render with no
-  network access. Swap in real webfonts at build time.
+  Governs (2026-10-27 update): DESIGN.md Components (motif-tile, garment-swatch,
+  product-card; NEW garment-option), Shapes, Colors.
+  EXPERIENCE.md: Component Patterns (design-summary, garment-option),
+  State Patterns (design chosen / no garment yet), Key Flow 1 steps 3-5.
+  Fonts: offline system fallbacks for Fraunces / IBM Plex Mono.
+  Prices are sample values; real prices come from the Etsy sync.
 */
 * { box-sizing: border-box; }
-body {
-  margin: 0; padding: 40px 16px; display: flex; justify-content: center;
-  background: #ddd6c8; font-family: -apple-system, Georgia, serif;
-}
-.frame {
-  width: 390px; background: #EFEAE0; color: #2B2A26;
-  border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(43,42,38,.25);
-}
-.nav {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 20px; border-bottom: 1px solid #D9D2C2;
-  font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 11px;
-  letter-spacing: .08em; text-transform: uppercase;
-}
-.nav .back { font-size: 13px; letter-spacing: 0; text-transform: none; }
-.preview {
-  aspect-ratio: 4/5; background: #F7F4EC; display: flex; align-items: center;
-  justify-content: center; text-align: center; padding: 24px;
-  border-bottom: 1px solid #D9D2C2;
-}
-.preview .label {
-  font-family: ui-monospace, monospace; font-size: 12px; color: #7C8567;
-  line-height: 1.5; max-width: 260px;
-}
-.preview .swatch {
-  width: 120px; height: 120px; border-radius: 4px; background: #2F4858;
-  margin: 0 auto 16px; display: flex; align-items: center; justify-content: center;
-  color: #EFEAE0; font-family: ui-monospace, monospace; font-size: 10px;
-}
+body { margin: 0; padding: 32px 16px 48px; background: #ddd6c8; font-family: Georgia, serif; color: #2B2A26; }
+.row { display: flex; gap: 28px; justify-content: center; align-items: flex-start; overflow-x: auto; padding-bottom: 12px; }
+.col { flex: 0 0 390px; }
+.cap { font: 12px/1.45 ui-monospace, Menlo, monospace; color: #5d5a50; margin: 0 0 10px; max-width: 390px; }
+.cap b { color: #2B2A26; }
+.frame { width: 390px; background: #EFEAE0; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(43,42,38,.25); }
+.mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+.nav { display: flex; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid #D9D2C2;
+  font: 11px ui-monospace, Menlo, monospace; letter-spacing: .08em; text-transform: uppercase; }
+.hero { aspect-ratio: 1/1; background: #F7F4EC; display: flex; align-items: center; justify-content: center; position: relative; }
+.patch { width: 46%; aspect-ratio: 1/1; border-radius: 50%; background: #F1E9D6; border: 2px dashed #2F4858;
+  display: flex; align-items: center; justify-content: center; text-align: center; color: #2F4858;
+  font: italic 500 15px/1.2 Georgia, serif; padding: 14px; }
+.dots { position: absolute; right: 12px; bottom: 12px; display: flex; gap: 6px; }
+.dots i { width: 7px; height: 7px; border-radius: 50%; background: #D9D2C2; }
+.dots i.on { background: #2B2A26; }
+.hero .tag { position: absolute; left: 12px; bottom: 10px; font: 10px ui-monospace, monospace; color: #7C8567; }
 .content { padding: 20px; }
-h1 { font-size: 22px; font-weight: 500; margin: 0 0 4px; }
-.price {
-  font-family: ui-monospace, monospace; font-size: 16px; font-weight: 500;
-  color: #2B2A26; margin: 0 0 20px;
-}
-.field-label {
-  font-family: ui-monospace, monospace; font-size: 11px; letter-spacing: .06em;
-  text-transform: uppercase; color: #7C8567; margin-bottom: 8px; display: block;
-}
-.swatches { display: flex; gap: 10px; margin-bottom: 20px; }
-.swatch-dot {
-  width: 32px; height: 32px; border-radius: 9999px; border: 2px solid #D9D2C2;
-  position: relative; cursor: pointer;
-}
-.swatch-dot.selected { border-color: #2B2A26; }
-.swatch-dot.oos { opacity: .35; }
-.swatch-dot.oos::after {
-  content: ""; position: absolute; inset: -4px; border: 1px solid #7C8567;
-  border-radius: 9999px;
-}
-.sw-pepper { background: #5b5652; } .sw-bluejean { background: #45607a; }
-.sw-ivory { background: #efe9d8; } .sw-bay { background: #7f8f8a; }
-.sizes { display: flex; gap: 8px; margin-bottom: 24px; }
-.size {
-  width: 40px; height: 36px; border: 1px solid #D9D2C2; border-radius: 4px;
-  display: flex; align-items: center; justify-content: center;
-  font-family: ui-monospace, monospace; font-size: 12px;
-}
-.size.selected { border-color: #2B2A26; background: #2B2A26; color: #EFEAE0; }
-.btn-primary {
-  width: 100%; padding: 16px; background: #2F4858; color: #EFEAE0; border: none;
-  border-radius: 2px; font-family: ui-monospace, monospace; font-size: 13px;
-  letter-spacing: .06em; text-transform: uppercase; margin-bottom: 28px;
-}
-.desc { font-size: 15px; line-height: 1.6; margin-bottom: 28px; }
-.section { border-top: 1px solid #D9D2C2; padding: 20px 0; }
-.section h2 {
-  font-family: ui-monospace, monospace; font-size: 12px; letter-spacing: .08em;
-  text-transform: uppercase; color: #A8823C; margin: 0 0 10px;
-}
-.section p { font-size: 14px; line-height: 1.6; margin: 0; color: #2B2A26; }
-.oos-note {
-  font-family: ui-monospace, monospace; font-size: 10px; color: #7C8567;
-  margin-top: 6px;
-}
+h1 { font-size: 22px; font-weight: 500; margin: 0 0 4px; line-height: 1.25; }
+.price { font: 500 16px ui-monospace, monospace; margin: 0 0 18px; min-height: 20px; }
+.label { display: block; font: 11px ui-monospace, monospace; letter-spacing: .06em; text-transform: uppercase; color: #7C8567; margin: 0 0 8px; }
+.prompt { font: 15px/1.5 Georgia, serif; margin: 0 0 12px; }
+
+/* design summary (collapsed) */
+.dsum { display: flex; align-items: center; gap: 12px; background: #F7F4EC; border-radius: 4px; padding: 10px 12px; margin-bottom: 22px; }
+.dsum .thumb { width: 44px; height: 44px; border-radius: 4px; background: #F1E9D6; border: 1px solid #D9D2C2; flex: none;
+  display: flex; align-items: center; justify-content: center; }
+.dsum .thumb i { width: 26px; height: 26px; border-radius: 50%; border: 1.5px dashed #2F4858; }
+.dsum .txt { flex: 1; min-width: 0; }
+.coll { font: 11px ui-monospace, monospace; letter-spacing: .04em; color: #7C8567; display: block; }
+.dname { font: 15px/1.3 Georgia, serif; display: block; }
+.btn2 { background: transparent; border: 1px solid #2B2A26; border-radius: 2px; padding: 0 12px; min-height: 44px;
+  font: 11px ui-monospace, monospace; letter-spacing: .06em; text-transform: uppercase; color: #2B2A26; }
+
+/* expanded design grid */
+.dgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px; }
+.mt { background: #F7F4EC; border-radius: 4px; padding: 8px; border: 1px solid transparent; }
+.mt.sel { border-color: #A8823C; }
+.mt .ph { aspect-ratio: 1/1; background: #F1E9D6; border-radius: 3px; margin-bottom: 6px; display: flex; align-items: center; justify-content: center; }
+.mt .ph i { width: 44%; aspect-ratio: 1/1; border-radius: 50%; border: 1.5px dashed #2F4858; }
+.mt .coll { font-size: 10px; }
+.mt .dname { font-size: 14px; }
+.closebar { display: flex; justify-content: flex-end; margin: 4px 0 22px; }
+
+/* garment options */
+.gopts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 22px; }
+.go { background: #F7F4EC; border: 2px solid transparent; border-radius: 4px; padding: 10px 4px 10px; text-align: center; min-height: 44px; }
+.go.sel { border-color: #2B2A26; }
+.go svg { width: 64px; height: 64px; display: block; margin: 0 auto 6px; }
+.go .gn { font: 13px/1.2 Georgia, serif; display: block; color: #2B2A26; }
+.go .gp { font: 500 12px ui-monospace, monospace; display: block; margin-top: 2px; color: #2B2A26; }
+
+.swatches { display: flex; gap: 10px; margin-bottom: 6px; }
+.sw { width: 44px; height: 44px; border-radius: 50%; border: 2px solid #D9D2C2; }
+.sw.sel { border-color: #2B2A26; }
+.sw.oos { opacity: .35; }
+.note { font: 10px ui-monospace, monospace; color: #7C8567; margin: 0 0 22px; }
+.sizes { display: flex; gap: 8px; margin-bottom: 22px; }
+.size { width: 44px; height: 44px; border: 1px solid #D9D2C2; border-radius: 4px; display: flex; align-items: center; justify-content: center; font: 12px ui-monospace, monospace; }
+.size.sel { background: #2B2A26; color: #EFEAE0; border-color: #2B2A26; }
+.btn1 { width: 100%; padding: 16px; background: #2F4858; color: #EFEAE0; border: 0; border-radius: 2px; font: 13px ui-monospace, monospace; letter-spacing: .06em; text-transform: uppercase; }
+.btn1[disabled] { opacity: .5; }
+.hint { font: 14px/1.5 Georgia, serif; margin: 0 0 12px; }
+.photos { display: flex; gap: 8px; margin: 14px 0 0; overflow: hidden; }
+.photos div { flex: none; width: 84px; height: 84px; background: #F1E9D6; border-radius: 4px; }
+.sec { border-top: 1px solid #D9D2C2; margin-top: 24px; padding-top: 16px; }
+.sec h2 { font: 12px ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase; color: #A8823C; margin: 0 0 8px; }
+.sec p { font-size: 14px; line-height: 1.6; margin: 0; }
 </style>
 </head>
 <body>
-<div class="frame">
-  <div class="nav"><span class="back">← Sea Isle</span><span>Bag (0)</span></div>
 
-  <div class="preview">
-    <div>
-      <div class="swatch">wt</div>
-      <div class="label">Water Tower on Blue Jean Crewneck<br>— placeholder mockup, real photography pending —</div>
+<!-- Caricature set: hand-drawn feel, fill = currentColor (the selected garment color), outline Wet Ink. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="g-tee" viewBox="0 0 100 100">
+      <path d="M35 14 C42 26 58 26 65 14 L85.5 23 L96 45.5 L80 52 L76.5 43 L77.5 86 C58 90.5 42 90.5 22.5 86 L23.5 43 L20 52 L4 45.5 L14.5 23 Z" fill="currentColor" stroke="#2B2A26" stroke-width="2.4" stroke-linejoin="round"/>
+      <path d="M37.5 15 C44 24 56 24 62.5 15" fill="none" stroke="#2B2A26" stroke-opacity=".55" stroke-width="1.6" stroke-linecap="round"/>
+      <path d="M27 80 C44 84 56 84 73 80" fill="none" stroke="#2B2A26" stroke-opacity=".45" stroke-width="1.4" stroke-dasharray="2 3" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="g-ls" viewBox="0 0 100 100">
+      <path d="M35 14 C42 26 58 26 65 14 L85.5 22 L97 77.5 L82 82 L74 46 L77.5 86 C58 90.5 42 90.5 22.5 86 L26 46 L18 82 L3 77.5 L14.5 22 Z" fill="currentColor" stroke="#2B2A26" stroke-width="2.4" stroke-linejoin="round"/>
+      <path d="M37.5 15 C44 24 56 24 62.5 15" fill="none" stroke="#2B2A26" stroke-opacity=".55" stroke-width="1.6" stroke-linecap="round"/>
+      <path d="M27 80 C44 84 56 84 73 80" fill="none" stroke="#2B2A26" stroke-opacity=".45" stroke-width="1.4" stroke-dasharray="2 3" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="g-crew" viewBox="0 0 100 100">
+      <path d="M33.5 14 C42 30 58 30 66.5 14 L85.5 22 L97 77.5 L82 82 L74 46 L77.5 86 C58 90.5 42 90.5 22.5 86 L26 46 L18 82 L3 77.5 L14.5 22 Z" fill="currentColor" stroke="#2B2A26" stroke-width="2.4" stroke-linejoin="round"/>
+      <path d="M36 15 C44 25 56 25 64 15" fill="none" stroke="#2B2A26" stroke-opacity=".6" stroke-width="1.6" stroke-linecap="round"/>
+      <path d="M39 15.5 C45 22 55 22 61 15.5" fill="none" stroke="#2B2A26" stroke-opacity=".6" stroke-width="1.6" stroke-linecap="round"/>
+      <path d="M23 76 C42 80.5 58 80.5 77 76" fill="none" stroke="#2B2A26" stroke-opacity=".65" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M80 71 L94.5 68 M81 66 L95.5 63 M20 71 L5.5 68 M19 66 L4.5 63" fill="none" stroke="#2B2A26" stroke-opacity=".6" stroke-width="1.6" stroke-linecap="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="row">
+
+  <!-- A: design chosen, garment + color chosen -->
+  <div class="col">
+    <p class="cap"><b>A · Design chosen, at rest.</b> Design grid collapsed to a summary (collection + name + Change). Order: Garment Type → Color → Size → Add to Bag. Caricatures tinted to the selected color. Hero is a swipeable gallery: design photos first, composited garment preview last.</p>
+    <div class="frame">
+      <div class="nav"><span>← Back to Collection</span><span>Bag</span></div>
+      <div class="hero"><div class="patch">Water<br>Tower</div><span class="tag">Photo 1 of 5 · last slide: Water Tower on a Blue Jean Crewneck (placeholder preview)</span><span class="dots"><i class="on"></i><i></i><i></i><i></i><i></i></span></div>
+      <div class="content">
+        <h1>Water Tower — Crewneck</h1>
+        <p class="price">$48</p>
+
+        <span class="label">Design</span>
+        <div class="dsum">
+          <div class="thumb"><i></i></div>
+          <div class="txt"><span class="coll">Sea Isle</span><span class="dname">Water Tower</span></div>
+          <button class="btn2">Change</button>
+        </div>
+
+        <span class="label">Garment Type</span>
+        <div class="gopts" style="color:#45607A">
+          <div class="go"><svg><use href="#g-tee"/></svg><span class="gn">Tee</span><span class="gp">$32</span></div>
+          <div class="go"><svg><use href="#g-ls"/></svg><span class="gn">Long Sleeve Tee</span><span class="gp">$38</span></div>
+          <div class="go sel"><svg><use href="#g-crew"/></svg><span class="gn">Crewneck</span><span class="gp">$48</span></div>
+        </div>
+
+        <span class="label">Color</span>
+        <div class="swatches">
+          <div class="sw" style="background:#5B5652" title="Pepper"></div>
+          <div class="sw sel" style="background:#45607A" title="Blue Jean"></div>
+          <div class="sw oos" style="background:#EFE9D8" title="Ivory — out of stock"></div>
+          <div class="sw" style="background:#7F8F8A" title="Bay"></div>
+        </div>
+        <p class="note">Ivory is currently out of stock in this style.</p>
+
+        <span class="label">Size</span>
+        <div class="sizes"><div class="size">S</div><div class="size sel">M</div><div class="size">L</div><div class="size">XL</div></div>
+
+        <button class="btn1">Add to Bag</button>
+
+        <div class="sec"><h2>The Garment</h2><p>Comfort Colors garment-dyed crewneck. Soft, broken-in feel from the first wear.</p></div>
+      </div>
     </div>
   </div>
 
-  <div class="content">
-    <h1>Water Tower — Crewneck Sweatshirt</h1>
-    <p class="price">$68</p>
+  <!-- B: Change expanded inline -->
+  <div class="col">
+    <p class="cap"><b>B · "Change" expanded inline.</b> The full design grid opens in place; every tile carries its collection name. Tapping a tile swaps the design and collapses back to the summary.</p>
+    <div class="frame">
+      <div class="nav"><span>← Back to Collection</span><span>Bag</span></div>
+      <div class="hero"><div class="patch">Water<br>Tower</div><span class="tag">Photo 1 of 5 · last slide: Water Tower on a Blue Jean Crewneck (placeholder preview)</span><span class="dots"><i class="on"></i><i></i><i></i><i></i><i></i></span></div>
+      <div class="content">
+        <h1>Water Tower — Crewneck</h1>
+        <p class="price">$48</p>
 
-    <span class="field-label">Color</span>
-    <div class="swatches">
-      <div class="swatch-dot sw-pepper selected" title="Pepper"></div>
-      <div class="swatch-dot sw-bluejean" title="Blue Jean"></div>
-      <div class="swatch-dot sw-ivory oos" title="Ivory — out of stock"></div>
-      <div class="swatch-dot sw-bay" title="Bay"></div>
-    </div>
-    <p class="oos-note">Ivory currently out of stock in this style.</p>
+        <span class="label">Design</span>
+        <div class="dgrid">
+          <div class="mt sel"><div class="ph"><i></i></div><span class="coll">Sea Isle</span><span class="dname">Water Tower</span></div>
+          <div class="mt"><div class="ph"><i></i></div><span class="coll">Sea Isle</span><span class="dname">Iconic Boat</span></div>
+          <div class="mt"><div class="ph"><i></i></div><span class="coll">Sea Isle</span><span class="dname">Sea Isle Wave</span></div>
+          <div class="mt"><div class="ph"><i></i></div><span class="coll">Sea Isle</span><span class="dname">Nautical Map</span></div>
+        </div>
+        <div class="closebar"><button class="btn2">Close</button></div>
 
-    <span class="field-label" style="margin-top:20px; display:block;">Size</span>
-    <div class="sizes">
-      <div class="size">S</div>
-      <div class="size selected">M</div>
-      <div class="size">L</div>
-      <div class="size">XL</div>
-    </div>
-
-    <button class="btn-primary">Add to Bag</button>
-
-    <p class="desc">A water tower on the skyline means you're close. This one's Sea Isle's — stitched onto a heavyweight crewneck built to soften with every wash, not wear out.</p>
-
-    <div class="section">
-      <h2>The Garment</h2>
-      <p>Comfort Colors garment-dyed crewneck sweatshirt. Soft, broken-in feel from the first wear, generous fit. Fabric weight and care detail pending final spec sheet.</p>
-    </div>
-    <div class="section">
-      <h2>The Embroidery</h2>
-      <p>Water Tower — one motif from the Sea Isle collection. Stitched in navy thread, part of the "PLACE → STORY → MOTIF → OBJECT" line: a specific landmark, remembered.</p>
+        <span class="label">Garment Type</span>
+        <div class="gopts" style="color:#45607A">
+          <div class="go"><svg><use href="#g-tee"/></svg><span class="gn">Tee</span><span class="gp">$32</span></div>
+          <div class="go"><svg><use href="#g-ls"/></svg><span class="gn">Long Sleeve Tee</span><span class="gp">$38</span></div>
+          <div class="go sel"><svg><use href="#g-crew"/></svg><span class="gn">Crewneck</span><span class="gp">$48</span></div>
+        </div>
+        <span class="label">Color</span>
+        <div class="swatches">
+          <div class="sw" style="background:#5B5652"></div><div class="sw sel" style="background:#45607A"></div>
+          <div class="sw oos" style="background:#EFE9D8"></div><div class="sw" style="background:#7F8F8A"></div>
+        </div>
+      </div>
     </div>
   </div>
+
+  <!-- C: design chosen, nothing else yet -->
+  <div class="col">
+    <p class="cap"><b>C · Design chosen, no garment yet.</b> The design's own photo is the hero (no empty box). Caricatures sit untinted until a color is picked; Color, Size appear after a garment is chosen.</p>
+    <div class="frame">
+      <div class="nav"><span>← Back to Collection</span><span>Bag</span></div>
+      <div class="hero"><div class="patch">Water<br>Tower</div><span class="tag">Photo 1 of 4 · garment preview appears once a garment and color are chosen</span><span class="dots"><i class="on"></i><i></i><i></i><i></i></span></div>
+      <div class="content">
+        <h1>Water Tower</h1>
+        <p class="price"></p>
+
+        <span class="label">Design</span>
+        <div class="dsum">
+          <div class="thumb"><i></i></div>
+          <div class="txt"><span class="coll">Sea Isle</span><span class="dname">Water Tower</span></div>
+          <button class="btn2">Change</button>
+        </div>
+
+        <p class="prompt">Choose a garment for this piece.</p>
+        <span class="label">Garment Type</span>
+        <div class="gopts" style="color:#E3DDCE">
+          <div class="go"><svg><use href="#g-tee"/></svg><span class="gn">Tee</span><span class="gp">$32</span></div>
+          <div class="go"><svg><use href="#g-ls"/></svg><span class="gn">Long Sleeve Tee</span><span class="gp">$38</span></div>
+          <div class="go"><svg><use href="#g-crew"/></svg><span class="gn">Crewneck</span><span class="gp">$48</span></div>
+        </div>
+
+        <button class="btn1" disabled>Add to Bag</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 </body>
 </html>

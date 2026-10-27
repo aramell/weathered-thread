@@ -2,7 +2,7 @@
 name: Weathered Thread
 description: Coastal heritage embroidery brand — quiet, tactile, place-led storytelling for a custom storefront that hands off to Etsy only to pay.
 status: final
-updated: 2026-09-21
+updated: 2026-10-27
 colors:
   sailcloth: '#EFEAE0'
   wet-ink: '#2B2A26'
@@ -10,6 +10,7 @@ colors:
   marsh-sage: '#7C8567'
   antique-brass: '#A8823C'
   paper-raised: '#F7F4EC'
+  garment-blank: '#E3DDCE'
   line: '#D9D2C2'
 typography:
   display-lg:
@@ -87,6 +88,18 @@ components:
     border-selected: '{colors.antique-brass}'
     label: '{typography.caption-mono}'
     radius: '{rounded.DEFAULT}'
+  garment-option:
+    surface: '{colors.paper-raised}'
+    border-selected: '{colors.wet-ink}'
+    label: '{typography.body-sm}'
+    price: '{typography.price-mono}'
+    radius: '{rounded.DEFAULT}'
+  design-summary:
+    surface: '{colors.paper-raised}'
+    collection: '{typography.caption-mono}'
+    name: '{typography.body-sm}'
+    action: '{components.button-secondary}'
+    radius: '{rounded.DEFAULT}'
   garment-swatch:
     shape: '{rounded.full}'
     border: '{colors.line}'
@@ -130,6 +143,7 @@ Five brand colors, two supporting tones, transcribed exactly from `imports/websi
 - **Antique Brass (`{colors.antique-brass}`)** — the one flourish. Small, premium touches only: a rule, a selected-state border on a motif tile, a tiny highlight. Never a background fill of any size, never the default button color. Its value comes from scarcity.
 - **Paper Raised (`{colors.paper-raised}`)** — supporting tone for cards and raised surfaces (product cards, motif tiles) sitting a half-step above Sailcloth. Not a headline brand color — a construction tone.
 - **Line (`{colors.line}`)** — supporting tone for hairline borders and dividers. Lowest-contrast separator that still reads.
+- **Garment Blank (`{colors.garment-blank}`)** — a construction tone added 2026-10-27, not from the brand PRD: the untinted `garment-option` caricature fill, one step darker than Paper Raised so it still reads on a Paper Raised card.
 
 ## Typography
 
@@ -158,13 +172,15 @@ Small, restrained radii (`{rounded.sm}` 2px, `{rounded.DEFAULT}` 4px, `{rounded.
 
 ## Components
 
-Visual reference: [`mockups/key-product.html`](mockups/key-product.html) (button-primary, garment-swatch, motif-tile selected state, product page in full), [`mockups/key-collection-story.html`](mockups/key-collection-story.html) (collection-story-block, motif-tile gallery), [`mockups/key-home.html`](mockups/key-home.html) (nav-header, product-card, collection-story-block on Home). Mocks illustrate; this table and `EXPERIENCE.md.Component Patterns` are the contract — spines win on conflict.
+Visual reference: [`mockups/key-product.html`](mockups/key-product.html) (button-primary, garment-option, design-summary, garment-swatch, motif-tile selected state, product page in full), [`mockups/key-collection-story.html`](mockups/key-collection-story.html) (collection-story-block, motif-tile gallery), [`mockups/key-home.html`](mockups/key-home.html) (nav-header, product-card, collection-story-block on Home). Mocks illustrate; this table and `EXPERIENCE.md.Component Patterns` are the contract — spines win on conflict.
 
 - **`button-primary`** — Deep Harbor fill, Sailcloth label text in `{typography.label-mono}`, `{rounded.sm}` corners. Used once per screen for the one primary action (Add to Bag, Shop the Collection). Never Antique Brass as a fill.
-- **`button-secondary`** — transparent with a Wet Ink border and text. Used for secondary actions (View Details, Back to Collection).
-- **`motif-tile`** — the embroidery-design picker unit. Paper Raised surface, `{typography.caption-mono}` caption naming the motif (e.g. "Water Tower"), `{rounded.DEFAULT}` corners. Selected state: a thin Antique Brass border — the system's one flourish, spent on the moment a customer commits to a design.
+- **`button-secondary`** — transparent with a Wet Ink border and text. Used for secondary actions (View Details, Back to Collection, Change, Close, See all designs).
+- **`motif-tile`** — the embroidery-design picker unit. Paper Raised surface, a `{typography.caption-mono}` collection label (e.g. "Sea Isle") above the design name (e.g. "Water Tower"), `{rounded.DEFAULT}` corners. Selected state: a thin Antique Brass border — the system's one flourish, spent on the moment a customer commits to a design.
+- **`garment-option`** — one garment type in the picker: a hand-drawn caricature (Tee, Long Sleeve Tee, Crewneck) above its name and `{typography.price-mono}` price, on a Paper Raised card. Caricature is a loose, slightly imperfect line drawing with a Wet Ink outline and soft ribbing and hem details, filled with the selected garment color (`{colors.garment-blank}` before a color is chosen). Selected state: 2px Wet Ink border. Replaces blank-garment photography.
+- **`design-summary`** — the collapsed design row on the Product page: small thumbnail, collection label in `{typography.caption-mono}`, design name, and a `button-secondary` "Change". Paper Raised surface, `{rounded.DEFAULT}` corners.
 - **`garment-swatch`** — small circular color swatch (`{rounded.full}`) for garment color selection (Pepper / Blue Jean / Ivory / Bay). Line-colored border at rest, Wet Ink border when selected.
-- **`product-card`** — used in grid contexts (Shop, search results). Paper Raised surface, `{typography.body}` title, `{typography.price-mono}` price, `{rounded.DEFAULT}` corners.
+- **`product-card`** — used in grid contexts (Home and Shop design tiles, search results). Paper Raised surface, the design's photo, a `{typography.caption-mono}` collection label, `{typography.body}` title, `{typography.price-mono}` price, `{rounded.DEFAULT}` corners.
 - **`collection-story-block`** — the PLACE → STORY moment (Sea Isle feature). Deep Harbor surface, Sailcloth text, `{typography.display-lg}` heading. This is the one place Deep Harbor covers a large area by design.
 - **`nav-header`** — Sailcloth surface, Wet Ink text, `{typography.label-mono}` for SHOP / COLLECTIONS / ABOUT plus search and bag icons. Stays quiet — no color fill, no shadow, a `{colors.line}` hairline at most on scroll.
 
@@ -179,4 +195,4 @@ Visual reference: [`mockups/key-product.html`](mockups/key-product.html) (button
 | Let Deep Harbor cover a full section (hero, story block, footer) | Let Deep Harbor read as "navy" — watch saturation and pairing |
 | Treat garment quality as part of the story (fabric, weight, fit language) | Describe pieces as merely "embroidered shirts" |
 | Keep motion and layout quiet, print-like | Add gradients, hero animations, popups, or effects "because a template offers them" |
-| Show real, tactile photography — actual garments, actual stitching, natural light | Use generic stock imagery to fill a section |
+| Show real, tactile photography of the designs and stitching, in natural light; draw garment types as caricatures, not blank-garment photos | Use generic stock imagery to fill a section, or photograph a blank garment as a stand-in for a choice (the garment preview slide is the one place a blank garment photo appears, under the design) |
