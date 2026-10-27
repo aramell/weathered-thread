@@ -7,7 +7,7 @@ import { describe, it } from "node:test";
 
 import type { CatalogEntry } from "@/content/catalog/types";
 
-import { buildShop } from "./shop";
+import { buildMotifShops, buildShop } from "./shop";
 import { derivePicker, getColor, getGarmentType, priceLabel } from "./shop-types";
 
 type Variation = CatalogEntry["variations"][number];
@@ -101,6 +101,24 @@ describe("buildShop", () => {
     assert.ok(color.swatchColor);
     const json = JSON.stringify(shop);
     assert.ok(!json.includes("etsy.com") && !json.includes("listingId"));
+  });
+});
+
+describe("buildMotifShops", () => {
+  it("each design keeps its own prices and stock instead of the pooled lowest", () => {
+    const shops = buildMotifShops([
+      entry("sea-isle", [v(1, "Heavyweight Tee", "Bay", "S", 3600, 3), v(2, "Heavyweight Tee", "Bay", "M", 3600, 0)]),
+      entry("logo", [v(3, "Heavyweight Tee", "Bay", "S", 3200, 0), v(4, "Heavyweight Tee", "Bay", "M", 3200, 4)]),
+    ]);
+    assert.deepEqual(Object.keys(shops), ["sea-isle", "logo"]);
+    const [seaIsle, logo] = ["sea-isle", "logo"].map((slug) => shops[slug].garmentTypes[0].colors[0].sizes);
+    assert.deepEqual(seaIsle.map((s) => [s.name, s.inStock, s.priceCents]), [["S", true, 3600], ["M", false, null]]);
+    assert.deepEqual(logo.map((s) => [s.name, s.inStock, s.priceCents]), [["S", false, null], ["M", true, 3200]]);
+  });
+
+  it("an inactive design gets an empty shop rather than borrowing another's", () => {
+    const shops = buildMotifShops([entry("gone", base, { state: "sold_out" })]);
+    assert.deepEqual(shops.gone.garmentTypes, []);
   });
 });
 

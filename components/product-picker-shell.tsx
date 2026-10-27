@@ -18,6 +18,8 @@ type ProductPickerSeed =
 type ProductPickerShellProps = {
   /** Url-free Shop model built on the server from the synced catalog (NFR8). */
   shop: Shop;
+  /** Each design's own Shop (its prices and stock), keyed by motif slug; used once a design is chosen. */
+  motifShops: Record<string, Shop>;
   /** Url-free motifs built on the server from the catalog's authored content. */
   motifs: Motif[];
   seed: ProductPickerSeed;
@@ -41,6 +43,7 @@ type ProductPickerShellProps = {
  */
 export default function ProductPickerShell({
   shop,
+  motifShops,
   motifs,
   seed,
   backHref,
@@ -57,9 +60,12 @@ export default function ProductPickerShell({
     seed.kind === "motif" ? seed.motifSlug : null,
   );
 
-  const { garmentTypes } = shop;
   const motif = motifs.find((m) => m.slug === motifSlug);
-  const { garmentType, colorway, size, priceCents, isAddToBagEnabled } = derivePicker(shop, {
+  // The pooled shop only serves the garment-first entry before a design is chosen; from then on
+  // price and stock are the design's own.
+  const activeShop = (motif && motifShops[motif.slug]) || shop;
+  const { garmentTypes } = activeShop;
+  const { garmentType, colorway, size, priceCents, isAddToBagEnabled } = derivePicker(activeShop, {
     garmentTypeSlug,
     colorSlug,
     sizeName,

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import ProductPickerShell from "@/components/product-picker-shell";
 import { getCollection } from "@/lib/collections";
 import { getMotif, getMotifs } from "@/lib/motifs";
-import { getShop } from "@/lib/shop";
+import { getMotifShops, getShop } from "@/lib/shop";
 
 /**
  * Product-surface entry point, motif-first (Story 3.2 AC2) — the
@@ -47,6 +47,7 @@ export default async function MotifGarmentPage({
   return (
     <ProductPickerShell
       shop={getShop()}
+      motifShops={getMotifShops()}
       motifs={getMotifs()}
       seed={{ kind: "motif", motifSlug: motif.slug }}
       backHref={`/collections/${collection.slug}`}

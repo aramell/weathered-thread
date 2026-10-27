@@ -95,4 +95,13 @@ export function buildShop(listings: readonly CatalogEntry[]): Shop {
   return { garmentTypes };
 }
 
+/**
+ * One Shop per design, keyed by catalog slug, so a chosen design shows its own prices and
+ * stock (the merged `getShop()` pools every listing, which is wrong once a design is picked).
+ */
+export function buildMotifShops(listings: readonly CatalogEntry[]): Record<string, Shop> {
+  return Object.fromEntries(listings.map((listing) => [listing.slug, buildShop([listing])]));
+}
+
 export const getShop = (): Shop => buildShop(getListings());
+export const getMotifShops = (): Record<string, Shop> => buildMotifShops(getListings());
