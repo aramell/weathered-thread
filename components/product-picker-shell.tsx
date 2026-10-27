@@ -120,6 +120,7 @@ export default function ProductPickerShell({
   const colorHeadingId = "color-heading";
   const sizeHeadingId = "size-heading";
   const motifHeadingId = "motif-heading";
+  const photosHeadingId = "photos-heading";
   const addToBagStatusId = "add-to-bag-status";
   const descriptionHeadingId = "description-heading";
   const garmentDetailHeadingId = "garment-detail-heading";
@@ -166,6 +167,32 @@ export default function ProductPickerShell({
                 {motif.name} on {colorway.name} {garmentType?.name} — placeholder mockup, real
                 photography pending.
               </p>
+            )}
+
+            {motif && motif.images.length > 0 && (
+              <div className="mb-5">
+                <p id={photosHeadingId} className="mb-2 font-mono text-label-mono uppercase text-antique-brass">
+                  {motif.name} photos
+                </p>
+                <ul
+                  aria-labelledby={photosHeadingId}
+                  className="-mx-gutter-mobile flex snap-x gap-3 overflow-x-auto px-gutter-mobile pb-2 md:mx-0 md:px-0"
+                >
+                  {motif.images.map((image, index) => (
+                    <li key={image.url} className="w-40 shrink-0 snap-start md:w-32">
+                      <div className="relative aspect-square overflow-hidden rounded bg-paper-raised">
+                        <Image
+                          src={image.url}
+                          alt={image.alt || `${motif.name} — photo ${index + 1}`}
+                          fill
+                          sizes="160px"
+                          className="object-cover"
+                        />
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )}
 
             {garmentType && (
@@ -238,7 +265,7 @@ export default function ProductPickerShell({
                         aria-pressed={selected}
                         className="block w-full text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-antique-brass"
                       >
-                        <MotifTile name={m.name} selected={selected} />
+                        <MotifTile name={m.name} image={m.images[0]?.url} selected={selected} />
                       </button>
                     </div>
                   );

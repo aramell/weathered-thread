@@ -64,6 +64,7 @@ export default async function CollectionPage({
             <div key={motif.slug} role="listitem">
               <MotifTileLink
                 name={motif.name}
+                image={motif.images[0]?.url}
                 href={`/collections/${collection.slug}/${motif.slug}`}
               />
             </div>

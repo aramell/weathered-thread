@@ -11,7 +11,13 @@ import type { Motif } from "./motif-types";
 export function getMotifs(): Motif[] {
   return getListings()
     .filter((listing) => listing.state === "active")
-    .map(({ slug, motifName, story, collection }) => ({ slug, name: motifName, story, collection }));
+    .map(({ slug, motifName, story, collection, images }) => ({
+      slug,
+      name: motifName,
+      story,
+      collection,
+      images: images.map(({ url, width, height, alt }) => ({ url, width, height, alt })),
+    }));
 }
 
 export const getMotif = (slug: string): Motif | undefined => getMotifs().find((motif) => motif.slug === slug);

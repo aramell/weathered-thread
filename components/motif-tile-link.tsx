@@ -7,6 +7,7 @@ import MotifTile from "@/components/motif-tile";
 type MotifTileLinkProps = {
   name: string;
   href: string;
+  image?: string;
 };
 
 /**
@@ -21,7 +22,7 @@ type MotifTileLinkProps = {
  * Collection Story) gains interactivity. Behavior unchanged from before
  * Story 3.3 — only the border's ownership moved into `motif-tile`.
  */
-export default function MotifTileLink({ name, href }: MotifTileLinkProps) {
+export default function MotifTileLink({ name, href, image }: MotifTileLinkProps) {
   const [selected, setSelected] = useState(false);
 
   return (
@@ -36,7 +37,7 @@ export default function MotifTileLink({ name, href }: MotifTileLinkProps) {
       aria-current={selected ? "true" : undefined}
       className="block rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-antique-brass"
     >
-      <MotifTile name={name} selected={selected} />
+      <MotifTile name={name} image={image} selected={selected} />
     </Link>
   );
 }
