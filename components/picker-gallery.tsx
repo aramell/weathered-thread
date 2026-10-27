@@ -25,8 +25,21 @@ const buttonClass =
  */
 export default function PickerGallery({ slides, index, onIndexChange, previewAlt, previewCaption }: PickerGalleryProps) {
   const trackRef = useRef<HTMLUListElement>(null);
+  const stripRef = useRef<HTMLUListElement>(null);
   const total = slides.length;
   const active = Math.min(index, total - 1);
+
+  // Keep the active thumbnail visible in the strip without scrolling the page.
+  useEffect(() => {
+    const strip = stripRef.current;
+    const thumb = strip?.children[active] as HTMLElement | undefined;
+    if (!strip || !thumb) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    strip.scrollTo({
+      left: thumb.offsetLeft - (strip.clientWidth - thumb.clientWidth) / 2,
+      behavior: reduce ? "instant" : "smooth",
+    });
+  }, [active, total]);
 
   // Bring the track to the requested slide (instant: it should feel like a photo swap).
   useEffect(() => {
@@ -92,6 +105,25 @@ export default function PickerGallery({ slides, index, onIndexChange, previewAlt
             </button>
           </div>
         </>
+      )}
+      {total > 1 && (
+        <ul ref={stripRef} aria-label="Choose photo" className="relative mt-2 flex gap-2 overflow-x-auto p-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {slides.map((slide, i) => (
+            <li key={`${i}-${slide.kind}-${slide.url}`} className="shrink-0">
+              <button
+                type="button"
+                onClick={() => onIndexChange(i)}
+                aria-label={`Show ${slideLabel(i, total).toLowerCase()}`}
+                aria-current={i === active ? "true" : undefined}
+                className={`relative block h-14 w-14 overflow-hidden rounded bg-paper-raised focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-antique-brass ${
+                  i === active ? "ring-2 ring-wet-ink" : "opacity-70"
+                }`}
+              >
+                <Image src={slide.url} alt="" fill sizes="56px" className="object-cover" />
+              </button>
+            </li>
+          ))}
+        </ul>
       )}
       <p aria-live="polite" className="mt-2 font-mono text-caption-mono text-marsh-sage">
         {slideLabel(active, total)}

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { buildGallerySlides, previewSlideIndex, slideLabel } from "./picker-gallery";
+import { buildGallerySlides, defaultPhotoIndex, previewSlideIndex, slideLabel } from "./picker-gallery";
 
 const images = [
   { url: "a.jpg", alt: "A" },
@@ -33,6 +33,18 @@ describe("previewSlideIndex", () => {
 
   it("is null without a preview, so the index is left alone", () => {
     assert.equal(previewSlideIndex(4, false), null);
+  });
+});
+
+describe("defaultPhotoIndex", () => {
+  it("opens on the second (zoomed-in) photo when there are several", () => {
+    assert.equal(defaultPhotoIndex(2), 1);
+    assert.equal(defaultPhotoIndex(6), 1);
+  });
+
+  it("opens on the first photo when there is one or none", () => {
+    assert.equal(defaultPhotoIndex(1), 0);
+    assert.equal(defaultPhotoIndex(0), 0);
   });
 });
 

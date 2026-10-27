@@ -20,6 +20,11 @@ export function previewSlideIndex(imageCount: number, hasPreview: boolean): numb
   return hasPreview ? imageCount : null;
 }
 
+/** Slide a chosen design opens on: Etsy's second photo is the zoomed-in design; else the only photo. */
+export function defaultPhotoIndex(imageCount: number): number {
+  return imageCount > 1 ? 1 : 0;
+}
+
 /** Announced position, 0-based `index`: "Photo 1 of 5". */
 export function slideLabel(index: number, total: number): string {
   return `Photo ${index + 1} of ${total}`;

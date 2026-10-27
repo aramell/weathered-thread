@@ -11,7 +11,7 @@ import PickerGallery from "@/components/picker-gallery";
 import { getCollection } from "@/lib/collections";
 import { garmentArtKind } from "@/lib/garment-art";
 import type { Motif } from "@/lib/motif-types";
-import { buildGallerySlides, previewSlideIndex } from "@/lib/picker-gallery";
+import { buildGallerySlides, defaultPhotoIndex, previewSlideIndex } from "@/lib/picker-gallery";
 import { derivePicker, getColor, priceLabel, type Shop } from "@/lib/shop-types";
 
 type ProductPickerSeed =
@@ -76,7 +76,9 @@ export default function ProductPickerShell({
     moveFocusOnToggle.current = false;
     (designOpen ? closeButtonRef.current : changeButtonRef.current)?.focus();
   }, [designOpen]);
-  const [galleryIndex, setGalleryIndex] = useState(0);
+  const [galleryIndex, setGalleryIndex] = useState(() =>
+    defaultPhotoIndex(motifs.find((m) => m.slug === motifSlug)?.images.length ?? 0),
+  );
 
   const motif = motifs.find((m) => m.slug === motifSlug);
   // The pooled shop only serves the garment-first entry before a design is chosen; from then on
@@ -250,7 +252,7 @@ export default function ProductPickerShell({
                             type="button"
                             onClick={() => {
                               setMotifSlug(m.slug);
-                              setGalleryIndex(0);
+                              setGalleryIndex(defaultPhotoIndex(m.images.length));
                               toggleDesign(false);
                             }}
                             aria-pressed={selected}
