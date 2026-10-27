@@ -5,6 +5,13 @@
  */
 import { formatPrice } from "./format-price";
 
+/** The url segment for a style or color name: "Blue Jean" -> "blue-jean". */
+export const slugify = (name: string) =>
+  name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
 export type ShopSize = {
   name: string;
   inStock: boolean;

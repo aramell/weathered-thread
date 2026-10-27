@@ -3,6 +3,7 @@ import { describe, it } from "node:test";
 
 import { GET } from "@/app/go/[slug]/route";
 import { getListings } from "./catalog";
+import { listingUrlWithSelection } from "./checkout";
 
 const ctx = (slug: string) => ({ params: Promise.resolve({ slug }) }) as Parameters<typeof GET>[1];
 const call = (slug: string, query = "") => GET(new Request(`https://shop.weatheredthread.com/go/${slug}${query}`), ctx(slug));
@@ -17,6 +18,27 @@ describe("shop forward route", () => {
     assert.equal(response.status, 307);
     assert.equal(response.headers.get("location"), active.url);
     assert.equal(response.headers.get("cache-control"), "no-store");
+  });
+
+  it("preselects the pick on Etsy when the variations carry ids", async () => {
+    assert.ok(active, "the catalog has an active listing");
+    const variations = active.variations.map((variation) =>
+      variation.options.Style === "Heavyweight Tee" && variation.options["Primary color"] === "Ivory" && variation.options.Size === "M"
+        ? { ...variation, optionIds: [{ propertyId: 1, valueId: 11 }, { propertyId: 2, valueId: 22 }, { propertyId: 3, valueId: 33 }] }
+        : variation,
+    );
+    assert.equal(
+      listingUrlWithSelection(active.url, variations, { style: "heavyweight-tee", color: "ivory", size: "M" }),
+      `${active.url}?variation0=11&variation1=22&variation2=33`,
+    );
+  });
+
+  it("falls back to the bare listing when the pick has no ids or matches nothing", () => {
+    assert.ok(active, "the catalog has an active listing");
+    const pick = { style: "heavyweight-tee", color: "ivory", size: "M" };
+    const bare = active.variations.map((variation) => ({ ...variation, optionIds: undefined }));
+    assert.equal(listingUrlWithSelection(active.url, bare, pick), active.url);
+    assert.equal(listingUrlWithSelection(active.url, active.variations, { ...pick, size: "XXL" }), active.url);
   });
 
   it("sends an unknown design back to the Handoff with the retry flag", async () => {

@@ -11,15 +11,9 @@ import type { CatalogEntry } from "@/content/catalog/types";
 import { getListings } from "./catalog";
 import { getLiveListings } from "./live-catalog";
 import { COLOR_ORDER, colorPresentation, garmentBlurb } from "./shop-presentation";
-import type { Shop, ShopColor, ShopGarmentType, ShopSize } from "./shop-types";
+import { slugify, type Shop, type ShopColor, type ShopGarmentType, type ShopSize } from "./shop-types";
 
 const SIZE_ORDER = ["XS", "S", "M", "L", "XL", "2XL", "3XL"];
-
-const slugify = (name: string) =>
-  name
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
 
 type Cell = { inStock: boolean; priceCents: number | null };
 

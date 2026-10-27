@@ -4,7 +4,8 @@
  * forwards to the design's Etsy listing. Url-free like `lib/shop-types.ts`: the Etsy listing
  * url is resolved server-side by `app/go/[slug]/route.ts` and never appears in markup (NFR8).
  */
-import { derivePicker, type Shop } from "./shop-types";
+import type { SyncedVariation } from "./etsy-inventory";
+import { derivePicker, slugify, type Shop } from "./shop-types";
 
 /** Where the forward is served; the shop host points at this same app. */
 export const DEFAULT_SHOP_ORIGIN = "https://shop.weatheredthread.com";
@@ -77,4 +78,27 @@ export function resolveSelection(shop: Shop | undefined, selection: CheckoutSele
   });
   if (!size || priceCents === null) return { ok: false, reason: "sold-out" };
   return { ok: true, garment: garmentType.name, color: colorway.name, size: size.name, priceCents };
+}
+
+/**
+ * The Etsy listing url with the visitor's pick preselected (`variation0=<value id>&...`), so
+ * they don't choose it again on Etsy. Falls back to the bare url when the pick doesn't match
+ * a variation or the variations carry no ids (synced before ids were kept).
+ */
+export function listingUrlWithSelection(
+  listingUrl: string,
+  variations: readonly SyncedVariation[],
+  selection: CheckoutSelection,
+): string {
+  const match = variations.find(
+    ({ options }) =>
+      slugify(options.Style ?? "") === selection.style &&
+      slugify(options["Primary color"] ?? "") === selection.color &&
+      options.Size === selection.size,
+  );
+  if (!match?.optionIds) return listingUrl;
+
+  const url = new URL(listingUrl);
+  match.optionIds.forEach(({ valueId }, index) => url.searchParams.set(`variation${index}`, String(valueId)));
+  return url.toString();
 }

@@ -12,6 +12,12 @@ export type SyncedVariation = {
   productId: number;
   /** Etsy property name -> chosen value, e.g. `{ "Size": "M", "Primary color": "Sage" }`. */
   options: Readonly<Record<string, string>>;
+  /**
+   * Etsy's property and value ids for `options`, in the listing's variation order: entry N is
+   * what the listing url's `variationN` parameter takes. Absent in files synced before ids were
+   * kept, and when a value has no single id.
+   */
+  optionIds?: readonly { propertyId: number; valueId: number }[];
   priceCents: number;
   /** 0 when the offering is disabled. */
   quantity: number;
@@ -69,6 +75,8 @@ export function parseInventory(body: unknown, what: string): SyncedVariation[] {
     if (!offering) continue;
 
     const options: Record<string, string> = {};
+    const optionIds: { propertyId: number; valueId: number }[] = [];
+    let idsComplete = true;
     for (const rawValue of Array.isArray(product.property_values) ? product.property_values : []) {
       const property = expectRecord(rawValue, `${what} product ${productId} property`);
       const values = Array.isArray(property.values) ? property.values.filter((v): v is string => typeof v === "string") : [];
@@ -77,10 +85,18 @@ export function parseInventory(body: unknown, what: string): SyncedVariation[] {
           ? property.property_name
           : `property ${String(property.property_id)}`;
       options[name] = values.join(", ");
+
+      const valueIds = Array.isArray(property.value_ids) ? property.value_ids : [];
+      if (Number.isInteger(property.property_id) && valueIds.length === 1 && Number.isInteger(valueIds[0])) {
+        optionIds.push({ propertyId: property.property_id as number, valueId: valueIds[0] as number });
+      } else {
+        idsComplete = false;
+      }
     }
     variations.push({
       productId,
       options,
+      ...(idsComplete && optionIds.length > 0 ? { optionIds } : {}),
       priceCents: moneyToCents(offering.price, `${what} product ${productId}`),
       quantity: offering.is_enabled === false ? 0 : expectCount(offering.quantity, `${what} product ${productId} quantity`),
     });

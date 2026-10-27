@@ -219,6 +219,35 @@ describe("parseInventory / livePrice", () => {
     assert.equal(parsed[0].quantity, 0);
   });
 
+  it("keeps Etsy's property and value ids in variation order, or none if any is missing", () => {
+    const offering = [{ quantity: 1, price: { amount: 100, divisor: 100, currency_code: "USD" } }];
+    const parsed = parseInventory(
+      {
+        products: [
+          {
+            product_id: 1,
+            property_values: [
+              { property_id: 100, property_name: "Style", values: ["Tee"], value_ids: [11] },
+              { property_id: 200, property_name: "Size", values: ["M"], value_ids: [22] },
+            ],
+            offerings: offering,
+          },
+          {
+            product_id: 2,
+            property_values: [{ property_id: 100, property_name: "Style", values: ["Tee"], value_ids: [] }],
+            offerings: offering,
+          },
+        ],
+      },
+      "x",
+    );
+    assert.deepEqual(parsed[0].optionIds, [
+      { propertyId: 100, valueId: 11 },
+      { propertyId: 200, valueId: 22 },
+    ]);
+    assert.equal(parsed[1].optionIds, undefined);
+  });
+
   it("prices the listing at its lowest in-stock variation, else the lowest overall", () => {
     const v = (priceCents: number, quantity: number) => ({ productId: priceCents, options: {}, priceCents, quantity });
     assert.equal(livePrice([v(3000, 0), v(3600, 2), v(4000, 1)], 1), 3600);
