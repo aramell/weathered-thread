@@ -60,6 +60,8 @@ export type SyncedListing = {
   state: string;
   priceCents: number;
   quantity: number;
+  /** Unix seconds Etsy created the listing; orders the site like Etsy's "Most Recent". */
+  createdTimestamp: number;
   variations: readonly SyncedVariation[];
   images: readonly SyncedImage[];
 };
@@ -334,6 +336,7 @@ async function fetchListing(
     state: expectString(listing.state, `${listingWhat} state`),
     priceCents: moneyToCents(listing.price, listingWhat),
     quantity: expectCount(listing.quantity, `${listingWhat} quantity`),
+    createdTimestamp: expectCount(listing.created_timestamp, `${listingWhat} created_timestamp`),
     variations: await fetchVariations(deps, apiKey, accessToken, slug, listingId),
     images: await fetchImages(deps, apiKey, slug, listingId),
   };

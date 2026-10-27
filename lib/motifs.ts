@@ -8,12 +8,15 @@ import "server-only";
 import { getListings } from "./catalog";
 import type { Motif } from "./motif-types";
 
+/** Newest first, like Etsy's "Most Recent" (ties fall back to slug so the order is stable). */
 export function getMotifs(): Motif[] {
   return getListings()
     .filter((listing) => listing.state === "active")
-    .map(({ slug, motifName, story, collection, images }) => ({
+    .sort((a, b) => b.createdTimestamp - a.createdTimestamp || a.slug.localeCompare(b.slug))
+    .map(({ slug, priceCents, motifName, story, collection, images }) => ({
       slug,
       name: motifName,
+      priceCents,
       story,
       collection,
       images: images.map(({ url, width, height, alt }) => ({ url, width, height, alt })),

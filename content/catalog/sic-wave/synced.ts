@@ -8,6 +8,7 @@ export const synced = {
   "state": "active",
   "priceCents": 3600,
   "quantity": 195,
+  "createdTimestamp": 1792977197,
   "variations": [
     {
       "productId": 35133436688,

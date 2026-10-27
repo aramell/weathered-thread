@@ -15,6 +15,8 @@ export type Motif = {
   /** The catalog slug, also the `/collections/[slug]/[motif]` route segment. */
   slug: string;
   name: string;
+  /** Listing price in integer cents, as Etsy displays it. */
+  priceCents: number;
   /** Story copy from `authored.ts`, shown above THE GARMENT. */
   story: string;
   /** Collection slug, e.g. "sea-isle". */

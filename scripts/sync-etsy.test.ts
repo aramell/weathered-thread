@@ -23,6 +23,7 @@ function listingBody(id: number, overrides: Record<string, unknown> = {}) {
     state: "active",
     price: { amount: 3200, divisor: 100, currency_code: "USD" },
     quantity: 12,
+    created_timestamp: 1793060986,
     ...overrides,
   };
 }
@@ -186,6 +187,7 @@ describe("happy path", () => {
     assert.equal(synced.url, "https://www.etsy.com/listing/111/pickleball");
     assert.equal(synced.priceCents, 3200);
     assert.equal(synced.quantity, 12);
+    assert.equal(synced.createdTimestamp, 1793060986);
     assert.equal(synced.state, "active");
     assert.deepEqual(synced.variations, [
       { productId: 1, options: { "Primary color": "Sage", Size: "S" }, priceCents: 3200, quantity: 5 },
@@ -415,7 +417,7 @@ describe("warning rows still write", () => {
     stubListing(111, { price: { amount: 2500, divisor: 100, currency_code: "USD" } });
     mainFiles.set(
       "content/catalog/pickleball/synced.ts",
-      renderSynced({ listingId: 111, name: "x", url: "https://www.etsy.com/listing/111", state: "active", priceCents: 3200, quantity: 1, variations: [], images: [] }),
+      renderSynced({ listingId: 111, name: "x", url: "https://www.etsy.com/listing/111", state: "active", priceCents: 3200, quantity: 1, createdTimestamp: 1, variations: [], images: [] }),
     );
     await runSync(deps());
     assert.equal(warnings.length, 1);
@@ -428,7 +430,7 @@ describe("warning rows still write", () => {
     stubListing(111, { price: { amount: 3600, divisor: 100, currency_code: "USD" } });
     mainFiles.set(
       "content/catalog/pickleball/synced.ts",
-      renderSynced({ listingId: 111, name: "x", url: "https://www.etsy.com/listing/111", state: "active", priceCents: 3200, quantity: 1, variations: [], images: [] }),
+      renderSynced({ listingId: 111, name: "x", url: "https://www.etsy.com/listing/111", state: "active", priceCents: 3200, quantity: 1, createdTimestamp: 1, variations: [], images: [] }),
     );
     await runSync(deps());
     assert.deepEqual(warnings, []);

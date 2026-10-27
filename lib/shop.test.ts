@@ -29,6 +29,7 @@ const entry = (slug: string, variations: Variation[], over: Partial<CatalogEntry
   state: "active",
   priceCents: 3200,
   quantity: 1,
+  createdTimestamp: 1,
   variations,
   images: [],
   motifName: "Logo",
