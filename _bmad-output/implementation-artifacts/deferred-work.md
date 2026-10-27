@@ -182,3 +182,7 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-3-1-shop-on-synced-catalog.md`
   summary: Every garment style shows the same four colorway photos (`/images/garments/{color}-front.jpg`), so the Long Sleeve Tee, tees and crewnecks look identical until real per-style photography exists.
   evidence: Carried over from the placeholder shop data; `lib/shop-presentation.ts` keys photos by color only. Displayed price and stock also ignore the chosen motif until motifs move onto the catalog.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-design-first-picker-caricature-garments.md`
+  summary: Gallery swipe may fight programmatic scrollTo mid-gesture on touch devices.
+  evidence: `components/picker-gallery.tsx` onScroll updates the index and the effect then scrollTo's the rounded slide; unverified without a device. Unverified severity: medium. Try swiping slowly on a phone-width viewport to settle it.

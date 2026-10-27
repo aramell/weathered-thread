@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ButtonSecondary from "@/components/button-secondary";
+import GarmentArt from "@/components/garment-art";
 import ProductCard from "@/components/product-card";
+import { garmentArtKind } from "@/lib/garment-art";
 import { getShop } from "@/lib/shop";
 import { getGarmentType, priceLabel } from "@/lib/shop-types";
 
@@ -65,7 +67,7 @@ export default async function GarmentTypePage({
                   <ProductCard
                     name={colorway.name}
                     price={priceLabel(colorway.priceCents)}
-                    image={colorway.frontImage ?? undefined}
+                    media={<GarmentArt kind={garmentArtKind(garmentType.slug)} tint={colorway.swatchColor} className="h-full w-full" />}
                   />
                 </Link>
               ) : (
@@ -74,7 +76,7 @@ export default async function GarmentTypePage({
                   <ProductCard
                     name={`${colorway.name} — out of stock`}
                     price={priceLabel(colorway.priceCents)}
-                    image={colorway.frontImage ?? undefined}
+                    media={<GarmentArt kind={garmentArtKind(garmentType.slug)} tint={colorway.swatchColor} className="h-full w-full" />}
                   />
                 </div>
               )}

@@ -9,6 +9,8 @@
   --color-antique-brass: #A8823C;
   --color-paper-raised: #F7F4EC;
   --color-line: #D9D2C2;
+  /* Untinted garment-option caricature fill (DESIGN.md garment-blank). */
+  --color-garment-blank: #E3DDCE;
 
   /* Typefaces — Fraunces carries expressive type, IBM Plex Mono carries
      functional/precise type, Libre Franklin carries paragraph-length body

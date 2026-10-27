@@ -11,7 +11,7 @@
     "auth:etsy": "tsx --env-file-if-exists=.env.local scripts/etsy-auth.ts",
     "test:sync": "tsx --test scripts/sync-etsy.test.ts scripts/etsy-oauth.test.ts",
     "check:catalog": "tsx scripts/check-catalog.ts",
-    "test:catalog": "tsx --conditions react-server --test scripts/check-catalog.test.ts lib/catalog.test.ts lib/shop.test.ts"
+    "test:catalog": "tsx --conditions react-server --test scripts/check-catalog.test.ts lib/catalog.test.ts lib/shop.test.ts lib/garment-art.test.ts lib/picker-gallery.test.ts"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",

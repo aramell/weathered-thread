@@ -1,14 +1,17 @@
 import Link from "next/link";
 import ButtonPrimary from "@/components/button-primary";
+import ButtonSecondary from "@/components/button-secondary";
 import CollectionStoryBlock from "@/components/collection-story-block";
 import EmailSignupForm from "@/components/email-signup-form";
 import ProductCard from "@/components/product-card";
 import { getCollection } from "@/lib/collections";
-import { getShop } from "@/lib/shop";
-import { priceLabel } from "@/lib/shop-types";
+import { formatPrice } from "@/lib/format-price";
+import { getMotifs } from "@/lib/motifs";
 
 export default function Home() {
-  const { garmentTypes } = getShop();
+  // Newest designs first: all of them up to 8, else the newest 6 plus "See all designs".
+  const allMotifs = getMotifs();
+  const motifs = allMotifs.length > 8 ? allMotifs.slice(0, 6) : allMotifs;
   const shopHeadingId = "shop-heading";
 
   return (
@@ -40,28 +43,38 @@ export default function Home() {
         </p>
       </section>
 
-      {/* Shop grid */}
-      <section className="px-gutter-mobile md:px-gutter-desktop">
-        <p
-          id={shopHeadingId}
-          className="mb-4 font-mono text-label-mono uppercase text-marsh-sage"
-        >
-          Shop
-        </p>
-        <div
-          role="list"
-          aria-labelledby={shopHeadingId}
-          className="grid grid-cols-2 gap-4 md:grid-cols-3"
-        >
-          {garmentTypes.map((type) => (
-            <div key={type.slug} role="listitem">
-              <Link href={`/shop/${type.slug}`}>
-                <ProductCard name={type.name} price={priceLabel(type.priceCents)} />
-              </Link>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* Shop: designs, newest first */}
+      {motifs.length > 0 && (
+        <section className="px-gutter-mobile md:px-gutter-desktop">
+          <p
+            id={shopHeadingId}
+            className="mb-4 font-mono text-label-mono uppercase text-marsh-sage"
+          >
+            Shop
+          </p>
+          <div
+            role="list"
+            aria-labelledby={shopHeadingId}
+            className="grid grid-cols-2 gap-4 md:grid-cols-3"
+          >
+            {motifs.map((motif) => (
+              <div key={motif.slug} role="listitem">
+                <Link href={`/collections/${motif.collection}/${motif.slug}`}>
+                  <ProductCard
+                    name={motif.name}
+                    price={formatPrice(motif.priceCents)}
+                    image={motif.images[0]?.url}
+                    collection={getCollection(motif.collection)?.name}
+                  />
+                </Link>
+              </div>
+            ))}
+          </div>
+          <div className="mt-6 flex justify-center">
+            <ButtonSecondary href="/shop">See all designs</ButtonSecondary>
+          </div>
+        </section>
+      )}
 
       {/* Embroidery detail */}
       <section className="mx-auto w-full max-w-md px-gutter-mobile text-center md:px-gutter-desktop">

@@ -1,14 +1,17 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import AddToBagBar from "@/components/add-to-bag-bar";
 import ButtonSecondary from "@/components/button-secondary";
 import GarmentSwatch from "@/components/garment-swatch";
 import MotifTile from "@/components/motif-tile";
-import ProductCard from "@/components/product-card";
+import DesignSummary from "@/components/design-summary";
+import GarmentOption from "@/components/garment-option";
+import PickerGallery from "@/components/picker-gallery";
 import { getCollection } from "@/lib/collections";
+import { garmentArtKind } from "@/lib/garment-art";
 import type { Motif } from "@/lib/motif-types";
+import { buildGallerySlides, previewSlideIndex } from "@/lib/picker-gallery";
 import { derivePicker, getColor, priceLabel, type Shop } from "@/lib/shop-types";
 
 type ProductPickerSeed =
@@ -34,12 +37,11 @@ type ProductPickerShellProps = {
  * both entry stubs (`/shop/[type]/[color]` seeded garment-first,
  * `/collections/[slug]/[motif]` seeded motif-first) so they converge on one
  * identical, interactive Product surface. `garment-swatch`, `motif-tile`,
- * and `add-to-bag-bar` stay presentational — they only read state/setters
- * via props, per Epic 3's Technical Decisions. The garment-type picker
- * reuses `product-card` itself (wrapped for selection/click), matching the
- * Boundaries note to reuse its styling for the motif-first "no garment
- * yet" empty state — and stays visible afterward so both entry paths land
- * on the same always-editable picker.
+ * `garment-option` and `add-to-bag-bar` stay presentational — they only read
+ * state/setters via props. Design-first arrivals collapse the chosen design
+ * to a `design-summary` (Change opens the grid inline, Close collapses it);
+ * garment-first arrivals show the full design grid uncollapsed. The hero is a
+ * user-driven gallery: design photos first, garment preview last.
  */
 export default function ProductPickerShell({
   shop,
@@ -59,6 +61,22 @@ export default function ProductPickerShell({
   const [motifSlug, setMotifSlug] = useState<string | null>(
     seed.kind === "motif" ? seed.motifSlug : null,
   );
+
+  const [designOpen, setDesignOpen] = useState(false);
+  const changeButtonRef = useRef<HTMLButtonElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const moveFocusOnToggle = useRef(false);
+  const toggleDesign = (open: boolean) => {
+    moveFocusOnToggle.current = true;
+    setDesignOpen(open);
+  };
+  // The toggled control unmounts the focused one; move focus to its replacement (not on mount).
+  useEffect(() => {
+    if (!moveFocusOnToggle.current) return;
+    moveFocusOnToggle.current = false;
+    (designOpen ? closeButtonRef.current : changeButtonRef.current)?.focus();
+  }, [designOpen]);
+  const [galleryIndex, setGalleryIndex] = useState(0);
 
   const motif = motifs.find((m) => m.slug === motifSlug);
   // The pooled shop only serves the garment-first entry before a design is chosen; from then on
@@ -81,6 +99,11 @@ export default function ProductPickerShell({
       ? `${garmentType.name} — ${colorway.name}`
       : "Build your piece";
 
+  // Design-first arrivals collapse the chosen design; garment-first ones keep the full grid.
+  const designFirst = seed.kind === "motif";
+  const designCollapsed = designFirst && Boolean(motif) && !designOpen;
+  const collectionName = (slug: string) => getCollection(slug)?.name ?? "Weathered Thread";
+
   const missingGarmentPrompt = !garmentType ? "Choose a garment for this piece." : null;
   const missingColorPrompt = garmentType && !colorway ? "Choose a color for this piece." : null;
   const selectedColorOutOfStockPrompt =
@@ -95,14 +118,29 @@ export default function ProductPickerShell({
 
   const addToBagDisabledReason = isAddToBagEnabled
     ? null
-    : (missingGarmentPrompt ??
-      missingColorPrompt ??
+    : // The garment prompt is shown once, above the garment options, so it is not repeated here.
+      (missingColorPrompt ??
       selectedColorOutOfStockPrompt ??
       missingSizePrompt ??
       missingMotifPrompt);
 
   const outOfStockColorways = garmentType?.colors.filter((c) => !c.inStock) ?? [];
   const outOfStockColorwayNames = outOfStockColorways.map((c) => c.name).join(", ");
+
+  const previewUrl = garmentType && colorway?.frontImage ? colorway.frontImage : null;
+  const slides = buildGallerySlides(
+    (motif?.images ?? []).map((image, i) => ({
+      url: image.url,
+      alt: image.alt || `${motif?.name} — photo ${i + 1}`,
+    })),
+    previewUrl,
+  );
+  const previewAlt = motif
+    ? `${motif.name} motif embroidered on ${colorway?.name} ${garmentType?.name ?? "garment"} — placeholder, real photography pending`
+    : `${garmentType?.name ?? "Garment"} — ${colorway?.name}`;
+  const previewCaption = motif
+    ? `${motif.name} on ${colorway?.name} ${garmentType?.name} — placeholder mockup, real photography pending.`
+    : "placeholder mockup, real photography pending.";
 
   const addToBagRef = useRef<HTMLButtonElement>(null);
   const [stickyVisible, setStickyVisible] = useState(false);
@@ -126,8 +164,8 @@ export default function ProductPickerShell({
   const colorHeadingId = "color-heading";
   const sizeHeadingId = "size-heading";
   const motifHeadingId = "motif-heading";
-  const photosHeadingId = "photos-heading";
   const addToBagStatusId = "add-to-bag-status";
+  const garmentPromptId = "garment-prompt";
   const descriptionHeadingId = "description-heading";
   const garmentDetailHeadingId = "garment-detail-heading";
   const embroideryHeadingId = "embroidery-heading";
@@ -144,65 +182,138 @@ export default function ProductPickerShell({
             instead of scrolling past name/price/type first. */}
         <div className="md:grid md:grid-cols-2 md:items-start md:gap-10">
           <div>
-            <div className="relative mb-3 aspect-square overflow-hidden rounded bg-paper-raised">
-              {colorway?.frontImage ? (
-                <Image
-                  src={colorway.frontImage}
-                  alt={
-                    motif
-                      ? `${motif.name} motif embroidered on ${colorway.name} ${garmentType?.name ?? "garment"} — placeholder, real photography pending`
-                      : `${garmentType?.name ?? "Garment"} — ${colorway.name}`
-                  }
-                  fill
-                  preload
-                  sizes="(max-width: 768px) 100vw, 448px"
-                  className="object-cover"
+            {slides.length > 0 ? (
+              <PickerGallery
+                slides={slides}
+                index={galleryIndex}
+                onIndexChange={setGalleryIndex}
+                previewAlt={previewAlt}
+                previewCaption={previewCaption}
+              />
+            ) : (
+              <div className="flex aspect-square items-center justify-center rounded bg-paper-raised p-6 text-center">
+                <p className="font-mono text-caption-mono text-marsh-sage">
+                  {garmentType
+                    ? "Select a color to preview this design."
+                    : "Select a garment to preview this design."}
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div className="mt-6 md:mt-0">
+            <h1 className="mb-1 font-display text-headline">{heading}</h1>
+            {price && <p className="mb-6 font-mono text-price-mono">{price}</p>}
+
+            <div className="mb-6">
+              {missingMotifPrompt && (
+                <p className="mb-4 font-body text-body">{missingMotifPrompt}</p>
+              )}
+              <p
+                id={motifHeadingId}
+                className="mb-2 font-mono text-label-mono uppercase text-marsh-sage"
+              >
+                Design
+              </p>
+              {designCollapsed && motif ? (
+                <DesignSummary
+                  collection={collectionName(motif.collection)}
+                  name={motif.name}
+                  image={motif.images[0]?.url}
+                  ref={changeButtonRef}
+                  onChange={() => toggleDesign(true)}
                 />
               ) : (
-                <div className="flex h-full items-center justify-center p-6 text-center">
-                  <p className="font-mono text-caption-mono text-marsh-sage">
-                    {garmentType
-                      ? "Select a color to preview this design."
-                      : "Select a garment to preview this design."}
-                  </p>
-                </div>
+                <>
+                  {designFirst && (
+                    <div className="mb-2 flex justify-end">
+                      <button
+                        type="button"
+                        ref={closeButtonRef}
+                        onClick={() => toggleDesign(false)}
+                        className="inline-flex min-h-11 items-center justify-center rounded-sm border border-wet-ink px-4 font-mono text-label-mono uppercase text-wet-ink"
+                      >
+                        Close
+                      </button>
+                    </div>
+                  )}
+                  <div
+                    role="list"
+                    aria-labelledby={motifHeadingId}
+                    className="grid grid-cols-2 gap-4 md:grid-cols-3"
+                  >
+                    {motifs.map((m) => {
+                      const selected = m.slug === motifSlug;
+                      return (
+                        <div key={m.slug} role="listitem">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setMotifSlug(m.slug);
+                              setGalleryIndex(0);
+                              toggleDesign(false);
+                            }}
+                            aria-pressed={selected}
+                            className="block w-full text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-antique-brass"
+                          >
+                            <MotifTile
+                              name={m.name}
+                              image={m.images[0]?.url}
+                              selected={selected}
+                              collection={collectionName(m.collection)}
+                            />
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
               )}
             </div>
-            {motif && colorway && (
-              <p className="mb-5 font-mono text-caption-mono text-marsh-sage">
-                {motif.name} on {colorway.name} {garmentType?.name} — placeholder mockup, real
-                photography pending.
+
+            {missingGarmentPrompt && (
+              <p id={garmentPromptId} className="mb-4 font-body text-body">
+                {missingGarmentPrompt}
               </p>
             )}
 
-            {motif && motif.images.length > 0 && (
-              <div className="mb-5">
-                <p id={photosHeadingId} className="mb-2 font-mono text-label-mono uppercase text-antique-brass">
-                  {motif.name} photos
-                </p>
-                <ul
-                  aria-labelledby={photosHeadingId}
-                  className="-mx-gutter-mobile flex snap-x gap-3 overflow-x-auto px-gutter-mobile pb-2 md:mx-0 md:px-0"
-                >
-                  {motif.images.map((image, index) => (
-                    <li key={image.url} className="w-40 shrink-0 snap-start md:w-32">
-                      <div className="relative aspect-square overflow-hidden rounded bg-paper-raised">
-                        <Image
-                          src={image.url}
-                          alt={image.alt || `${motif.name} — photo ${index + 1}`}
-                          fill
-                          sizes="160px"
-                          className="object-cover"
-                        />
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+            <div className="mb-6">
+              <p
+                id={garmentTypeHeadingId}
+                className="mb-2 font-mono text-label-mono uppercase text-marsh-sage"
+              >
+                Garment Type
+              </p>
+              <div
+                role="list"
+                aria-labelledby={garmentTypeHeadingId}
+                className="grid grid-cols-2 gap-3 md:grid-cols-3"
+              >
+                {garmentTypes.map((type) => {
+                  const selected = type.slug === garmentTypeSlug;
+                  const tint = colorSlug ? getColor(type, colorSlug)?.swatchColor : undefined;
+                  return (
+                    <div key={type.slug} role="listitem">
+                      <GarmentOption
+                        name={type.name}
+                        price={priceLabel(type.priceCents)}
+                        kind={garmentArtKind(type.slug)}
+                        tint={tint}
+                        selected={selected}
+                        onSelect={() => {
+                          setGarmentTypeSlug(type.slug);
+                          const color = colorSlug ? getColor(type, colorSlug) : undefined;
+                          if (!color?.sizes.some((s) => s.name === sizeName && s.inStock)) setSizeName(null);
+                        }}
+                      />
+                    </div>
+                  );
+                })}
               </div>
-            )}
+            </div>
 
             {garmentType && (
-              <div>
+              <div className="mb-6">
                 {missingColorPrompt && (
                   <p className="mb-4 font-body text-body">{missingColorPrompt}</p>
                 )}
@@ -222,6 +333,8 @@ export default function ProductPickerShell({
                         inStock={c.inStock}
                         onSelect={() => {
                           setColorSlug(c.slug);
+                          const jump = previewSlideIndex(motif?.images.length ?? 0, Boolean(c.frontImage));
+                          if (jump !== null) setGalleryIndex(jump);
                           if (!c.sizes.some((s) => s.name === sizeName && s.inStock)) setSizeName(null);
                         }}
                       />
@@ -237,87 +350,6 @@ export default function ProductPickerShell({
                 )}
               </div>
             )}
-          </div>
-
-          <div className="mt-6 md:mt-0">
-            <h1 className="mb-1 font-display text-headline">{heading}</h1>
-            {price && <p className="mb-6 font-mono text-price-mono">{price}</p>}
-
-            {/* Design is the other selection that visibly affects the
-                preview, so — like Color on the left — it sits right after
-                heading/price instead of behind the Garment Type grid. */}
-            <div className="mb-6">
-              {missingMotifPrompt && (
-                <p className="mb-4 font-body text-body">{missingMotifPrompt}</p>
-              )}
-              <p
-                id={motifHeadingId}
-                className="mb-2 font-mono text-label-mono uppercase text-marsh-sage"
-              >
-                Design
-              </p>
-              <div
-                role="list"
-                aria-labelledby={motifHeadingId}
-                className="grid grid-cols-2 gap-4 md:grid-cols-3"
-              >
-                {motifs.map((m) => {
-                  const selected = m.slug === motifSlug;
-                  return (
-                    <div key={m.slug} role="listitem">
-                      <button
-                        type="button"
-                        onClick={() => setMotifSlug(m.slug)}
-                        aria-pressed={selected}
-                        className="block w-full text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-antique-brass"
-                      >
-                        <MotifTile name={m.name} image={m.images[0]?.url} selected={selected} />
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {missingGarmentPrompt && (
-              <p className="mb-4 font-body text-body">{missingGarmentPrompt}</p>
-            )}
-
-            <div className="mb-6">
-              <p
-                id={garmentTypeHeadingId}
-                className="mb-2 font-mono text-label-mono uppercase text-marsh-sage"
-              >
-                Garment Type
-              </p>
-              <div
-                role="list"
-                aria-labelledby={garmentTypeHeadingId}
-                className="grid grid-cols-2 gap-3"
-              >
-                {garmentTypes.map((type) => {
-                  const selected = type.slug === garmentTypeSlug;
-                  return (
-                    <div key={type.slug} role="listitem">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setGarmentTypeSlug(type.slug);
-                          const color = colorSlug ? getColor(type, colorSlug) : undefined;
-                          if (!color?.sizes.some((s) => s.name === sizeName && s.inStock)) setSizeName(null);
-                        }}
-                        aria-pressed={selected}
-                        className={`block w-full rounded border-2 text-left ${
-                          selected ? "border-wet-ink" : "border-transparent"
-                        }`}
-                      >
-                        <ProductCard name={type.name} price={priceLabel(type.priceCents)} />
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
 
             {garmentType && colorway && (
               <div className="mb-6">
@@ -367,7 +399,13 @@ export default function ProductPickerShell({
               disabled={!isAddToBagEnabled}
               aria-hidden={stickyVisible}
               tabIndex={stickyVisible ? -1 : undefined}
-              aria-describedby={addToBagDisabledReason ? addToBagStatusId : undefined}
+              aria-describedby={
+                addToBagDisabledReason
+                  ? addToBagStatusId
+                  : missingGarmentPrompt
+                    ? garmentPromptId
+                    : undefined
+              }
               className="mb-4 inline-flex min-h-11 w-full items-center justify-center rounded-sm bg-deep-harbor px-5 font-mono text-label-mono uppercase text-sailcloth disabled:cursor-not-allowed disabled:opacity-50"
             >
               Add to Bag

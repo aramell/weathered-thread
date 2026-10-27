@@ -5,6 +5,8 @@ type MotifTileProps = {
   /** Listing photo for the glyph slot; a flat placeholder block when absent. */
   image?: string;
   selected?: boolean;
+  /** Collection name shown above the design name. */
+  collection?: string;
 };
 
 /**
@@ -17,7 +19,7 @@ type MotifTileProps = {
  * shares one border implementation instead of wrapping its own. Still
  * browse/read only — no tap handling here, callers own selection.
  */
-export default function MotifTile({ name, image, selected = false }: MotifTileProps) {
+export default function MotifTile({ name, image, selected = false, collection }: MotifTileProps) {
   return (
     <div
       className={`rounded border-2 bg-paper-raised p-4 ${
@@ -38,6 +40,7 @@ export default function MotifTile({ name, image, selected = false }: MotifTilePr
       ) : (
         <div className="mb-3 aspect-square rounded bg-sailcloth" aria-hidden="true" />
       )}
+      {collection && <p className="font-mono text-caption-mono text-marsh-sage">{collection}</p>}
       <p className="font-mono text-caption-mono uppercase text-wet-ink">{name}</p>
     </div>
   );

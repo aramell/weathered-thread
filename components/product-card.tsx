@@ -1,9 +1,14 @@
 import Image from "next/image";
+import type { ReactNode } from "react";
 
 type ProductCardProps = {
   name: string;
   price: string;
   image?: string;
+  /** Collection name shown above the design name, e.g. "Sea Isle". */
+  collection?: string;
+  /** Replaces the image slot (e.g. a garment caricature); wins over `image`. */
+  media?: ReactNode;
 };
 
 /**
@@ -14,10 +19,12 @@ type ProductCardProps = {
  * photo when one is (e.g. `/shop/[type]`'s colorway cards). Reused by
  * Epic 3's Shop grid and browse-by-color flow.
  */
-export default function ProductCard({ name, price, image }: ProductCardProps) {
+export default function ProductCard({ name, price, image, collection, media }: ProductCardProps) {
   return (
     <div className="rounded bg-paper-raised p-4">
-      {image ? (
+      {media ? (
+        <div className="mb-3 flex aspect-square items-center justify-center rounded bg-sailcloth p-6">{media}</div>
+      ) : image ? (
         <div className="relative mb-3 aspect-square overflow-hidden rounded">
           <Image
             src={image}
@@ -30,6 +37,7 @@ export default function ProductCard({ name, price, image }: ProductCardProps) {
       ) : (
         <div className="mb-3 aspect-square rounded bg-sailcloth" aria-hidden="true" />
       )}
+      {collection && <p className="font-mono text-caption-mono text-marsh-sage">{collection}</p>}
       <p className="font-body text-body">{name}</p>
       <p className="font-mono text-price-mono">{price}</p>
     </div>
