@@ -60,7 +60,7 @@ export default async function CheckoutHandoffPage({
             {failedNotice}
             <div className="mb-4">
               <ButtonPrimary href={forwardHref(listing.slug, selection, process.env.SHOP_ORIGIN)}>
-                Continue to Checkout
+                Continue to Etsy
               </ButtonPrimary>
             </div>
             <ButtonSecondary href={backHref}>Change selection</ButtonSecondary>

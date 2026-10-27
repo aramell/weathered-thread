@@ -417,7 +417,7 @@ export default function ProductPickerShell({
               }
               className="mb-4 inline-flex min-h-11 w-full items-center justify-center rounded-sm bg-deep-harbor px-5 font-mono text-label-mono uppercase text-sailcloth disabled:cursor-not-allowed disabled:opacity-50"
             >
-              Add to Bag
+              Buy on Etsy
             </button>
             <ButtonSecondary href={backHref}>{backLabel}</ButtonSecondary>
           </div>

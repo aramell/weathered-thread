@@ -32,7 +32,7 @@ export default function AddToBagBar({ price, disabled, visible, onAddToBag }: Ad
         tabIndex={visible ? 0 : -1}
         className="inline-flex min-h-11 flex-1 max-w-56 items-center justify-center rounded-sm bg-deep-harbor px-5 font-mono text-label-mono uppercase text-sailcloth disabled:cursor-not-allowed disabled:opacity-50"
       >
-        Add to Bag
+        Buy on Etsy
       </button>
     </div>
   );

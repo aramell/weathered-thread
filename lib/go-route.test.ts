@@ -16,8 +16,15 @@ describe("shop forward route", () => {
     assert.ok(active, "the catalog has an active listing");
     const response = await call(active.slug, selection);
     assert.equal(response.status, 307);
-    assert.equal(response.headers.get("location"), active.url);
+    const target = new URL(response.headers.get("location") ?? "");
+    assert.equal(`${target.origin}${target.pathname}`, new URL(active.url).origin + new URL(active.url).pathname);
     assert.equal(response.headers.get("cache-control"), "no-store");
+  });
+
+  it("forwards a design with no selection to the bare listing", async () => {
+    assert.ok(active, "the catalog has an active listing");
+    const response = await call(active.slug);
+    assert.equal(response.headers.get("location"), active.url);
   });
 
   it("preselects the pick on Etsy when the variations carry ids", async () => {
