@@ -32,6 +32,7 @@ const entry = (slug: string, variations: Variation[], over: Partial<CatalogEntry
   createdTimestamp: 1,
   variations,
   images: [],
+  photos: [],
   motifName: "Logo",
   story: "Story",
   collection: "weathered-thread",
@@ -55,29 +56,28 @@ describe("buildShop", () => {
     assert.deepEqual(tee.colors.map((c) => c.slug), ["ivory", "bay"], "pepper..ivory..bay order, absent colors omitted");
     assert.deepEqual(tee.colors[0].sizes.map((s) => s.name), ["S", "M"]);
     assert.equal(tee.priceCents, 3200);
-    assert.equal(shop.garmentTypes[1].priceCents, 3800, "style price ignores out-of-stock Bay");
+    assert.equal(shop.garmentTypes[1].priceCents, 3200, "style price is the lowest across every color, Etsy stock aside");
     assert.equal(priceLabel(3200), "$32");
   });
 
-  it("out-of-stock color: disabled, no price", () => {
+  it("made-to-order: a combination Etsy shows at zero stock is still orderable at its price", () => {
     const longSleeve = buildShop([entry("logo", base)]).garmentTypes[1];
     const bay = longSleeve.colors.find((c) => c.slug === "bay");
     assert.ok(bay);
-    assert.equal(bay.inStock, false);
-    assert.equal(bay.priceCents, null);
-    assert.ok(bay.sizes.every((s) => !s.inStock && s.priceCents === null));
-    assert.equal(priceLabel(null), "Sold out");
+    assert.equal(bay.inStock, true);
+    assert.equal(bay.priceCents, 3200);
+    assert.ok(bay.sizes.every((s) => s.inStock && s.priceCents === 3200));
   });
 
-  it("mixed listings: in stock if either has stock, lowest in-stock price wins", () => {
+  it("mixed listings: orderable if either lists it, lowest price wins", () => {
     const shop = buildShop([
       entry("a", [v(1, "Tee", "Bay", "S", 3600, 3)]),
       entry("b", [v(2, "Tee", "Bay", "S", 3400, 1), v(3, "Tee", "Ivory", "S", 1000, 0)]),
     ]);
     const [bay, ivory] = [...shop.garmentTypes[0].colors].sort((x, y) => (x.slug < y.slug ? -1 : 1));
     assert.equal(bay.sizes[0].priceCents, 3400);
-    assert.equal(ivory.inStock, false);
-    assert.equal(ivory.priceCents, null, "an out-of-stock offering's price is never used");
+    assert.equal(ivory.inStock, true);
+    assert.equal(ivory.priceCents, 1000);
   });
 
   it("excludes inactive listings and listings with no variations", () => {
@@ -105,15 +105,15 @@ describe("buildShop", () => {
 });
 
 describe("buildMotifShops", () => {
-  it("each design keeps its own prices and stock instead of the pooled lowest", () => {
+  it("each design keeps its own prices instead of the pooled lowest", () => {
     const shops = buildMotifShops([
       entry("sea-isle", [v(1, "Heavyweight Tee", "Bay", "S", 3600, 3), v(2, "Heavyweight Tee", "Bay", "M", 3600, 0)]),
       entry("logo", [v(3, "Heavyweight Tee", "Bay", "S", 3200, 0), v(4, "Heavyweight Tee", "Bay", "M", 3200, 4)]),
     ]);
     assert.deepEqual(Object.keys(shops), ["sea-isle", "logo"]);
     const [seaIsle, logo] = ["sea-isle", "logo"].map((slug) => shops[slug].garmentTypes[0].colors[0].sizes);
-    assert.deepEqual(seaIsle.map((s) => [s.name, s.inStock, s.priceCents]), [["S", true, 3600], ["M", false, null]]);
-    assert.deepEqual(logo.map((s) => [s.name, s.inStock, s.priceCents]), [["S", false, null], ["M", true, 3200]]);
+    assert.deepEqual(seaIsle.map((s) => [s.name, s.inStock, s.priceCents]), [["S", true, 3600], ["M", true, 3600]]);
+    assert.deepEqual(logo.map((s) => [s.name, s.inStock, s.priceCents]), [["S", true, 3200], ["M", true, 3200]]);
   });
 
   it("an inactive design gets an empty shop rather than borrowing another's", () => {
@@ -137,18 +137,17 @@ describe("lookups and picker derivation", () => {
     assert.ok(longSleeve && getColor(longSleeve, "pepper"));
   });
 
-  it("Add to Bag needs an in-stock color, an in-stock size and a motif", () => {
+  it("Add to Bag needs a color, a size and a motif", () => {
     assert.equal(pick({ sizeName: "M" }).isAddToBagEnabled, true);
     assert.equal(pick({ sizeName: null }).isAddToBagEnabled, false);
     assert.equal(pick({ sizeName: "M", hasMotif: false }).isAddToBagEnabled, false);
     assert.equal(pick({ sizeName: "XL" }).isAddToBagEnabled, false, "unknown size");
-    const soldOut = pick({ garmentTypeSlug: "long-sleeve-tee", colorSlug: "bay", sizeName: "S" });
-    assert.equal(soldOut.isAddToBagEnabled, false);
-    assert.equal(soldOut.size, undefined, "an out-of-stock size is never selected");
-    assert.equal(soldOut.priceCents, null, "an out-of-stock color has no price");
+    const zeroStock = pick({ garmentTypeSlug: "long-sleeve-tee", colorSlug: "bay", sizeName: "S" });
+    assert.equal(zeroStock.isAddToBagEnabled, true, "made-to-order: Etsy's zero stock does not block");
+    assert.equal(zeroStock.priceCents, 3200);
   });
 
-  it("a size chosen in one color is dropped where it is out of stock", () => {
+  it("a size chosen in one color is dropped where the color doesn't list it", () => {
     assert.equal(pick({ garmentTypeSlug: "long-sleeve-tee", colorSlug: "pepper", sizeName: "S" }).size?.name, "S");
     assert.equal(pick({ garmentTypeSlug: "long-sleeve-tee", colorSlug: "pepper", sizeName: "M" }).size, undefined, "M absent in pepper");
   });

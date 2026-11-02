@@ -15,7 +15,7 @@ import { slugify, type Shop, type ShopColor, type ShopGarmentType, type ShopSize
 
 const SIZE_ORDER = ["XS", "S", "M", "L", "XL", "2XL", "3XL"];
 
-type Cell = { inStock: boolean; priceCents: number | null };
+type Cell = { priceCents: number };
 
 const lowest = (prices: (number | null)[]): number | null => {
   const real = prices.filter((price): price is number => price !== null);
@@ -23,9 +23,10 @@ const lowest = (prices: (number | null)[]): number | null => {
 };
 
 /**
- * Fold active listings' variations into garment types -> colors -> sizes. A combination is
- * in stock when any listing has stock for it; its price is the lowest in-stock price. A
- * variation missing Style, Primary color or Size throws, naming the listing.
+ * Fold active listings' variations into garment types -> colors -> sizes. Every combination a
+ * listing lists is orderable at its price (the lowest across listings), whatever Etsy's
+ * quantity says: pieces are made to order, so Etsy's stock count says nothing about whether
+ * one can be made. A variation missing Style, Primary color or Size throws, naming the listing.
  */
 export function buildShop(listings: readonly CatalogEntry[]): Shop {
   // style name -> color name -> size name -> merged cell; Map keeps Etsy's first-appearance order.
@@ -42,12 +43,8 @@ export function buildShop(listings: readonly CatalogEntry[]): Shop {
       }
       const colors = styles.get(style) ?? new Map<string, Map<string, Cell>>();
       const sizes = colors.get(color) ?? new Map<string, Cell>();
-      const inStock = variation.quantity > 0;
       const previous = sizes.get(size);
-      sizes.set(size, {
-        inStock: (previous?.inStock ?? false) || inStock,
-        priceCents: lowest([previous?.priceCents ?? null, inStock ? variation.priceCents : null]),
-      });
+      sizes.set(size, { priceCents: Math.min(previous?.priceCents ?? variation.priceCents, variation.priceCents) });
       colors.set(color, sizes);
       styles.set(style, colors);
     }
@@ -58,7 +55,7 @@ export function buildShop(listings: readonly CatalogEntry[]): Shop {
     const colors: ShopColor[] = [...colorMap].map(([colorName, sizeMap]) => {
       const colorSlug = slugify(colorName);
       const sizes: ShopSize[] = [...sizeMap]
-        .map(([name, cell]) => ({ name, inStock: cell.inStock, priceCents: cell.inStock ? cell.priceCents : null }))
+        .map(([name, cell]) => ({ name, inStock: true, priceCents: cell.priceCents }))
         .sort((a, b) => {
           const [ia, ib] = [SIZE_ORDER.indexOf(a.name), SIZE_ORDER.indexOf(b.name)];
           return (ia === -1 ? SIZE_ORDER.length : ia) - (ib === -1 ? SIZE_ORDER.length : ib);

@@ -1,6 +1,6 @@
 /**
  * motifs — the server-only read model behind the Collection pages and the Product Picker's
- * design list. Built from the synced catalog's authored content, and trimmed to the url-free
+ * design list. Built from the catalog's authored content (names, stories and this site's own photos), and trimmed to the url-free
  * `Motif` shape so it can be passed to Client Components.
  */
 import "server-only";
@@ -15,13 +15,13 @@ export function buildMotifs(listings: readonly CatalogEntry[]): Motif[] {
   return listings
     .filter((listing) => listing.state === "active")
     .sort((a, b) => b.createdTimestamp - a.createdTimestamp || a.slug.localeCompare(b.slug))
-    .map(({ slug, priceCents, motifName, story, collection, images }) => ({
+    .map(({ slug, priceCents, motifName, story, collection, photos }) => ({
       slug,
       name: motifName,
       priceCents,
       story,
       collection,
-      images: images.map(({ url, width, height, alt }) => ({ url, width, height, alt })),
+      images: photos.map(({ src, width, height, alt }) => ({ url: src, width, height, alt })),
     }));
 }
 
