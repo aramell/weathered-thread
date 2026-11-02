@@ -29,8 +29,23 @@ const SYNCED = renderSynced({
   images: [],
 });
 
-const authoredSource = (fields: Record<string, string> = {}) => {
-  const values = { motifName: "Pickleball", story: "The paddle that took over the courts.", collection: "sea-isle", ...fields };
+// `{{slug}}` is filled in by writeListing, so one default serves every listing directory.
+const photo = (over: Record<string, unknown> = {}) => ({
+  src: "/images/designs/{{slug}}/01.jpg",
+  width: 1200,
+  height: 1600,
+  alt: "A navy pickleball paddle embroidered on a cream tee",
+  ...over,
+});
+
+const authoredSource = (fields: Record<string, unknown> = {}) => {
+  const values = {
+    motifName: "Pickleball",
+    story: "The paddle that took over the courts.",
+    collection: "sea-isle",
+    photos: [photo()],
+    ...fields,
+  };
   return `export const authored = ${JSON.stringify(values, null, 2)} as const;\n`;
 };
 
@@ -54,7 +69,7 @@ async function writeListing(slug: string, files: Record<string, string | null>) 
   const dir = path.join(catalogDir, slug);
   await fs.mkdir(dir, { recursive: true });
   for (const [name, content] of Object.entries(files)) {
-    if (content !== null) await fs.writeFile(path.join(dir, name), content);
+    if (content !== null) await fs.writeFile(path.join(dir, name), content.replaceAll("{{slug}}", slug));
   }
 }
 
@@ -125,6 +140,57 @@ describe("check-catalog", () => {
     const { problems } = await checkCatalog(catalogDir);
     assert.equal(problems.length, 1);
     assert.match(problems[0], /pickleball: authored\.ts field `story` must be a non-empty string/);
+  });
+
+  describe("photos", () => {
+    const listWith = async (fields: Record<string, unknown>, slug = "pickleball") => {
+      await writeListing(slug, { ...validFiles(), "authored.ts": authoredSource(fields) });
+      await writeCatalog([slug]);
+    };
+
+    it("missing or empty: names `photos`", async () => {
+      await listWith({ photos: undefined });
+      assert.match((await checkCatalog(catalogDir)).problems.join("\n"), /pickleball: authored\.ts field `photos` must be a non-empty array/);
+      await listWith({ photos: [] });
+      assert.match((await checkCatalog(catalogDir)).problems.join("\n"), /pickleball: authored\.ts field `photos` must be a non-empty array/);
+    });
+
+    it("blank alt text: names the photo", async () => {
+      await listWith({ photos: [photo(), photo({ src: "/images/designs/{{slug}}/02.jpg", alt: "  " })] });
+      const { problems } = await checkCatalog(catalogDir);
+      assert.equal(problems.length, 1);
+      assert.match(problems[0], /pickleball: photos\[1\] needs non-empty alt text/);
+    });
+
+    it("another design's folder or a path outside images/designs: reported", async () => {
+      await listWith({ photos: [photo({ src: "/images/designs/other-design/01.jpg" }), photo({ src: "https://i.etsystatic.com/1/x.jpg" })] });
+      const { problems } = await checkCatalog(catalogDir);
+      assert.equal(problems.length, 2);
+      assert.match(problems[0], /pickleball: photos\[0\]\.src must be \/images\/designs\/pickleball\//);
+      assert.match(problems[1], /pickleball: photos\[1\]\.src must be \/images\/designs\/pickleball\//);
+    });
+
+    it("bad dimensions: reported", async () => {
+      await listWith({ photos: [photo({ width: 0 }), photo({ height: 12.5 })] });
+      const { problems } = await checkCatalog(catalogDir);
+      assert.deepEqual(
+        problems.map((problem) => problem.replace(/^pickleball: /, "")),
+        ["photos[0] needs a positive whole-number width and height", "photos[1] needs a positive whole-number width and height"],
+      );
+    });
+
+    it("file on disk: ok; file missing from public/: reported", async () => {
+      const publicDir = await fs.mkdtemp(path.join(os.tmpdir(), "check-public-"));
+      try {
+        await listWith({ photos: [photo(), photo({ src: "/images/designs/{{slug}}/02.jpg" })] });
+        await fs.mkdir(path.join(publicDir, "images/designs/pickleball"), { recursive: true });
+        await fs.writeFile(path.join(publicDir, "images/designs/pickleball/01.jpg"), "x");
+        const { problems } = await checkCatalog(catalogDir, publicDir);
+        assert.deepEqual(problems, ["pickleball: photos[1] file /images/designs/pickleball/02.jpg is not in public/"]);
+      } finally {
+        await fs.rm(publicDir, { recursive: true, force: true });
+      }
+    });
   });
 
   it("key collision: names the key", async () => {
@@ -379,9 +445,22 @@ describe("check:catalog CLI", () => {
     await writeListing("pickleball", validFiles());
     await writeCatalog(["pickleball"]);
     const repo = await asRepoRoot();
+    await fs.mkdir(path.join(repo, "public/images/designs/pickleball"), { recursive: true });
+    await fs.writeFile(path.join(repo, "public/images/designs/pickleball/01.jpg"), "x");
     const result = await run(repo);
     assert.equal(result.code, 0, result.stderr);
     assert.match(result.stdout, /ok {3}pickleball/);
+    await fs.rm(repo, { recursive: true, force: true });
+    await fs.mkdir(catalogDir);
+  });
+
+  it("photo file missing from public/: exit 1 and a FAIL line naming the file", async () => {
+    await writeListing("pickleball", validFiles());
+    await writeCatalog(["pickleball"]);
+    const repo = await asRepoRoot();
+    const result = await run(repo);
+    assert.equal(result.code, 1);
+    assert.match(result.stderr, /FAIL pickleball: photos\[0\] file \/images\/designs\/pickleball\/01\.jpg is not in public\//);
     await fs.rm(repo, { recursive: true, force: true });
     await fs.mkdir(catalogDir);
   });

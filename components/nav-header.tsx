@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BagLink from "@/components/bag-link";
 
 const navLinks = [
   { href: "/shop", label: "Shop" },
@@ -9,10 +10,9 @@ const navLinks = [
 /**
  * nav-header — Server Component: brand mark, SHOP/COLLECTIONS/ABOUT
  * label-mono text links (Wet Ink), a search icon (aria-label only, no href
- * yet — Story 3.5 wires it up) and a non-interactive bag icon (aria-label
- * only, no href or count badge — "bag" is always scoped to a single
- * product's Add to Bag, Epic 4). No 'use client' here; rendered as children
- * of <NavScrollShell>, which owns all scroll-tracking state.
+ * yet — Story 3.5 wires it up) and the bag link with its item count
+ * (`BagLink`, the one client island here). No 'use client' on this file;
+ * rendered as children of <NavScrollShell>, which owns all scroll-tracking state.
  */
 export default function NavHeader() {
   return (
@@ -58,26 +58,7 @@ export default function NavHeader() {
           </svg>
         </span>
 
-        <span
-          role="img"
-          aria-label="Bag"
-          className="flex h-11 w-11 items-center justify-center text-wet-ink"
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M6 8h12l-1 12a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1L6 8Z" />
-            <path d="M9 8V6a3 3 0 0 1 6 0v2" />
-          </svg>
-        </span>
+        <BagLink />
       </div>
     </div>
   );

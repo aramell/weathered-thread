@@ -26,6 +26,7 @@ const listing = (over: Partial<CatalogListing> = {}): CatalogListing => ({
   createdTimestamp: 1,
   variations: [],
   images: [],
+  photos: [],
   motifName: "Pickleball",
   story: "The paddle that took over the courts.",
   collection: "sea-isle",

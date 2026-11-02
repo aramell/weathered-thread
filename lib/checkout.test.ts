@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { forwardHref, handoffPath, parseSelection, resolveSelection, shopOrigin } from "./checkout";
+import { resolveSelection, shopOrigin } from "./checkout";
 import type { Shop } from "./shop-types";
 
 const shop: Shop = {
@@ -31,13 +31,6 @@ const shop: Shop = {
 };
 
 describe("checkout selection", () => {
-  it("parses a complete selection and rejects partial or repeated params", () => {
-    assert.deepEqual(parseSelection({ style: "a", color: "b", size: "M" }), { style: "a", color: "b", size: "M" });
-    assert.equal(parseSelection({ style: "a", color: "b" }), null);
-    assert.equal(parseSelection({ style: "a", color: ["b", "c"], size: "M" }), null);
-    assert.equal(parseSelection({ style: "", color: "b", size: "M" }), null);
-  });
-
   it("resolves an in-stock combination to plain-language names and its price", () => {
     assert.deepEqual(resolveSelection(shop, { style: "heavyweight-tee", color: "ivory", size: "M" }), {
       ok: true,
@@ -63,27 +56,14 @@ describe("checkout selection", () => {
     });
   });
 
-  it("builds a shop-host forward and a handoff path that keep the selection", () => {
-    const selection = { style: "heavyweight-tee", color: "ivory", size: "M" };
-    assert.equal(
-      forwardHref("sic-wave", selection),
-      "https://shop.weatheredthread.com/go/sic-wave?style=heavyweight-tee&color=ivory&size=M",
-    );
-    assert.ok(!forwardHref("sic-wave", selection).includes("etsy.com"));
-    assert.equal(handoffPath("sic-wave", selection, true), "/checkout/sic-wave?style=heavyweight-tee&color=ivory&size=M&failed=1");
-  });
-
-  it("keeps the forward on the shop host whatever SHOP_ORIGIN holds", () => {
-    const selection = { style: "a", color: "b", size: "M" };
-    const fallback = "https://shop.weatheredthread.com";
+  it("returns to the live site whatever SHOP_ORIGIN holds", () => {
+    const fallback = "https://weatheredthread.com";
     assert.equal(shopOrigin(undefined), fallback);
     assert.equal(shopOrigin(""), fallback);
-    assert.equal(shopOrigin("shop.weatheredthread.com"), fallback);
+    assert.equal(shopOrigin("weatheredthread.com"), fallback);
     assert.equal(shopOrigin("http://shop.example.com"), fallback);
     assert.equal(shopOrigin("https://shop.example.com/"), "https://shop.example.com");
     assert.equal(shopOrigin(" https://shop.example.com/extra "), "https://shop.example.com");
     assert.equal(shopOrigin("http://localhost:3000"), "http://localhost:3000");
-    assert.ok(forwardHref("x", selection, "").startsWith(`${fallback}/go/x?`));
-    assert.ok(forwardHref("x", selection, "https://shop.example.com/").startsWith("https://shop.example.com/go/x?"));
   });
 });

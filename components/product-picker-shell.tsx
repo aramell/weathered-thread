@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import AddToBagBar from "@/components/add-to-bag-bar";
 import ButtonSecondary from "@/components/button-secondary";
@@ -9,7 +9,8 @@ import MotifTile from "@/components/motif-tile";
 import DesignSummary from "@/components/design-summary";
 import GarmentOption from "@/components/garment-option";
 import PickerGallery from "@/components/picker-gallery";
-import { handoffPath } from "@/lib/checkout";
+import { itemKey } from "@/lib/cart";
+import { cartStore } from "@/lib/cart-store";
 import { getCollection } from "@/lib/collections";
 import { garmentArtKind } from "@/lib/garment-art";
 import type { Motif } from "@/lib/motif-types";
@@ -95,10 +96,18 @@ export default function ProductPickerShell({
   });
   const price = garmentType && priceCents !== null ? priceLabel(priceCents) : null;
 
-  const router = useRouter();
+  // The pick most recently added; the confirmation shows while the current pick still matches it.
+  const [addedKey, setAddedKey] = useState<string | null>(null);
+  const currentKey =
+    motif && garmentType && colorway && size
+      ? itemKey({ slug: motif.slug, style: garmentType.slug, color: colorway.slug, size: size.name })
+      : null;
+  const added = currentKey !== null && addedKey === currentKey;
   const addToBag = () => {
     if (!isAddToBagEnabled || !motif || !garmentType || !colorway || !size) return;
-    router.push(handoffPath(motif.slug, { style: garmentType.slug, color: colorway.slug, size: size.name }));
+    const pick = { slug: motif.slug, style: garmentType.slug, color: colorway.slug, size: size.name };
+    cartStore.add(pick);
+    setAddedKey(itemKey(pick));
   };
 
   const heading = motif
@@ -417,8 +426,18 @@ export default function ProductPickerShell({
               }
               className="mb-4 inline-flex min-h-11 w-full items-center justify-center rounded-sm bg-deep-harbor px-5 font-mono text-label-mono uppercase text-sailcloth disabled:cursor-not-allowed disabled:opacity-50"
             >
-              Buy on Etsy
+              Add to Bag
             </button>
+            <p role="status" className="mb-4 font-body text-body-sm">
+              {added && (
+                <>
+                  Added to your bag.{" "}
+                  <Link href="/bag" className="underline underline-offset-2">
+                    View bag
+                  </Link>
+                </>
+              )}
+            </p>
             <ButtonSecondary href={backHref}>{backLabel}</ButtonSecondary>
           </div>
         </div>
@@ -526,6 +545,7 @@ export default function ProductPickerShell({
         price={price ?? "—"}
         disabled={!isAddToBagEnabled}
         visible={stickyVisible}
+        added={added}
         onAddToBag={addToBag}
       />
     </main>

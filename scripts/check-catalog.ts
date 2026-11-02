@@ -17,13 +17,15 @@ import { isDeepStrictEqual } from "node:util";
 import type { AuthoredContent } from "../content/catalog/types";
 
 const SLUG_PATTERN = /^[a-z0-9-]+$/;
+const PHOTO_FILE = /^[A-Za-z0-9._-]+\.(jpe?g|png|webp)$/;
 const FILES = ["synced.ts", "authored.ts", "index.ts"] as const;
 // Exhaustive over AuthoredContent: adding or renaming a field there fails tsc until this follows.
+// `photos` is an array of objects, so it has its own checks below instead of the string check.
 const AUTHORED_FIELDS = Object.keys({
   motifName: true,
   story: true,
   collection: true,
-} satisfies Record<keyof AuthoredContent, true>) as (keyof AuthoredContent)[];
+} satisfies Record<Exclude<keyof AuthoredContent, "photos">, true>) as Exclude<keyof AuthoredContent, "photos">[];
 
 export type CatalogReport = {
   /**
@@ -77,7 +79,36 @@ type ListingCheck = {
   listing?: Record<string, unknown>;
 };
 
-async function checkListing(catalogDir: string, slug: string): Promise<ListingCheck> {
+/** Problems with `authored.photos`; with `publicDir` it also checks each file exists there. */
+async function checkPhotos(slug: string, photos: unknown, publicDir: string | undefined): Promise<string[]> {
+  if (!Array.isArray(photos) || photos.length === 0) {
+    return ["authored.ts field `photos` must be a non-empty array"];
+  }
+  const problems: string[] = [];
+  const prefix = `/images/designs/${slug}/`;
+  for (const [index, photo] of photos.entries()) {
+    const label = `photos[${index}]`;
+    if (!isRecord(photo)) {
+      problems.push(`${label} must be an object with src, width, height and alt`);
+      continue;
+    }
+    const { src, width, height, alt } = photo;
+    if (typeof src !== "string" || !src.startsWith(prefix) || !PHOTO_FILE.test(src.slice(prefix.length))) {
+      problems.push(`${label}.src must be ${prefix}<file>.jpg (or .png/.webp), got ${JSON.stringify(src)}`);
+    } else if (publicDir && !(await exists(path.join(publicDir, src)))) {
+      problems.push(`${label} file ${src} is not in public/`);
+    }
+    if (!Number.isInteger(width) || (width as number) < 1 || !Number.isInteger(height) || (height as number) < 1) {
+      problems.push(`${label} needs a positive whole-number width and height`);
+    }
+    if (typeof alt !== "string" || alt.trim() === "") {
+      problems.push(`${label} needs non-empty alt text`);
+    }
+  }
+  return problems;
+}
+
+async function checkListing(catalogDir: string, slug: string, publicDir: string | undefined): Promise<ListingCheck> {
   const problems: string[] = [];
   if (!SLUG_PATTERN.test(slug)) {
     problems.push(`directory name must match ${SLUG_PATTERN} (lowercase letters, digits, hyphens)`);
@@ -113,6 +144,7 @@ async function checkListing(catalogDir: string, slug: string): Promise<ListingCh
       problems.push(`authored.ts field \`${field}\` must be a non-empty string`);
     }
   }
+  problems.push(...(await checkPhotos(slug, authored.photos, publicDir)));
   if (typeof authored.collection === "string" && authored.collection.trim() !== "" && !SLUG_PATTERN.test(authored.collection)) {
     problems.push(`authored.ts field \`collection\` must be a collection slug matching ${SLUG_PATTERN}, got "${authored.collection}"`);
   }
@@ -128,7 +160,8 @@ async function checkListing(catalogDir: string, slug: string): Promise<ListingCh
   return { problems, listing: loaded };
 }
 
-export async function checkCatalog(catalogDir: string): Promise<CatalogReport> {
+/** `publicDir`, when given, is where each listing's photo files must exist (the site's `public/`). */
+export async function checkCatalog(catalogDir: string, publicDir?: string): Promise<CatalogReport> {
   const report: CatalogReport = { ok: [], problems: [] };
   const entries = await fs.readdir(catalogDir, { withFileTypes: true });
   const directories = entries
@@ -157,7 +190,7 @@ export async function checkCatalog(catalogDir: string): Promise<CatalogReport> {
 
     let listing: Record<string, unknown> | undefined;
     if (inDirectory) {
-      const check = await checkListing(catalogDir, slug);
+      const check = await checkListing(catalogDir, slug, publicDir);
       problems.push(...check.problems);
       listing = check.listing;
     }
@@ -188,7 +221,7 @@ async function main(): Promise<void> {
   const catalogDir = path.join(process.cwd(), "content", "catalog");
   let report: CatalogReport;
   try {
-    report = await checkCatalog(catalogDir);
+    report = await checkCatalog(catalogDir, path.join(process.cwd(), "public"));
   } catch (error) {
     const detail = (error as NodeJS.ErrnoException).code === "ENOENT"
       ? `${catalogDir} not found — run from the repo root`
