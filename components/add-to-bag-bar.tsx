@@ -1,7 +1,11 @@
+import Link from "next/link";
+
 type AddToBagBarProps = {
   price: string;
   disabled: boolean;
   visible: boolean;
+  /** The current pick is already in the bag: the price gives way to a link to it. */
+  added: boolean;
   onAddToBag: () => void;
 };
 
@@ -16,7 +20,7 @@ type AddToBagBarProps = {
  * mounted so the transition can animate; `md:hidden` keeps it off desktop
  * entirely, and it's inert (no tab stop, `aria-hidden`) while not visible.
  */
-export default function AddToBagBar({ price, disabled, visible, onAddToBag }: AddToBagBarProps) {
+export default function AddToBagBar({ price, disabled, visible, added, onAddToBag }: AddToBagBarProps) {
   return (
     <div
       aria-hidden={!visible}
@@ -24,7 +28,17 @@ export default function AddToBagBar({ price, disabled, visible, onAddToBag }: Ad
         visible ? "translate-y-0" : "pointer-events-none translate-y-full"
       }`}
     >
-      <p className="font-mono text-price-mono">{price}</p>
+      {added ? (
+        <Link
+          href="/bag"
+          tabIndex={visible ? 0 : -1}
+          className="font-mono text-label-mono uppercase text-wet-ink underline underline-offset-2"
+        >
+          Added · View bag
+        </Link>
+      ) : (
+        <p className="font-mono text-price-mono">{price}</p>
+      )}
       <button
         type="button"
         disabled={disabled}
@@ -32,7 +46,7 @@ export default function AddToBagBar({ price, disabled, visible, onAddToBag }: Ad
         tabIndex={visible ? 0 : -1}
         className="inline-flex min-h-11 flex-1 max-w-56 items-center justify-center rounded-sm bg-deep-harbor px-5 font-mono text-label-mono uppercase text-sailcloth disabled:cursor-not-allowed disabled:opacity-50"
       >
-        Buy on Etsy
+        Add to Bag
       </button>
     </div>
   );
