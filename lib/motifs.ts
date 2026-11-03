@@ -7,7 +7,6 @@ import "server-only";
 
 import type { CatalogEntry } from "@/content/catalog/types";
 import { getListings } from "./catalog";
-import { getLiveListings } from "./live-catalog";
 import type { Motif } from "./motif-types";
 
 /** Newest first, like Etsy's "Most Recent" (ties fall back to slug so the order is stable). */
@@ -30,8 +29,5 @@ export const getMotifs = (): Motif[] => buildMotifs(getListings());
 
 export const getMotif = (slug: string): Motif | undefined => getMotifs().find((motif) => motif.slug === slug);
 
-/** Same designs with the price Etsy shows right now. Use wherever a price is rendered. */
-export const getLiveMotifs = async (): Promise<Motif[]> => buildMotifs(await getLiveListings());
-
-export const getLiveMotifsByCollection = async (collection: string): Promise<Motif[]> =>
-  (await getLiveMotifs()).filter((motif) => motif.collection === collection);
+export const getMotifsByCollection = (collection: string): Motif[] =>
+  getMotifs().filter((motif) => motif.collection === collection);

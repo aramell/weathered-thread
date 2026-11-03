@@ -25,6 +25,12 @@ export function shopOrigin(raw?: string): string {
   return DEFAULT_SHOP_ORIGIN;
 }
 
+/** The page Square returns the visitor to after paying (`app/(site)/checkout/thank-you`). */
+export const THANK_YOU_PATH = "/checkout/thank-you";
+
+/** The full return url handed to Square: the shop origin plus the thank-you page. */
+export const thankYouUrl = (rawOrigin?: string): string => `${shopOrigin(rawOrigin)}${THANK_YOU_PATH}`;
+
 export type ResolvedSelection =
   | { ok: true; garment: string; color: string; size: string; priceCents: number }
   | { ok: false; reason: "unavailable" | "sold-out" };

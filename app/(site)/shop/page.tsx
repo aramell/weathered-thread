@@ -2,11 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import ProductCard from "@/components/product-card";
 import { formatPrice } from "@/lib/format-price";
-import { getLiveMotifs } from "@/lib/motifs";
+import { getMotifs } from "@/lib/motifs";
 import { getCollection } from "@/lib/collections";
-
-/** Rebuilt in the background at most this often, so stock and prices follow Etsy (see `lib/live-catalog.ts`). */
-export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "Shop — Weathered Thread",
@@ -14,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ShopPage() {
-  const motifs = await getLiveMotifs();
+  const motifs = getMotifs();
   const designsHeadingId = "designs-heading";
 
   return (

@@ -42,9 +42,10 @@ export function createCartStore(storage: CartStorage | null) {
     return current;
   }
 
-  function update(change: (cart: Cart) => Cart) {
+  /** Returns whether the bag changed (an add past the line or quantity cap changes nothing). */
+  function update(change: (cart: Cart) => Cart): boolean {
     const next = change(getSnapshot());
-    if (next === current) return;
+    if (next === current) return false;
     current = next;
     try {
       const raw = serializeCart(next);
@@ -54,6 +55,7 @@ export function createCartStore(storage: CartStorage | null) {
       // Not persisted: the bag lives in memory until the page closes.
     }
     for (const listener of listeners) listener();
+    return true;
   }
 
   function subscribe(listener: () => void): () => void {

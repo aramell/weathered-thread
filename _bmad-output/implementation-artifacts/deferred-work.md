@@ -192,3 +192,11 @@
 - source_spec: `_bmad-output/planning-artifacts/epics.md` (Stories 4.1, 4.2)
   summary: The picker's Add to Bag wiring (`addToBag` in `components/product-picker-shell.tsx`, `onAddToBag` in `components/add-to-bag-bar.tsx`) has no test. Swapping style/color or sending `size.slug` instead of `size.name` would make the Handoff show "That piece isn't available" for every pick.
   evidence: deferred — no component-test harness exists (node:test on lib/scripts only); `resolveSelection` and `handoffPath` are covered separately. Extracting the push target into a pure helper and testing it would close most of the gap.
+
+## Deferred from: code review of spec-square-hosted-checkout (2026-11-03)
+
+- US-only shipping is not enforced: the bag says "flat rate, US" but Square Payment Links has no country restriction (already noted in the spec). Settle at the S6 test purchase: check the address in the order, or reword the copy. [components/bag-view.tsx, lib/square-checkout.ts]
+- Square webhook edges are unverified: the route's order fetch and Resend wiring are untested, it emails for any COMPLETED payment on the location, and dedupe relies on Resend's 24-hour idempotency window. The webhook is not enabled; fix before subscribing. [app/api/square/webhook/route.ts, lib/square-webhook.ts]
+- `SHOP_ORIGIN` may still be the old `https://shop.weatheredthread.com` in the deployed environment (unverified; medium if true, paid visitors would land on the old host). Check with `vercel env ls` before go-live. [lib/checkout.ts]
+- Dead code after hard-coding `inStock: true`: the `sold-out` branch in `resolveSelection`, the picker's out-of-stock UI, `lowest`, and `lib/live-catalog.ts` / `live-merge.ts` / `etsy-live.ts` lost their checkout consumer. Clean up once the pricing-source decision is made. [lib/shop.ts, lib/checkout.ts, components/product-picker-shell.tsx]
+- No CI runs the test suite: the new payment tests run only via `npm run test:catalog`, and the only workflow is `sync-etsy.yml`. Add a test and tsc job. [package.json, .github/workflows]
