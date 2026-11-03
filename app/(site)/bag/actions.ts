@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { priceBag, startBagCheckout } from "@/lib/bag";
 import { parseCart, type PricedCart } from "@/lib/cart";
-import { shopOrigin } from "@/lib/checkout";
+import { thankYouUrl } from "@/lib/checkout";
 import { squareClient } from "@/lib/square-client";
 
 /**
@@ -22,7 +22,7 @@ export async function startCheckout(raw: string): Promise<StartCheckoutFailure> 
   try {
     result = await startBagCheckout(parseCart(raw), {
       client: squareClient(),
-      redirectUrl: `${shopOrigin(process.env.SHOP_ORIGIN)}/checkout/thank-you`,
+      redirectUrl: thankYouUrl(process.env.SHOP_ORIGIN),
     });
   } catch (error) {
     // Missing Square configuration; the message names a variable, never its value.

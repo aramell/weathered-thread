@@ -2,7 +2,7 @@
 title: 'Square hosted checkout with a cart (ad-hoc line items)'
 type: 'feature'
 created: '2026-10-28'
-status: 'in-progress'
+status: 'done'
 route: 'dispatch'
 baseline_commit: '1ab6a2b74d8b137f1c0444e8db1a69821a800d67'
 review_loop_iteration: 0
@@ -88,6 +88,42 @@ context: []
 - 2026-11-02: Renegotiated by owner to add a cart (stay on page with count after add, quantity 1-10 per line). Single-item Handoff replaced by a bag page; S3 replaced by C1-C4; S2 builder generalized in C2.
 
 ## Review Triage Log
+
+### Review Findings
+
+Code review of `main...HEAD` (2026-11-03): 1 decision-needed, 5 patch, 5 defer, 17 rejected.
+
+- [x] [Review][Patch] Owner decided (2026-11-03): pages read the synced snapshot so the site owns prices and variations (option b). Make the shop, collection and picker pages use `getShop`/synced listings instead of `getLiveShop`/`getLiveMotifShops`, so they agree with the bag. Original finding: The bag prices from the synced snapshot while product pages show live Etsy prices and variations — `lib/bag.ts` calls `getListing` (synced files), but the shop, collection and picker pages read `getLiveShop()` (live overlay via `lib/live-merge.ts`). If Etsy's price or a variation changes between syncs, the page shows one price and the bag/charge uses another, or reports "no longer available". Options: (a) price the bag from `getLiveListing`; (b) make pages read the synced snapshot, so the site owns prices (the S6 plan); (c) accept until S6. (medium; blind-hunter+edge-case-hunter)
+- [x] [Review][Patch] "Added to your bag" shows when nothing was added — `addItem` returns the cart unchanged once 20 lines exist and clamps quantity at 10, yet `addToBag` always calls `setAddedKey`; the status and the "Added · View bag" bar appear for a dropped or capped pick [lib/cart.ts:addItem, components/product-picker-shell.tsx:106-110] (medium; acceptance-auditor+blind-hunter+edge-case-hunter)
+- [x] [Review][Patch] Bag error handling: if `priceBagAction` rejects the bag stays on "Loading…" with Checkout disabled and no retry, and `failure` is never cleared on a later success; a rejected `startCheckout` is not caught, so the visitor gets no message [components/bag-view.tsx:36-42, 75-79] (low; blind-hunter+edge-case-hunter)
+- [x] [Review][Patch] `/bag` renders "Your bag is empty." in the server HTML and during hydration for a visitor who has a stored bag, then swaps; render a neutral state until the store has hydrated [components/bag-view.tsx, components/use-cart.ts] (low; edge-case-hunter)
+- [x] [Review][Patch] `startCheckout` wiring is untested: the redirect url path (`/checkout/thank-you`) and the missing-config → `{error:"failed"}` mapping can change with every test still passing; move the redirect-url construction into a pure helper and test it [app/(site)/bag/actions.ts:20-32, lib/checkout.test.ts] (low; verification-gap)
+- [x] [Review][Patch] Misleading comments: `thank-you/page.tsx` says "the real record is the order webhook" (webhook is not enabled; the owner uses the Square Dashboard) and `square-checkout.ts:55` says the webhook reads line metadata, but `describeOrder` only prints `line.name` [app/(site)/checkout/thank-you/page.tsx, lib/square-checkout.ts:55] (low; acceptance-auditor+blind-hunter)
+- [x] [Review][Defer] US-only shipping is not enforced; the bag says "flat rate, US" but Payment Links has no country restriction — deferred: the spec's Implementation Notes already record this Square limitation; settle at the S6 test purchase (restrict by checking the address in the order, or reword the copy) [components/bag-view.tsx, lib/square-checkout.ts]
+- [x] [Review][Defer] Webhook is unverified at its edges: the route's order fetch and Resend wiring are untested, it emails for any COMPLETED payment on the location (POS, Dashboard, other links), and dedupe relies on Resend's 24-hour idempotency window — deferred: the webhook is built but not enabled (owner chose Square-only visibility); fix before subscribing [app/api/square/webhook/route.ts, lib/square-webhook.ts]
+- [x] [Review][Defer] `SHOP_ORIGIN` may still be set to the old `https://shop.weatheredthread.com` in the deployed environment, which would send paid visitors to the old host (unverified, medium if true) — deferred: check the production value with `vercel env ls` before go-live (S6); the code default is now `https://weatheredthread.com` [lib/checkout.ts]
+- [x] [Review][Defer] Dead code after hard-coding `inStock: true`: the `sold-out` branch in `resolveSelection`, the picker's out-of-stock UI, `lowest`, and `lib/live-catalog.ts` / `live-merge.ts` / `etsy-live.ts` lost their checkout consumer — deferred: cleanup; depends on the pricing-source decision above [lib/shop.ts:58, lib/checkout.ts, components/product-picker-shell.tsx]
+- [x] [Review][Defer] The new payment tests (`bag`, `cart`, `cart-store`, `square-*`) only run through `npm run test:catalog`; the only workflow is `sync-etsy.yml` — deferred: no CI runs the test suite (pre-existing gap, see the first deferred-work item); add a test/tsc job [package.json, .github/workflows]
+
+#### Rejected
+
+- Sandbox as the default `SQUARE_ENVIRONMENT` is unsafe in production (false): deliberate per the spec and `.env.example`; with live credentials unset the client throws a `SquareConfigError`, which `startCheckout` logs and reports as "failed", so nothing is charged to the wrong account.
+- Webhook answers 500 when unconfigured (low): harmless while nothing is subscribed.
+- Webhook crashes on an invalid `SQUARE_ENVIRONMENT` (low): webhook not enabled.
+- "Added" confirmation is not brief (low): persists only until the pick changes; not worth a timer.
+- Square failure shows inline rather than "back to bag" (low): functionally equivalent to the spec's retry notice.
+- Server action redirect is not literally a 303 (low): same behavior; wording only.
+- Thank-you page clears the bag on any visit (low): the spec requires clearing there and the page claims nothing.
+- Thank-you copy says Square emails a receipt, which is not guaranteed (low): cosmetic.
+- Thank-you page has no cancel/return path (low): fix adds a new flow.
+- Unauthenticated server actions can create unlimited payment links (low): creating a link charges no one; rate limiting adds infrastructure.
+- `itemKey` joins on `|` (low): catalog values never contain it, and a hand-edited bag only affects that visitor, whose pick resolves as unavailable.
+- Catalog price of 0 or a non-integer would make checkout throw (low): not shown reachable; the catalog check guards synced data.
+- Old `/go/{slug}` and `/checkout/{motif}` urls now 404 (low): the hand-off was days old; redirects add config for little benefit.
+- 66 unique photos but 80 files, 18 MB in git (low): the owner chose photos in the repo (spec Change Log, 2026-11-02).
+- Photo dimension check only tests for positive integers (low): a wrong size only affects layout.
+- Spec tasks and status are stale (rejected): the fix edits the spec under review.
+- No tax or returns/delivery note on the bag (rejected): "no tax" is an owner decision in the spec.
 
 ## Verification
 

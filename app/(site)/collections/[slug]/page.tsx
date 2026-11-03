@@ -3,10 +3,7 @@ import { notFound } from "next/navigation";
 import CollectionStoryBlock from "@/components/collection-story-block";
 import MotifTileLink from "@/components/motif-tile-link";
 import { collections, getCollection } from "@/lib/collections";
-import { getLiveMotifsByCollection } from "@/lib/motifs";
-
-/** Rebuilt in the background at most this often, so stock and prices follow Etsy (see `lib/live-catalog.ts`). */
-export const revalidate = 300;
+import { getMotifsByCollection } from "@/lib/motifs";
 
 export function generateStaticParams() {
   return collections.map((collection) => ({ slug: collection.slug }));
@@ -38,7 +35,7 @@ export default async function CollectionPage({
     notFound();
   }
 
-  const motifs = await getLiveMotifsByCollection(collection.slug);
+  const motifs = getMotifsByCollection(collection.slug);
   const motifsHeadingId = "motifs-heading";
 
   return (

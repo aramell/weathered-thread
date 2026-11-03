@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { resolveSelection, shopOrigin } from "./checkout";
+import { existsSync } from "node:fs";
+import { resolveSelection, shopOrigin, THANK_YOU_PATH, thankYouUrl } from "./checkout";
 import type { Shop } from "./shop-types";
 
 const shop: Shop = {
@@ -65,5 +66,11 @@ describe("checkout selection", () => {
     assert.equal(shopOrigin("https://shop.example.com/"), "https://shop.example.com");
     assert.equal(shopOrigin(" https://shop.example.com/extra "), "https://shop.example.com");
     assert.equal(shopOrigin("http://localhost:3000"), "http://localhost:3000");
+  });
+
+  it("sends paid visitors to a thank-you page that exists", () => {
+    assert.equal(thankYouUrl(undefined), "https://weatheredthread.com/checkout/thank-you");
+    assert.equal(thankYouUrl("https://shop.example.com/"), "https://shop.example.com/checkout/thank-you");
+    assert.ok(existsSync(`app/(site)${THANK_YOU_PATH}/page.tsx`), "THANK_YOU_PATH must match a real route");
   });
 });

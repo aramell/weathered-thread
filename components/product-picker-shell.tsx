@@ -103,11 +103,15 @@ export default function ProductPickerShell({
       ? itemKey({ slug: motif.slug, style: garmentType.slug, color: colorway.slug, size: size.name })
       : null;
   const added = currentKey !== null && addedKey === currentKey;
+  // A pick the bag refused (20 lines, or 10 of this one already); shown while that pick is current.
+  const [refusedKey, setRefusedKey] = useState<string | null>(null);
+  const refused = currentKey !== null && refusedKey === currentKey;
   const addToBag = () => {
     if (!isAddToBagEnabled || !motif || !garmentType || !colorway || !size) return;
     const pick = { slug: motif.slug, style: garmentType.slug, color: colorway.slug, size: size.name };
-    cartStore.add(pick);
-    setAddedKey(itemKey(pick));
+    const changed = cartStore.add(pick);
+    setAddedKey(changed ? itemKey(pick) : null);
+    setRefusedKey(changed ? null : itemKey(pick));
   };
 
   const heading = motif
@@ -437,6 +441,7 @@ export default function ProductPickerShell({
                   </Link>
                 </>
               )}
+              {refused && "Your bag is full for this pick (up to 10 of one piece, 20 different picks)."}
             </p>
             <ButtonSecondary href={backHref}>{backLabel}</ButtonSecondary>
           </div>

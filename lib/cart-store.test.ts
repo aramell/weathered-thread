@@ -102,4 +102,12 @@ describe("createCartStore", () => {
     store.add(wave);
     assert.equal(store.getSnapshot().length, 1);
   });
+
+  it("reports whether an add changed the bag", () => {
+    const store = createCartStore(memoryStorage().storage);
+    assert.equal(store.add(wave, 10), true);
+    assert.equal(store.add(wave), false, "a line already at the quantity cap takes no more");
+    assert.equal(store.getSnapshot()[0].quantity, 10);
+    assert.equal(store.add(boat), true);
+  });
 });

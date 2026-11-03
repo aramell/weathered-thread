@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState, useSyncExternalStore, useTransition } from "react";
 import { priceBagAction, startCheckout, type StartCheckoutFailure } from "@/app/(site)/bag/actions";
 import { useCart } from "@/components/use-cart";
 import { itemKey, MAX_QUANTITY, SHIPPING_CENTS, serializeCart, type PricedLine } from "@/lib/cart";
@@ -27,24 +27,42 @@ export default function BagView() {
   const raw = serializeCart(cart);
   const [priced, setPriced] = useState<Map<string, PricedLine> | null>(null);
   const [failure, setFailure] = useState<StartCheckoutFailure["error"] | null>(null);
+  const [pricingFailed, setPricingFailed] = useState(false);
+  const [pricingAttempt, setPricingAttempt] = useState(0);
   const [pending, startTransition] = useTransition();
+  // False for the server render and hydration, when the stored bag isn't readable yet.
+  const hydrated = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
 
   useEffect(() => {
     if (cart.length === 0) return;
     let stale = false;
     priceBagAction(raw)
       .then((result) => {
-        if (!stale) setPriced(new Map(result.lines.map((line) => [line.key, line])));
+        if (stale) return;
+        setPriced(new Map(result.lines.map((line) => [line.key, line])));
+        setPricingFailed(false);
       })
       .catch(() => {
-        if (!stale) setFailure("failed");
+        if (!stale) setPricingFailed(true);
       });
     return () => {
       stale = true;
     };
-    // `raw` is the serialized `cart`.
+    // `raw` is the serialized `cart`; `pricingAttempt` re-runs a failed pricing request.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [raw]);
+  }, [raw, pricingAttempt]);
+
+  if (!hydrated) {
+    return (
+      <section aria-busy="true" className="mx-auto w-full max-w-xl px-gutter-mobile py-story-gap md:px-gutter-desktop">
+        <h1 className="mb-6 font-display text-headline">Your bag</h1>
+      </section>
+    );
+  }
 
   if (cart.length === 0) {
     return (
@@ -73,8 +91,12 @@ export default function BagView() {
   const checkout = () => {
     setFailure(null);
     startTransition(async () => {
-      const result = await startCheckout(raw);
-      if (result) setFailure(result.error);
+      try {
+        const result = await startCheckout(raw);
+        if (result) setFailure(result.error);
+      } catch {
+        setFailure("failed");
+      }
     });
   };
 
@@ -158,9 +180,26 @@ export default function BagView() {
         </div>
       </dl>
 
-      <p role="alert" className="mb-4 font-body text-body">
-        {failure ? FAILURE_COPY[failure] : null}
-      </p>
+      {pricingFailed && (
+        <p role="alert" className="mb-4 font-body text-body">
+          We couldn’t load your prices.{" "}
+          <button
+            type="button"
+            className="underline underline-offset-2"
+            onClick={() => {
+              setPricingFailed(false);
+              setPricingAttempt((attempt) => attempt + 1);
+            }}
+          >
+            Try again
+          </button>
+        </p>
+      )}
+      {failure && (
+        <p role="alert" className="mb-4 font-body text-body">
+          {FAILURE_COPY[failure]}
+        </p>
+      )}
       <button
         type="button"
         disabled={!canCheckout}

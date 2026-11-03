@@ -52,7 +52,7 @@ export function buildPaymentLinkRequest(
         name: `${line.motifName} — ${line.garment}, ${line.color}, ${line.size}`,
         quantity: String(line.quantity),
         base_price_money: { amount: line.priceCents, currency: CURRENCY },
-        // Read back by the order webhook to say what to make; order-level metadata caps at 10 entries.
+        // Kept on the Square line item for the owner's reference; the webhook email names lines by `name`. Line-level, since order-level metadata caps at 10 entries.
         metadata: { design: line.slug, style: line.styleSlug, color: line.color, size: line.size },
       })),
     },

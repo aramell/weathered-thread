@@ -9,8 +9,8 @@ export const metadata: Metadata = {
 
 /**
  * Where Square sends the visitor after paying. It is a courtesy page, not proof of payment:
- * anyone can open this url, so it claims nothing about an order and the real record is the
- * order webhook. It only empties the bag.
+ * anyone can open this url, so it claims nothing about an order and the owner's record is
+ * the Square Dashboard (the order webhook is built but not enabled). It only empties the bag.
  */
 export default function ThankYouPage() {
   return (

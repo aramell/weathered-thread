@@ -24,6 +24,7 @@ export function addItem(cart: Cart, pick: CartPick, quantity = 1): Cart {
   const key = itemKey(pick);
   const existing = cart.find((item) => itemKey(item) === key);
   if (existing) {
+    if (existing.quantity >= MAX_QUANTITY) return cart;
     return cart.map((item) => (item === existing ? { ...item, quantity: clampQuantity(item.quantity + quantity) } : item));
   }
   if (cart.length >= MAX_LINES) return cart;
