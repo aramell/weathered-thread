@@ -77,10 +77,10 @@ Bring the site to the Master Brand Guidelines v1.0. Palette already matches and 
 - Remove the trailing "Made to remember." from the brand collection story and from `wt-horizontal-logo/authored.ts`. The exact tagline remains only on the home page, About page and page title.
 - Meta description is unchanged.
 
-### Story 6.3: Logos and brand rules
+### Story 6.3: Logos and brand rules (built, in review)
 - **Given** the approved logo files (OQ-4), **when** the logo appears, **then** the exact files are used, unaltered, with clear space.
 - Search confirms no lighthouse reference and no unlocked Weathered Clay.
-- **Blocked by** OQ-4 (logo files).
+- Logo files received (lockup, stacked, WT mark). Header done; the stacked logo is shipped for the About/homepage work in Epic 8.
 
 ---
 

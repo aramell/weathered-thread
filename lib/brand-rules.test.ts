@@ -1,0 +1,54 @@
+/**
+ * Brand rules from the Master Brand Guidelines v1.0 (Nov 2026), enforced so they cannot drift
+ * (Story 6.3): the approved logo files are shipped byte for byte, nothing recreates the logo,
+ * and no lighthouse imagery or invented Weathered Clay value appears. Run via `npm run test:catalog`.
+ */
+import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import { join } from "node:path";
+import { describe, it } from "node:test";
+
+const root = join(__dirname, "..");
+const sha = (file: string) => createHash("sha256").update(readFileSync(join(root, file))).digest("hex");
+
+/** SHA-256 of the approved transparent PNGs supplied by the owner (Nov 2026). A change here means the artwork changed: confirm it is a newly approved file. */
+const APPROVED_LOGOS = {
+  "public/images/brand/WT_Logo_Primary.png": "0c685ef7a149",
+  "public/images/brand/WT_Logo_Stacked.png": "4c0418bd61dd",
+  "public/images/brand/WT_Mark.png": "be7a3039fe59",
+} as const;
+
+function sourceFiles(dir: string): string[] {
+  return readdirSync(join(root, dir)).flatMap((name) => {
+    const relative = join(dir, name);
+    if (statSync(join(root, relative)).isDirectory()) return sourceFiles(relative);
+    return /\.(tsx?|css)$/.test(name) && !name.endsWith(".test.ts") ? [relative] : [];
+  });
+}
+
+describe("brand rules", () => {
+  for (const [file, prefix] of Object.entries(APPROVED_LOGOS)) {
+    it(`${file} is the approved artwork`, () => {
+      assert.ok(sha(file).startsWith(prefix), `${file} no longer matches the approved file`);
+    });
+  }
+
+  it("the header uses the approved files, not a font-set wordmark", () => {
+    const header = readFileSync(join(root, "components/nav-header.tsx"), "utf8");
+    assert.match(header, /images\/brand\/WT_Mark\.png/);
+    assert.match(header, /images\/brand\/WT_Logo_Primary\.png/);
+  });
+
+  it("no lighthouse reference anywhere in app, components, lib or content", () => {
+    for (const file of ["app", "components", "lib", "content"].flatMap(sourceFiles)) {
+      assert.doesNotMatch(readFileSync(join(root, file), "utf8"), /lighthouse/i, `${file} mentions a lighthouse`);
+    }
+  });
+
+  it("Weathered Clay is not used until its hex is confirmed", () => {
+    for (const file of ["app", "components", "lib"].flatMap(sourceFiles)) {
+      assert.doesNotMatch(readFileSync(join(root, file), "utf8"), /weathered[ -]?clay/i, `${file} uses Weathered Clay`);
+    }
+  });
+});

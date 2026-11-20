@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import BagLink from "@/components/bag-link";
 
@@ -8,7 +9,7 @@ const navLinks = [
 ] as const;
 
 /**
- * nav-header — Server Component: brand mark, SHOP/COLLECTIONS/ABOUT
+ * nav-header — Server Component: approved logo, SHOP/COLLECTIONS/ABOUT
  * label-mono text links (Wet Ink), a search icon (aria-label only, no href
  * yet — Story 3.5 wires it up) and the bag link with its item count
  * (`BagLink`, the one client island here). No 'use client' on this file;
@@ -17,11 +18,26 @@ const navLinks = [
 export default function NavHeader() {
   return (
     <div className="flex items-center justify-between gap-4 px-gutter-mobile py-3 md:px-gutter-desktop">
-      <Link
-        href="/"
-        className="inline-flex min-h-11 items-center font-display text-body text-wet-ink"
-      >
-        Weathered Thread
+      {/* Approved artwork, used unaltered: the full lockup where there is room, the WT mark on
+          phones (the lockup's name would be too small to read). Both are navy on transparent,
+          so they only ever sit on the light header. */}
+      <Link href="/" className="inline-flex min-h-11 items-center">
+        <Image
+          src="/images/brand/WT_Mark.png"
+          alt="Weathered Thread"
+          width={1774}
+          height={887}
+          priority
+          className="h-10 w-auto md:hidden"
+        />
+        <Image
+          src="/images/brand/WT_Logo_Primary.png"
+          alt="Weathered Thread"
+          width={2048}
+          height={682}
+          priority
+          className="hidden h-14 w-auto md:block"
+        />
       </Link>
 
       <nav aria-label="Primary" className="flex items-center gap-5">
