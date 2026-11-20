@@ -55,7 +55,7 @@ As a visitor, I want the Collections link to work, so that I can browse by place
 - Each new design gets authored story content (`authored.ts`) and passes the registry drift check (Story 2.4).
 - Done: 4 new active designs synced and authored (13 shown). 2 listings are inactive on Etsy and cannot be synced until reactivated. `npm run sync:photos` is the refresh step (see `content/catalog/README.md`).
 
-### Story 5.5: Hide and unhide a design
+### Story 5.5: Hide and unhide a design (built, in review)
 - **Given** a design marked hidden, **when** any listing, search, collection or direct URL is requested, **then** the design is not shown (direct URL returns not found).
 - **Given** the flag is removed, **then** it reappears with no other change.
 - Default mechanism: a `hidden` field in repo-authored content (OQ-3).

@@ -20,12 +20,12 @@ const SLUG_PATTERN = /^[a-z0-9-]+$/;
 const PHOTO_FILE = /^[A-Za-z0-9._-]+\.(jpe?g|png|webp)$/;
 const FILES = ["synced.ts", "authored.ts", "index.ts"] as const;
 // Exhaustive over AuthoredContent: adding or renaming a field there fails tsc until this follows.
-// `photos` is an array of objects, so it has its own checks below instead of the string check.
+// `photos` is an array of objects, and `hidden` an optional boolean; both have their own checks below instead of the string check.
 const AUTHORED_FIELDS = Object.keys({
   motifName: true,
   story: true,
   collection: true,
-} satisfies Record<Exclude<keyof AuthoredContent, "photos">, true>) as Exclude<keyof AuthoredContent, "photos">[];
+} satisfies Record<Exclude<keyof AuthoredContent, "photos" | "hidden">, true>) as Exclude<keyof AuthoredContent, "photos" | "hidden">[];
 
 export type CatalogReport = {
   /**
@@ -145,6 +145,9 @@ async function checkListing(catalogDir: string, slug: string, publicDir: string 
     }
   }
   problems.push(...(await checkPhotos(slug, authored.photos, publicDir)));
+  if (authored.hidden !== undefined && typeof authored.hidden !== "boolean") {
+    problems.push("authored.ts field `hidden` must be true or false (or removed)");
+  }
   if (typeof authored.collection === "string" && authored.collection.trim() !== "" && !SLUG_PATTERN.test(authored.collection)) {
     problems.push(`authored.ts field \`collection\` must be a collection slug matching ${SLUG_PATTERN}, got "${authored.collection}"`);
   }

@@ -14,6 +14,11 @@ export type AuthoredContent = {
   readonly collection: string;
   /** This design's photos, in display order; the first is its thumbnail. Files live in `public/images/designs/{slug}/`. */
   readonly photos: readonly AuthoredPhoto[];
+  /**
+   * Set `hidden: true` to keep a design off the site (shop, collections, its page, the bag)
+   * without deleting it, e.g. to stage a launch. Remove the line to show it again.
+   */
+  readonly hidden?: boolean;
 };
 
 /** One photo of a design, served from this site (not from Etsy). */

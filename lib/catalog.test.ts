@@ -62,6 +62,16 @@ describe("catalog", () => {
     assert.deepEqual(catalog.getListingsByCollection("nowhere"), []);
   });
 
+  it("hidden designs are not in the catalog; removing the flag brings them back", () => {
+    const staged = createCatalog({ ...registry, pickleball: listing({ hidden: true }) });
+    assert.deepEqual(staged.getListings().map((entry) => entry.slug), ["beach-badge", "water-tower"]);
+    assert.equal(staged.getListing("pickleball"), undefined);
+    assert.deepEqual(staged.getListingsByCollection("sea-isle").map((entry) => entry.slug), ["water-tower"]);
+    const shown = createCatalog({ ...registry, pickleball: listing({ hidden: false }) });
+    assert.ok(shown.getListing("pickleball"), "hidden: false is shown");
+    assert.ok(createCatalog(registry).getListing("pickleball"), "no flag is shown");
+  });
+
   it("empty registry: no entries and no errors", () => {
     const empty = createCatalog({});
     assert.deepEqual(empty.getListings(), []);

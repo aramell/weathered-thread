@@ -54,6 +54,18 @@ Renaming or removing a listing means changing the directory, the `listings.json`
 
 App code reads listings only through `lib/catalog.ts` (`getListings`, `getListing(slug)`, `getListingsByCollection`). Only `lib/catalog.ts` is `server-only` (a merged listing carries the Etsy `url`, which must never reach a client bundle), so import `registry.ts` through it and never pass an entry or its `url` as a prop to a Client Component.
 
+## Hiding a design (staging a launch)
+
+Add `hidden: true` to the design's `authored.ts` to keep it off the site: it leaves the shop, the collection page, its own page (404) and the bag, and nothing else changes. Remove the line (or set `hidden: false`) to show it again. The files, photos and Etsy listing are untouched, so a hidden design can be fully prepared before launch.
+
+```ts
+export const authored = {
+  motifName: "Pickleball",
+  // ...
+  hidden: true,
+} as const satisfies AuthoredContent;
+```
+
 ## Refreshing photos after you change them on Etsy
 
 `npm run sync:etsy` refreshes prices, variations and the list of Etsy photo URLs. Photos are served from this site, so copy them over too:
