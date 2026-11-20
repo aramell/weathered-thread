@@ -18,14 +18,11 @@ const CHART = {
 
 /**
  * Known disagreements between the synced Etsy data and the chart, as "design | style | color | size".
- * Etsy lists the stacked logo's Ivory Lightweight Crewneck S and M at $50, the chart says $44.
- * Fix the price on Etsy and re-sync, then delete this entry: the test fails if a listed
- * mismatch no longer exists, so this list cannot go stale.
+ * Empty now: the stacked logo's Ivory Lightweight Crewneck S and M were $50 on Etsy and are $44
+ * after the Nov 2026 re-sync. Add an entry only while a wrong Etsy price waits to be fixed; the
+ * test fails if a listed mismatch no longer exists, so this list cannot go stale.
  */
-const KNOWN_ETSY_MISMATCHES = new Set([
-  "weathered-thread-logo | Lightweight Crewneck | Ivory | S",
-  "weathered-thread-logo | Lightweight Crewneck | Ivory | M",
-]);
+const KNOWN_ETSY_MISMATCHES = new Set<string>([]);
 
 describe("price chart parity", () => {
   const listings = getListings();

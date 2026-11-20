@@ -5,7 +5,11 @@
  * and add one key. The key is the slug from `listings.json` and the directory name.
  *
  *   import { listing as pickleball } from "./pickleball";
- *   import type { CatalogListing } from "./types";
+ *   import { listing as sicTerrapinTurtle } from "./sic-terrapin-turtle";
+import { listing as sicSeagullFry } from "./sic-seagull-fry";
+import { listing as sicLobsterLoft } from "./sic-lobster-loft";
+import { listing as sicPickleball } from "./sic-pickleball";
+import type { CatalogListing } from "./types";
  *   export const registry = { pickleball } as const satisfies Record<string, CatalogListing>;
  *
  * `npm run check:catalog` verifies this file: every key must be a slug in `listings.json` with a
@@ -20,6 +24,10 @@ import { listing as sicSmile } from "./sic-smile";
 import { listing as sicWave } from "./sic-wave";
 import { listing as wtHorizontalLogo } from "./wt-horizontal-logo";
 import { listing as wtMinimalistLogo } from "./wt-minimalist-logo";
+import { listing as sicTerrapinTurtle } from "./sic-terrapin-turtle";
+import { listing as sicSeagullFry } from "./sic-seagull-fry";
+import { listing as sicLobsterLoft } from "./sic-lobster-loft";
+import { listing as sicPickleball } from "./sic-pickleball";
 import type { CatalogListing } from "./types";
 
 export const registry = {
@@ -32,4 +40,8 @@ export const registry = {
   "sic-wave": sicWave,
   "wt-horizontal-logo": wtHorizontalLogo,
   "wt-minimalist-logo": wtMinimalistLogo,
+  "sic-terrapin-turtle": sicTerrapinTurtle,
+  "sic-seagull-fry": sicSeagullFry,
+  "sic-lobster-loft": sicLobsterLoft,
+  "sic-pickleball": sicPickleball,
 } as const satisfies Record<string, CatalogListing>;

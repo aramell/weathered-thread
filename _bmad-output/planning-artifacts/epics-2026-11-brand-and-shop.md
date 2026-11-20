@@ -49,11 +49,11 @@ As a visitor, I want the Collections link to work, so that I can browse by place
 - Find the root cause (hypothesis: lowest-price-across-listings in `lib/shop.ts`) before changing code. Add a test with chart values as fixtures.
 - Chart received (Collections & Pricing). Price screenshot still not seen.
 
-### Story 5.4: All active designs appear; Etsy changes flow through
+### Story 5.4: All active designs appear; Etsy changes flow through (built, in review)
 - **Given** the owner has run `npm run auth:etsy`, **when** the sync runs, **then** every active listing the owner intends to sell is in `content/catalog` (15 expected).
 - **Given** updated photos on Etsy, **when** the documented refresh step runs, **then** the site serves the new images and the old ones are removed.
 - Each new design gets authored story content (`authored.ts`) and passes the registry drift check (Story 2.4).
-- **Blocked by** OQ-2.
+- Done: 4 new active designs synced and authored (13 shown). 2 listings are inactive on Etsy and cannot be synced until reactivated. `npm run sync:photos` is the refresh step (see `content/catalog/README.md`).
 
 ### Story 5.5: Hide and unhide a design
 - **Given** a design marked hidden, **when** any listing, search, collection or direct URL is requested, **then** the design is not shown (direct URL returns not found).

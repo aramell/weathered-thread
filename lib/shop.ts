@@ -12,8 +12,8 @@ import { getListings } from "./catalog";
 import { COLOR_ORDER, colorPresentation, garmentBlurb } from "./shop-presentation";
 import { slugify, type Shop, type ShopColor, type ShopGarmentType, type ShopSize } from "./shop-types";
 
-/** Display order only: sizes shown are whatever the synced data lists (S, M, L today). */
-const SIZE_ORDER = ["S", "M", "L"];
+/** Display order only: sizes shown are whatever the synced data lists (S, M, L, XL today). */
+const SIZE_ORDER = ["S", "M", "L", "XL"];
 
 /**
  * Colors offered on only some styles, by exact Etsy style name. Bay is Heavyweight Tee only
