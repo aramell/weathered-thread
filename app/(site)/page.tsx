@@ -13,6 +13,7 @@ export default async function Home() {
   const allMotifs = getMotifs();
   const motifs = allMotifs.length > 8 ? allMotifs.slice(0, 6) : allMotifs;
   const shopHeadingId = "shop-heading";
+  const seaIsle = getCollection("sea-isle");
 
   return (
     <main className="flex flex-col gap-story-gap">
@@ -30,10 +31,12 @@ export default async function Home() {
       </section>
 
       {/* Sea Isle feature */}
-      <CollectionStoryBlock eyebrow="Launch Collection" heading="Sea Isle" location>
-        <p>{getCollection("sea-isle")?.story[0]}</p>
-        <ButtonPrimary href="/collections/sea-isle">Shop Sea Isle</ButtonPrimary>
-      </CollectionStoryBlock>
+      {seaIsle && (
+        <CollectionStoryBlock eyebrow={seaIsle.eyebrow} heading={seaIsle.heading} location>
+          <p>{seaIsle.story[0]}</p>
+          <ButtonPrimary href="/collections/sea-isle">Shop Sea Isle</ButtonPrimary>
+        </CollectionStoryBlock>
+      )}
 
       {/* Brand idea */}
       <section className="mx-auto w-full max-w-md px-gutter-mobile text-center md:px-gutter-desktop">

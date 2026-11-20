@@ -72,7 +72,7 @@ Bring the site to the Master Brand Guidelines v1.0. Palette already matches and 
 - The "Weathered Thread" brand heading and all other display type stay Fraunces.
 - Verified in browser on the Deep Harbor block at mobile width (OQ-6). `DESIGN.md` documents four typefaces and Anton's single job.
 
-### Story 6.2: Eyebrow and tagline copy
+### Story 6.2: Eyebrow and tagline copy (built, in review)
 - Sea Isle eyebrow is "For places worth remembering" on the collection page and the home page block; both read it from `lib/collections.ts`. "Launch Collection" is removed.
 - Remove the trailing "Made to remember." from the brand collection story and from `wt-horizontal-logo/authored.ts`. The exact tagline remains only on the home page, About page and page title.
 - Meta description is unchanged.
