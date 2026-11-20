@@ -38,7 +38,7 @@ As a visitor, I want the Collections link to work, so that I can browse by place
 - A test fails the build if a nav link has no matching route.
 - Verify the 404 cause in the browser first (PRD A-1).
 
-### Story 5.2: Bay only on tees; size list from data
+### Story 5.2: Bay only on Heavyweight Tee; size list from data (built, in review)
 - **Given** Bay is Heavyweight Tee only (decided), **when** any other style is shown, **then** Bay is not offered for it.
 - The rule lives in one place (a catalog or shop-presentation rule), not per page.
 - **Given** the shop model, **then** sizes shown equal those in the synced data. Trim unused `2XL`/`3XL` from `SIZE_ORDER` in `lib/shop.ts`.

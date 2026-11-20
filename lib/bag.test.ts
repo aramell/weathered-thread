@@ -7,7 +7,9 @@ import { priceBag, startBagCheckout, toCheckoutLines } from "./bag";
 import { SquareApiError, type SquareClient } from "./square-client";
 
 const ivoryTee: CartPick = { slug: "sic-wave", style: "heavyweight-tee", color: "ivory", size: "M" };
-const bayLongSleeve: CartPick = { slug: "sic-wave", style: "long-sleeve-tee", color: "bay", size: "S" };
+const blueJeanLongSleeve: CartPick = { slug: "sic-wave", style: "long-sleeve-tee", color: "blue-jean", size: "S" };
+const bayLongSleeve: CartPick = { ...blueJeanLongSleeve, color: "bay" };
+const bayTee: CartPick = { slug: "sic-wave", style: "heavyweight-tee", color: "bay", size: "S" };
 
 const catalogPrice = (slug: string, style: string, color: string, size: string) => {
   const variation = getListing(slug)?.variations.find(
@@ -34,9 +36,14 @@ describe("priceBag", () => {
   });
 
   it("prices a combination Etsy shows at zero stock: pieces are made to order", () => {
-    const [line] = priceBag(addItem([], bayLongSleeve)).lines;
+    const [line] = priceBag(addItem([], blueJeanLongSleeve)).lines;
     assert.ok(line.status === "ok");
-    assert.equal(line.pick.priceCents, catalogPrice("sic-wave", "Long Sleeve Tee", "Bay", "S"));
+    assert.equal(line.pick.priceCents, catalogPrice("sic-wave", "Long Sleeve Tee", "Blue Jean", "S"));
+  });
+
+  it("Bay is Heavyweight Tee only: a Bay long sleeve is unavailable, a Bay tee prices", () => {
+    assert.equal(priceBag(addItem([], bayLongSleeve)).lines[0].status, "unavailable");
+    assert.equal(priceBag(addItem([], bayTee)).lines[0].status, "ok");
   });
 
   it("flags unknown designs, styles, colors and sizes without throwing", () => {

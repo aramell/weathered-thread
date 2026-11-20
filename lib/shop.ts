@@ -12,7 +12,19 @@ import { getListings } from "./catalog";
 import { COLOR_ORDER, colorPresentation, garmentBlurb } from "./shop-presentation";
 import { slugify, type Shop, type ShopColor, type ShopGarmentType, type ShopSize } from "./shop-types";
 
-const SIZE_ORDER = ["XS", "S", "M", "L", "XL", "2XL", "3XL"];
+/** Display order only: sizes shown are whatever the synced data lists (S, M, L today). */
+const SIZE_ORDER = ["S", "M", "L"];
+
+/**
+ * Colors offered on only some styles, by exact Etsy style name. Bay is Heavyweight Tee only
+ * (owner decision, brand sizes & colors chart); every other style never shows it, even if a
+ * synced listing still lists it. A color not named here is offered on every style.
+ */
+export const COLOR_STYLE_RULES: Record<string, readonly string[]> = {
+  Bay: ["Heavyweight Tee"],
+};
+
+const colorOffered = (color: string, style: string): boolean => COLOR_STYLE_RULES[color]?.includes(style) ?? true;
 
 type Cell = { priceCents: number };
 
@@ -40,6 +52,7 @@ export function buildShop(listings: readonly CatalogEntry[]): Shop {
           throw new Error(`listing "${listing.slug}" variation ${variation.productId}: missing option "${axis}"`);
         }
       }
+      if (!colorOffered(color, style)) continue;
       const colors = styles.get(style) ?? new Map<string, Map<string, Cell>>();
       const sizes = colors.get(color) ?? new Map<string, Cell>();
       const previous = sizes.get(size);
