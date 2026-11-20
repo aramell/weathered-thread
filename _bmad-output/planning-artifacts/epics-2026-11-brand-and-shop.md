@@ -44,10 +44,10 @@ As a visitor, I want the Collections link to work, so that I can browse by place
 - **Given** the shop model, **then** sizes shown equal those in the synced data. Trim unused `2XL`/`3XL` from `SIZE_ORDER` in `lib/shop.ts`.
 - Test: a Bay variation on a non-tee style never reaches the rendered shop.
 
-### Story 5.3: Prices match the owner's chart
+### Story 5.3: Prices match the owner's chart (built, in review)
 - **Given** the owner's pricing chart, **when** every style, color and size is compared with the site, **then** all prices match, or each difference is listed and explained.
 - Find the root cause (hypothesis: lowest-price-across-listings in `lib/shop.ts`) before changing code. Add a test with chart values as fixtures.
-- **Blocked by** OQ-4 (chart and price screenshot).
+- Chart received (Collections & Pricing). Price screenshot still not seen.
 
 ### Story 5.4: All active designs appear; Etsy changes flow through
 - **Given** the owner has run `npm run auth:etsy`, **when** the sync runs, **then** every active listing the owner intends to sell is in `content/catalog` (15 expected).
