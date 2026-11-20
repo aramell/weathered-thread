@@ -5,6 +5,8 @@
  */
 export type Collection = {
   slug: string;
+  /** "place" collections are named for a location and set that name in Anton; "brand" is the Weathered Thread mark. */
+  kind: "place" | "brand";
   /** Short name used in running copy, e.g. "the Sea Isle collection". */
   name: string;
   eyebrow: string;
@@ -15,6 +17,7 @@ export type Collection = {
 export const collections: Collection[] = [
   {
     slug: "sea-isle",
+    kind: "place",
     name: "Sea Isle",
     eyebrow: "Collection",
     heading: "Sea Isle",
@@ -24,6 +27,7 @@ export const collections: Collection[] = [
   },
   {
     slug: "brand",
+    kind: "brand",
     name: "Weathered Thread",
     eyebrow: "Collection",
     heading: "Weathered Thread",

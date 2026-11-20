@@ -6,6 +6,8 @@ import type { ReactNode } from "react";
 type CollectionStoryBlockProps = {
   eyebrow: string;
   heading: string;
+  /** The heading is a place name: set it in Anton (location wording), not Fraunces. */
+  location?: boolean;
   children: ReactNode;
 };
 
@@ -18,6 +20,7 @@ type CollectionStoryBlockProps = {
 export default function CollectionStoryBlock({
   eyebrow,
   heading,
+  location = false,
   children,
 }: CollectionStoryBlockProps) {
   const sectionRef = useRef<HTMLElement>(null);
@@ -88,7 +91,11 @@ export default function CollectionStoryBlock({
       <p className="mb-3 font-mono text-label-mono uppercase text-sailcloth/75">
         {eyebrow}
       </p>
-      <h2 className="mb-4 font-display text-display-lg-mobile md:text-display-lg">
+      <h2
+        className={`mb-4 text-display-lg-mobile md:text-display-lg ${
+          location ? "font-location uppercase tracking-location" : "font-display"
+        }`}
+      >
         {heading}
       </h2>
       <div className="flex flex-col items-start gap-5 font-body text-body">

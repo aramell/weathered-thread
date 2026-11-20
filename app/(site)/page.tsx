@@ -30,7 +30,7 @@ export default async function Home() {
       </section>
 
       {/* Sea Isle feature */}
-      <CollectionStoryBlock eyebrow="Launch Collection" heading="Sea Isle">
+      <CollectionStoryBlock eyebrow="Launch Collection" heading="Sea Isle" location>
         <p>{getCollection("sea-isle")?.story[0]}</p>
         <ButtonPrimary href="/collections/sea-isle">Shop Sea Isle</ButtonPrimary>
       </CollectionStoryBlock>
@@ -65,6 +65,7 @@ export default async function Home() {
                     price={formatPrice(motif.priceCents)}
                     image={motif.images[0]?.url}
                     collection={getCollection(motif.collection)?.name}
+                    collectionPlace={getCollection(motif.collection)?.kind === "place"}
                   />
                 </Link>
               </div>

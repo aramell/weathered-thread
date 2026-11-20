@@ -1,4 +1,5 @@
 import Image from "next/image";
+import CollectionLabel from "@/components/collection-label";
 import type { ReactNode } from "react";
 
 type ProductCardProps = {
@@ -7,6 +8,8 @@ type ProductCardProps = {
   image?: string;
   /** Collection name shown above the design name, e.g. "Sea Isle". */
   collection?: string;
+  /** The collection is a place (set its name in Anton). */
+  collectionPlace?: boolean;
   /** Replaces the image slot (e.g. a garment caricature); wins over `image`. */
   media?: ReactNode;
 };
@@ -19,7 +22,7 @@ type ProductCardProps = {
  * photo when one is (e.g. `/shop/[type]`'s colorway cards). Reused by
  * Epic 3's Shop grid and browse-by-color flow.
  */
-export default function ProductCard({ name, price, image, collection, media }: ProductCardProps) {
+export default function ProductCard({ name, price, image, collection, collectionPlace, media }: ProductCardProps) {
   return (
     <div className="rounded bg-paper-raised p-4">
       {media ? (
@@ -37,7 +40,7 @@ export default function ProductCard({ name, price, image, collection, media }: P
       ) : (
         <div className="mb-3 aspect-square rounded bg-sailcloth" aria-hidden="true" />
       )}
-      {collection && <p className="font-mono text-caption-mono text-marsh-sage">{collection}</p>}
+      {collection && <CollectionLabel name={collection} place={collectionPlace} />}
       <p className="font-body text-body">{name}</p>
       <p className="font-mono text-price-mono">{price}</p>
     </div>

@@ -126,6 +126,7 @@ export default function ProductPickerShell({
   const designFirst = seed.kind === "motif";
   const designCollapsed = designFirst && Boolean(motif) && !designOpen;
   const collectionName = (slug: string) => getCollection(slug)?.name ?? "Weathered Thread";
+  const collectionPlace = (slug: string) => getCollection(slug)?.kind === "place";
 
   const missingGarmentPrompt = !garmentType ? "Choose a garment for this piece." : null;
   const missingColorPrompt = garmentType && !colorway ? "Choose a color for this piece." : null;
@@ -241,6 +242,7 @@ export default function ProductPickerShell({
               {designCollapsed && motif ? (
                 <DesignSummary
                   collection={collectionName(motif.collection)}
+                  collectionPlace={collectionPlace(motif.collection)}
                   name={motif.name}
                   image={motif.images[0]?.url}
                   ref={changeButtonRef}
@@ -284,6 +286,7 @@ export default function ProductPickerShell({
                               image={m.images[0]?.url}
                               selected={selected}
                               collection={collectionName(m.collection)}
+                              collectionPlace={collectionPlace(m.collection)}
                             />
                           </button>
                         </div>

@@ -66,7 +66,7 @@ As a visitor, I want the Collections link to work, so that I can browse by place
 
 Bring the site to the Master Brand Guidelines v1.0. Palette already matches and needs no work.
 
-### Story 6.1: Anton for location wording
+### Story 6.1: Anton for location wording (built, in review)
 - Anton is loaded via `next/font` and exposed as a font token with uppercase, slightly tracked styling.
 - Applied only to place names: the Sea Isle story heading, the collection label on design tiles, and place-collection page headings. A `kind: "place" | "brand"` field on collections decides it.
 - The "Weathered Thread" brand heading and all other display type stay Fraunces.
