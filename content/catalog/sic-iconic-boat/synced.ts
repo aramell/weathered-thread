@@ -7,7 +7,7 @@ export const synced = {
   "url": "https://www.etsy.com/listing/4603867680/sea-isle-city-iconic-boat-embroidered",
   "state": "active",
   "priceCents": 3600,
-  "quantity": 195,
+  "quantity": 260,
   "createdTimestamp": 1793060986,
   "variations": [
     {
@@ -77,6 +77,30 @@ export const synced = {
         {
           "propertyId": 62809790533,
           "valueId": 64119146685
+        }
+      ],
+      "priceCents": 3600,
+      "quantity": 5
+    },
+    {
+      "productId": 36278633854,
+      "options": {
+        "Style": "Heavyweight Tee",
+        "Primary color": "Ivory",
+        "Size": "XL"
+      },
+      "optionIds": [
+        {
+          "propertyId": 513,
+          "valueId": 868769690934
+        },
+        {
+          "propertyId": 200,
+          "valueId": 50110898006
+        },
+        {
+          "propertyId": 62809790533,
+          "valueId": 65405610620
         }
       ],
       "priceCents": 3600,
@@ -155,6 +179,30 @@ export const synced = {
       "quantity": 5
     },
     {
+      "productId": 35902008327,
+      "options": {
+        "Style": "Heavyweight Tee",
+        "Primary color": "Blue Jean",
+        "Size": "XL"
+      },
+      "optionIds": [
+        {
+          "propertyId": 513,
+          "valueId": 868769690934
+        },
+        {
+          "propertyId": 200,
+          "valueId": 67761475759
+        },
+        {
+          "propertyId": 62809790533,
+          "valueId": 65405610620
+        }
+      ],
+      "priceCents": 3600,
+      "quantity": 5
+    },
+    {
       "productId": 35275073267,
       "options": {
         "Style": "Heavyweight Tee",
@@ -221,6 +269,30 @@ export const synced = {
         {
           "propertyId": 62809790533,
           "valueId": 64119146685
+        }
+      ],
+      "priceCents": 3600,
+      "quantity": 5
+    },
+    {
+      "productId": 36278633852,
+      "options": {
+        "Style": "Heavyweight Tee",
+        "Primary color": "Pepper",
+        "Size": "XL"
+      },
+      "optionIds": [
+        {
+          "propertyId": 513,
+          "valueId": 868769690934
+        },
+        {
+          "propertyId": 200,
+          "valueId": 90661726819
+        },
+        {
+          "propertyId": 62809790533,
+          "valueId": 65405610620
         }
       ],
       "priceCents": 3600,
@@ -299,6 +371,30 @@ export const synced = {
       "quantity": 5
     },
     {
+      "productId": 35902008325,
+      "options": {
+        "Style": "Heavyweight Tee",
+        "Primary color": "Bay",
+        "Size": "XL"
+      },
+      "optionIds": [
+        {
+          "propertyId": 513,
+          "valueId": 868769690934
+        },
+        {
+          "propertyId": 200,
+          "valueId": 93421697417
+        },
+        {
+          "propertyId": 62809790533,
+          "valueId": 65405610620
+        }
+      ],
+      "priceCents": 3600,
+      "quantity": 5
+    },
+    {
       "productId": 35656017700,
       "options": {
         "Style": "Long Sleeve Tee",
@@ -365,6 +461,30 @@ export const synced = {
         {
           "propertyId": 62809790533,
           "valueId": 64119146685
+        }
+      ],
+      "priceCents": 3800,
+      "quantity": 5
+    },
+    {
+      "productId": 35902008323,
+      "options": {
+        "Style": "Long Sleeve Tee",
+        "Primary color": "Ivory",
+        "Size": "XL"
+      },
+      "optionIds": [
+        {
+          "propertyId": 513,
+          "valueId": 108667086563
+        },
+        {
+          "propertyId": 200,
+          "valueId": 50110898006
+        },
+        {
+          "propertyId": 62809790533,
+          "valueId": 65405610620
         }
       ],
       "priceCents": 3800,
@@ -443,6 +563,30 @@ export const synced = {
       "quantity": 5
     },
     {
+      "productId": 36278633850,
+      "options": {
+        "Style": "Long Sleeve Tee",
+        "Primary color": "Blue Jean",
+        "Size": "XL"
+      },
+      "optionIds": [
+        {
+          "propertyId": 513,
+          "valueId": 108667086563
+        },
+        {
+          "propertyId": 200,
+          "valueId": 67761475759
+        },
+        {
+          "propertyId": 62809790533,
+          "valueId": 65405610620
+        }
+      ],
+      "priceCents": 3800,
+      "quantity": 5
+    },
+    {
       "productId": 35275073253,
       "options": {
         "Style": "Long Sleeve Tee",
@@ -509,6 +653,30 @@ export const synced = {
         {
           "propertyId": 62809790533,
           "valueId": 64119146685
+        }
+      ],
+      "priceCents": 3800,
+      "quantity": 5
+    },
+    {
+      "productId": 35902008319,
+      "options": {
+        "Style": "Long Sleeve Tee",
+        "Primary color": "Pepper",
+        "Size": "XL"
+      },
+      "optionIds": [
+        {
+          "propertyId": 513,
+          "valueId": 108667086563
+        },
+        {
+          "propertyId": 200,
+          "valueId": 90661726819
+        },
+        {
+          "propertyId": 62809790533,
+          "valueId": 65405610620
         }
       ],
       "priceCents": 3800,
@@ -587,6 +755,30 @@ export const synced = {
       "quantity": 0
     },
     {
+      "productId": 36278633848,
+      "options": {
+        "Style": "Long Sleeve Tee",
+        "Primary color": "Bay",
+        "Size": "XL"
+      },
+      "optionIds": [
+        {
+          "propertyId": 513,
+          "valueId": 108667086563
+        },
+        {
+          "propertyId": 200,
+          "valueId": 93421697417
+        },
+        {
+          "propertyId": 62809790533,
+          "valueId": 65405610620
+        }
+      ],
+      "priceCents": 3600,
+      "quantity": 0
+    },
+    {
       "productId": 35656017686,
       "options": {
         "Style": "Lightweight Crewneck",
@@ -653,6 +845,30 @@ export const synced = {
         {
           "propertyId": 62809790533,
           "valueId": 64119146685
+        }
+      ],
+      "priceCents": 4800,
+      "quantity": 5
+    },
+    {
+      "productId": 35902008317,
+      "options": {
+        "Style": "Lightweight Crewneck",
+        "Primary color": "Ivory",
+        "Size": "XL"
+      },
+      "optionIds": [
+        {
+          "propertyId": 513,
+          "valueId": 1517311254557
+        },
+        {
+          "propertyId": 200,
+          "valueId": 50110898006
+        },
+        {
+          "propertyId": 62809790533,
+          "valueId": 65405610620
         }
       ],
       "priceCents": 4800,
@@ -731,6 +947,30 @@ export const synced = {
       "quantity": 5
     },
     {
+      "productId": 36278633846,
+      "options": {
+        "Style": "Lightweight Crewneck",
+        "Primary color": "Blue Jean",
+        "Size": "XL"
+      },
+      "optionIds": [
+        {
+          "propertyId": 513,
+          "valueId": 1517311254557
+        },
+        {
+          "propertyId": 200,
+          "valueId": 67761475759
+        },
+        {
+          "propertyId": 62809790533,
+          "valueId": 65405610620
+        }
+      ],
+      "priceCents": 4800,
+      "quantity": 5
+    },
+    {
       "productId": 35656017682,
       "options": {
         "Style": "Lightweight Crewneck",
@@ -797,6 +1037,30 @@ export const synced = {
         {
           "propertyId": 62809790533,
           "valueId": 64119146685
+        }
+      ],
+      "priceCents": 4800,
+      "quantity": 5
+    },
+    {
+      "productId": 35902008315,
+      "options": {
+        "Style": "Lightweight Crewneck",
+        "Primary color": "Pepper",
+        "Size": "XL"
+      },
+      "optionIds": [
+        {
+          "propertyId": 513,
+          "valueId": 1517311254557
+        },
+        {
+          "propertyId": 200,
+          "valueId": 90661726819
+        },
+        {
+          "propertyId": 62809790533,
+          "valueId": 65405610620
         }
       ],
       "priceCents": 4800,
@@ -875,6 +1139,30 @@ export const synced = {
       "quantity": 0
     },
     {
+      "productId": 35902008313,
+      "options": {
+        "Style": "Lightweight Crewneck",
+        "Primary color": "Bay",
+        "Size": "XL"
+      },
+      "optionIds": [
+        {
+          "propertyId": 513,
+          "valueId": 1517311254557
+        },
+        {
+          "propertyId": 200,
+          "valueId": 93421697417
+        },
+        {
+          "propertyId": 62809790533,
+          "valueId": 65405610620
+        }
+      ],
+      "priceCents": 3600,
+      "quantity": 0
+    },
+    {
       "productId": 35275073233,
       "options": {
         "Style": "Heavyweight Crewneck",
@@ -941,6 +1229,30 @@ export const synced = {
         {
           "propertyId": 62809790533,
           "valueId": 64119146685
+        }
+      ],
+      "priceCents": 5600,
+      "quantity": 5
+    },
+    {
+      "productId": 36278633844,
+      "options": {
+        "Style": "Heavyweight Crewneck",
+        "Primary color": "Ivory",
+        "Size": "XL"
+      },
+      "optionIds": [
+        {
+          "propertyId": 513,
+          "valueId": 1212022554018
+        },
+        {
+          "propertyId": 200,
+          "valueId": 50110898006
+        },
+        {
+          "propertyId": 62809790533,
+          "valueId": 65405610620
         }
       ],
       "priceCents": 5600,
@@ -1019,6 +1331,30 @@ export const synced = {
       "quantity": 5
     },
     {
+      "productId": 35902008311,
+      "options": {
+        "Style": "Heavyweight Crewneck",
+        "Primary color": "Blue Jean",
+        "Size": "XL"
+      },
+      "optionIds": [
+        {
+          "propertyId": 513,
+          "valueId": 1212022554018
+        },
+        {
+          "propertyId": 200,
+          "valueId": 67761475759
+        },
+        {
+          "propertyId": 62809790533,
+          "valueId": 65405610620
+        }
+      ],
+      "priceCents": 5600,
+      "quantity": 5
+    },
+    {
       "productId": 35275073227,
       "options": {
         "Style": "Heavyweight Crewneck",
@@ -1085,6 +1421,30 @@ export const synced = {
         {
           "propertyId": 62809790533,
           "valueId": 64119146685
+        }
+      ],
+      "priceCents": 5600,
+      "quantity": 5
+    },
+    {
+      "productId": 36278633842,
+      "options": {
+        "Style": "Heavyweight Crewneck",
+        "Primary color": "Pepper",
+        "Size": "XL"
+      },
+      "optionIds": [
+        {
+          "propertyId": 513,
+          "valueId": 1212022554018
+        },
+        {
+          "propertyId": 200,
+          "valueId": 90661726819
+        },
+        {
+          "propertyId": 62809790533,
+          "valueId": 65405610620
         }
       ],
       "priceCents": 5600,
@@ -1161,19 +1521,57 @@ export const synced = {
       ],
       "priceCents": 3200,
       "quantity": 0
+    },
+    {
+      "productId": 36278633840,
+      "options": {
+        "Style": "Heavyweight Crewneck",
+        "Primary color": "Bay",
+        "Size": "XL"
+      },
+      "optionIds": [
+        {
+          "propertyId": 513,
+          "valueId": 1212022554018
+        },
+        {
+          "propertyId": 200,
+          "valueId": 93421697417
+        },
+        {
+          "propertyId": 62809790533,
+          "valueId": 65405610620
+        }
+      ],
+      "priceCents": 3600,
+      "quantity": 0
     }
   ],
   "images": [
     {
-      "url": "https://i.etsystatic.com/68094452/r/il/87e3e4/8747949164/il_570xN.8747949164_isup.jpg",
-      "fullUrl": "https://i.etsystatic.com/68094452/r/il/87e3e4/8747949164/il_fullxfull.8747949164_isup.jpg",
-      "width": 2250,
-      "height": 3000,
+      "url": "https://i.etsystatic.com/68094452/r/il/371902/8933466563/il_570xN.8933466563_9wko.jpg",
+      "fullUrl": "https://i.etsystatic.com/68094452/r/il/371902/8933466563/il_fullxfull.8933466563_9wko.jpg",
+      "width": 2000,
+      "height": 2000,
+      "alt": ""
+    },
+    {
+      "url": "https://i.etsystatic.com/68094452/r/il/ae122c/8933457455/il_570xN.8933457455_qcv2.jpg",
+      "fullUrl": "https://i.etsystatic.com/68094452/r/il/ae122c/8933457455/il_fullxfull.8933457455_qcv2.jpg",
+      "width": 2000,
+      "height": 2000,
       "alt": ""
     },
     {
       "url": "https://i.etsystatic.com/68094452/r/il/bc3ac3/8747948954/il_570xN.8747948954_ng14.jpg",
       "fullUrl": "https://i.etsystatic.com/68094452/r/il/bc3ac3/8747948954/il_fullxfull.8747948954_ng14.jpg",
+      "width": 2000,
+      "height": 2000,
+      "alt": ""
+    },
+    {
+      "url": "https://i.etsystatic.com/68094452/r/il/b359ae/8885684684/il_570xN.8885684684_3jnz.jpg",
+      "fullUrl": "https://i.etsystatic.com/68094452/r/il/b359ae/8885684684/il_fullxfull.8885684684_3jnz.jpg",
       "width": 2000,
       "height": 2000,
       "alt": ""
@@ -1200,22 +1598,8 @@ export const synced = {
       "alt": ""
     },
     {
-      "url": "https://i.etsystatic.com/68094452/r/il/d2a0ca/8747948958/il_570xN.8747948958_iz24.jpg",
-      "fullUrl": "https://i.etsystatic.com/68094452/r/il/d2a0ca/8747948958/il_fullxfull.8747948958_iz24.jpg",
-      "width": 2000,
-      "height": 2000,
-      "alt": ""
-    },
-    {
-      "url": "https://i.etsystatic.com/68094452/r/il/e31af7/8747948964/il_570xN.8747948964_ersk.jpg",
-      "fullUrl": "https://i.etsystatic.com/68094452/r/il/e31af7/8747948964/il_fullxfull.8747948964_ersk.jpg",
-      "width": 2000,
-      "height": 2000,
-      "alt": ""
-    },
-    {
-      "url": "https://i.etsystatic.com/68094452/r/il/d2ed41/8682501247/il_570xN.8682501247_2w92.jpg",
-      "fullUrl": "https://i.etsystatic.com/68094452/r/il/d2ed41/8682501247/il_fullxfull.8682501247_2w92.jpg",
+      "url": "https://i.etsystatic.com/68094452/r/il/b8aaa0/8939919159/il_570xN.8939919159_711h.jpg",
+      "fullUrl": "https://i.etsystatic.com/68094452/r/il/b8aaa0/8939919159/il_fullxfull.8939919159_711h.jpg",
       "width": 1254,
       "height": 1254,
       "alt": ""
@@ -1223,6 +1607,13 @@ export const synced = {
     {
       "url": "https://i.etsystatic.com/68094452/r/il/6d9f3f/8682501399/il_570xN.8682501399_gx0c.jpg",
       "fullUrl": "https://i.etsystatic.com/68094452/r/il/6d9f3f/8682501399/il_fullxfull.8682501399_gx0c.jpg",
+      "width": 1254,
+      "height": 1254,
+      "alt": ""
+    },
+    {
+      "url": "https://i.etsystatic.com/68094452/r/il/e56c99/8933456469/il_570xN.8933456469_a0ho.jpg",
+      "fullUrl": "https://i.etsystatic.com/68094452/r/il/e56c99/8933456469/il_fullxfull.8933456469_a0ho.jpg",
       "width": 1254,
       "height": 1254,
       "alt": ""
