@@ -1549,16 +1549,23 @@ export const synced = {
   ],
   "images": [
     {
-      "url": "https://i.etsystatic.com/68094452/r/il/04f578/8885947582/il_570xN.8885947582_qdl7.jpg",
-      "fullUrl": "https://i.etsystatic.com/68094452/r/il/04f578/8885947582/il_fullxfull.8885947582_qdl7.jpg",
-      "width": 2250,
+      "url": "https://i.etsystatic.com/68094452/r/il/ab5788/8885938056/il_570xN.8885938056_b4s7.jpg",
+      "fullUrl": "https://i.etsystatic.com/68094452/r/il/ab5788/8885938056/il_fullxfull.8885938056_b4s7.jpg",
+      "width": 2400,
       "height": 3000,
       "alt": ""
     },
     {
-      "url": "https://i.etsystatic.com/68094452/r/il/ab5788/8885938056/il_570xN.8885938056_b4s7.jpg",
-      "fullUrl": "https://i.etsystatic.com/68094452/r/il/ab5788/8885938056/il_fullxfull.8885938056_b4s7.jpg",
-      "width": 2400,
+      "url": "https://i.etsystatic.com/68094452/r/il/2b3e13/8933713763/il_570xN.8933713763_nj36.jpg",
+      "fullUrl": "https://i.etsystatic.com/68094452/r/il/2b3e13/8933713763/il_fullxfull.8933713763_nj36.jpg",
+      "width": 2165,
+      "height": 2706,
+      "alt": ""
+    },
+    {
+      "url": "https://i.etsystatic.com/68094452/r/il/04f578/8885947582/il_570xN.8885947582_qdl7.jpg",
+      "fullUrl": "https://i.etsystatic.com/68094452/r/il/04f578/8885947582/il_fullxfull.8885947582_qdl7.jpg",
+      "width": 2250,
       "height": 3000,
       "alt": ""
     },
@@ -1595,13 +1602,6 @@ export const synced = {
       "fullUrl": "https://i.etsystatic.com/68094452/r/il/f6ef88/8788248225/il_fullxfull.8788248225_pzrv.jpg",
       "width": 2000,
       "height": 2000,
-      "alt": ""
-    },
-    {
-      "url": "https://i.etsystatic.com/68094452/r/il/2b3e13/8933713763/il_570xN.8933713763_nj36.jpg",
-      "fullUrl": "https://i.etsystatic.com/68094452/r/il/2b3e13/8933713763/il_fullxfull.8933713763_nj36.jpg",
-      "width": 2165,
-      "height": 2706,
       "alt": ""
     },
     {

@@ -1549,10 +1549,10 @@ export const synced = {
   ],
   "images": [
     {
-      "url": "https://i.etsystatic.com/68094452/r/il/80f398/8885929830/il_570xN.8885929830_8nft.jpg",
-      "fullUrl": "https://i.etsystatic.com/68094452/r/il/80f398/8885929830/il_fullxfull.8885929830_8nft.jpg",
-      "width": 2250,
-      "height": 3000,
+      "url": "https://i.etsystatic.com/68094452/r/il/533a11/8945048759/il_570xN.8945048759_9utb.jpg",
+      "fullUrl": "https://i.etsystatic.com/68094452/r/il/533a11/8945048759/il_fullxfull.8945048759_9utb.jpg",
+      "width": 2858,
+      "height": 2143,
       "alt": ""
     },
     {
@@ -1563,20 +1563,6 @@ export const synced = {
       "alt": ""
     },
     {
-      "url": "https://i.etsystatic.com/68094452/r/il/3701ac/8933638867/il_570xN.8933638867_807r.jpg",
-      "fullUrl": "https://i.etsystatic.com/68094452/r/il/3701ac/8933638867/il_fullxfull.8933638867_807r.jpg",
-      "width": 2250,
-      "height": 3000,
-      "alt": ""
-    },
-    {
-      "url": "https://i.etsystatic.com/68094452/r/il/b89c1d/8740678874/il_570xN.8740678874_osir.jpg",
-      "fullUrl": "https://i.etsystatic.com/68094452/r/il/b89c1d/8740678874/il_fullxfull.8740678874_osir.jpg",
-      "width": 2000,
-      "height": 2000,
-      "alt": ""
-    },
-    {
       "url": "https://i.etsystatic.com/68094452/r/il/c45d05/8885876970/il_570xN.8885876970_8lr7.jpg",
       "fullUrl": "https://i.etsystatic.com/68094452/r/il/c45d05/8885876970/il_fullxfull.8885876970_8lr7.jpg",
       "width": 1701,
@@ -1584,10 +1570,17 @@ export const synced = {
       "alt": ""
     },
     {
-      "url": "https://i.etsystatic.com/68094452/r/il/38ff09/8788532089/il_570xN.8788532089_rmy7.jpg",
-      "fullUrl": "https://i.etsystatic.com/68094452/r/il/38ff09/8788532089/il_fullxfull.8788532089_rmy7.jpg",
-      "width": 2000,
-      "height": 2000,
+      "url": "https://i.etsystatic.com/68094452/r/il/80f398/8885929830/il_570xN.8885929830_8nft.jpg",
+      "fullUrl": "https://i.etsystatic.com/68094452/r/il/80f398/8885929830/il_fullxfull.8885929830_8nft.jpg",
+      "width": 2250,
+      "height": 3000,
+      "alt": ""
+    },
+    {
+      "url": "https://i.etsystatic.com/68094452/r/il/3701ac/8933638867/il_570xN.8933638867_807r.jpg",
+      "fullUrl": "https://i.etsystatic.com/68094452/r/il/3701ac/8933638867/il_fullxfull.8933638867_807r.jpg",
+      "width": 2250,
+      "height": 3000,
       "alt": ""
     },
     {
