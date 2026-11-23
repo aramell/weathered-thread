@@ -200,3 +200,11 @@
 - `SHOP_ORIGIN` may still be the old `https://shop.weatheredthread.com` in the deployed environment (unverified; medium if true, paid visitors would land on the old host). Check with `vercel env ls` before go-live. [lib/checkout.ts]
 - Dead code after hard-coding `inStock: true`: the `sold-out` branch in `resolveSelection`, the picker's out-of-stock UI, `lowest`, and `lib/live-catalog.ts` / `live-merge.ts` / `etsy-live.ts` lost their checkout consumer. Clean up once the pricing-source decision is made. [lib/shop.ts, lib/checkout.ts, components/product-picker-shell.tsx]
 - No CI runs the test suite: the new payment tests run only via `npm run test:catalog`, and the only workflow is `sync-etsy.yml`. Add a test and tsc job. [package.json, .github/workflows]
+
+## Deferred from: code review of change-set-brand-guidelines-2026-11 (2026-11-23)
+
+Code chunk only (app, components, lib, scripts, config). `content/`, `_bmad-output/` and `public/` were not reviewed. All three items below re-confirm entries already recorded on 2026-11-03.
+
+- Square webhook can email twice for one order: it handles every `payment.updated` with status `COMPLETED`, and dedupe relies only on Resend's 24-hour idempotency key. A later re-delivery (for example after a refund update) would send a second "make this" email. Unverified severity: medium. To settle it, check whether Square sends `payment.updated` with `COMPLETED` after a refund; if so, persist processed order ids or skip payments with `refunded_money`. [lib/square-webhook.ts]
+- Square webhook route glue is untested: `fetchOrder` (GET `/v2/orders/{id}`, unwrapping `.order`) and `send` (Resend with `{ idempotencyKey }`, throwing on `error`) have no test, because `lib/square-webhook.test.ts` stubs both. Fix before enabling the webhook: move the two closures into `lib/` factories that take `fetch` and a Resend client, then test them. [app/api/square/webhook/route.ts]
+- Shipping is a flat US rate but Square's `ask_for_shipping_address` is not restricted to the US, so a non-US address is accepted at the US rate. Unverified severity: medium. Settle at the test purchase by checking the address on the order, or reword the bag copy. [lib/cart.ts, components/bag-view.tsx]

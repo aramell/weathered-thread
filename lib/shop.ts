@@ -12,8 +12,8 @@ import { getListings } from "./catalog";
 import { COLOR_ORDER, colorPresentation, garmentBlurb } from "./shop-presentation";
 import { slugify, type Shop, type ShopColor, type ShopGarmentType, type ShopSize } from "./shop-types";
 
-/** Display order only: sizes shown are whatever the synced data lists (S, M, L, XL today). */
-const SIZE_ORDER = ["S", "M", "L", "XL"];
+/** The only sizes offered, in display order (brand guidelines v1.0: S, M and L). A synced size outside this list is never shown. */
+const SIZE_ORDER = ["S", "M", "L"];
 
 /**
  * Colors offered on only some styles, by exact Etsy style name. Bay is Heavyweight Tee only
@@ -52,7 +52,7 @@ export function buildShop(listings: readonly CatalogEntry[]): Shop {
           throw new Error(`listing "${listing.slug}" variation ${variation.productId}: missing option "${axis}"`);
         }
       }
-      if (!colorOffered(color, style)) continue;
+      if (!colorOffered(color, style) || !SIZE_ORDER.includes(size)) continue;
       const colors = styles.get(style) ?? new Map<string, Map<string, Cell>>();
       const sizes = colors.get(color) ?? new Map<string, Cell>();
       const previous = sizes.get(size);

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
 import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { resolveSelection, shopOrigin, THANK_YOU_PATH, thankYouUrl } from "./checkout";
 import type { Shop } from "./shop-types";
 
@@ -71,6 +72,6 @@ describe("checkout selection", () => {
   it("sends paid visitors to a thank-you page that exists", () => {
     assert.equal(thankYouUrl(undefined), "https://weatheredthread.com/checkout/thank-you");
     assert.equal(thankYouUrl("https://shop.example.com/"), "https://shop.example.com/checkout/thank-you");
-    assert.ok(existsSync(`app/(site)${THANK_YOU_PATH}/page.tsx`), "THANK_YOU_PATH must match a real route");
+    assert.ok(existsSync(join(__dirname, "..", `app/(site)${THANK_YOU_PATH}/page.tsx`)), "THANK_YOU_PATH must match a real route");
   });
 });
