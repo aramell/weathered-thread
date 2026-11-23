@@ -86,7 +86,7 @@ Bring the site to the Master Brand Guidelines v1.0. Palette already matches and 
 
 ## Epic 7: Simplified design-first picker
 
-### Story 7.1: Design locked on the product page
+### Story 7.1: Design locked on the product page (built, in review)
 - **Given** I chose a design on Shop or a collection, **when** I reach its product page, **then** I can change only style, color and size.
 - The design switcher is removed from the product page.
 - The bag and checkout flows are unchanged. Existing picker tests are updated, not deleted.

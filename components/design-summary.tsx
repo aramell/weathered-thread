@@ -7,13 +7,14 @@ type DesignSummaryProps = {
   collectionPlace?: boolean;
   name: string;
   image?: string;
-  onChange: () => void;
+  /** Shows a "Change" button when given. The Product page omits it: its design is fixed. */
+  onChange?: () => void;
   ref?: Ref<HTMLButtonElement>;
 };
 
 /**
- * design-summary — the collapsed design row on the Product page: thumbnail, collection label,
- * design name, and a secondary "Change" button. Paper Raised surface, rounded corners.
+ * design-summary — the design row on the Product page: thumbnail, collection label and design
+ * name, plus an optional secondary "Change" button (the Product page leaves it off). Paper Raised surface, rounded corners.
  */
 export default function DesignSummary({ collection, collectionPlace, name, image, onChange, ref }: DesignSummaryProps) {
   return (
@@ -25,15 +26,17 @@ export default function DesignSummary({ collection, collectionPlace, name, image
         <CollectionLabel name={collection} place={collectionPlace} />
         <p className="font-body text-body-sm">{name}</p>
       </div>
-      <button
-        ref={ref}
-        type="button"
-        onClick={onChange}
-        aria-label={`Change design, currently ${name}`}
-        className="inline-flex min-h-11 items-center justify-center rounded-sm border border-wet-ink px-4 font-mono text-label-mono uppercase text-wet-ink"
-      >
-        Change
-      </button>
+      {onChange && (
+        <button
+          ref={ref}
+          type="button"
+          onClick={onChange}
+          aria-label={`Change design, currently ${name}`}
+          className="inline-flex min-h-11 items-center justify-center rounded-sm border border-wet-ink px-4 font-mono text-label-mono uppercase text-wet-ink"
+        >
+          Change
+        </button>
+      )}
     </div>
   );
 }

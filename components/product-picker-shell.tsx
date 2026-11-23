@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import AddToBagBar from "@/components/add-to-bag-bar";
 import ButtonSecondary from "@/components/button-secondary";
 import GarmentSwatch from "@/components/garment-swatch";
-import MotifTile from "@/components/motif-tile";
 import DesignSummary from "@/components/design-summary";
 import GarmentOption from "@/components/garment-option";
 import PickerGallery from "@/components/picker-gallery";
@@ -17,82 +16,37 @@ import type { Motif } from "@/lib/motif-types";
 import { buildGallerySlides, defaultPhotoIndex } from "@/lib/picker-gallery";
 import { derivePicker, getColor, priceLabel, type Shop } from "@/lib/shop-types";
 
-type ProductPickerSeed =
-  | { kind: "garment"; garmentTypeSlug: string; colorSlug: string }
-  | { kind: "motif"; motifSlug: string };
-
 type ProductPickerShellProps = {
-  /** Url-free Shop model built on the server from the synced catalog (NFR8). */
+  /** The design this page is for. It is fixed: the visitor never changes it here. */
+  motif: Motif;
+  /** That design's own Shop (its prices and sizes), url-free, built on the server (NFR8). */
   shop: Shop;
-  /** Each design's own Shop (its prices and stock), keyed by motif slug; used once a design is chosen. */
-  motifShops: Record<string, Shop>;
-  /** Url-free motifs built on the server from the catalog's authored content. */
-  motifs: Motif[];
-  seed: ProductPickerSeed;
-  /** Origin surface to return to — Shop's garment-type list or the Collection Story. */
+  /** Where to go back to: the Collection Story the design came from. */
   backHref: string;
   backLabel: string;
 };
 
 /**
- * product-picker-shell — the one Client Component for Epic 3 Story 3.3.
- * Owns every piece of picker state (garment type, color, size, motif) for
- * both entry stubs (`/shop/[type]/[color]` seeded garment-first,
- * `/collections/[slug]/[motif]` seeded motif-first) so they converge on one
- * identical, interactive Product surface. `garment-swatch`, `motif-tile`,
- * `garment-option` and `add-to-bag-bar` stay presentational — they only read
- * state/setters via props. Design-first arrivals collapse the chosen design
- * to a `design-summary` (Change opens the grid inline, Close collapses it);
- * garment-first arrivals show the full design grid uncollapsed. The hero is a
- * user-driven gallery: design photos first, garment preview last.
+ * product-picker-shell — the one Client Component for the Product surface (`/collections/[slug]/[motif]`).
+ * The visitor chooses a design on Shop or a Collection and arrives here with it fixed; this page
+ * owns only the garment type, color and size state. `garment-swatch`, `garment-option` and
+ * `add-to-bag-bar` stay presentational. The design appears as a read-only `design-summary`; there
+ * is no way to swap it on this page. The hero is a user-driven gallery: design photos first,
+ * garment preview last.
  */
-export default function ProductPickerShell({
-  shop,
-  motifShops,
-  motifs,
-  seed,
-  backHref,
-  backLabel,
-}: ProductPickerShellProps) {
-  const [garmentTypeSlug, setGarmentTypeSlug] = useState<string | null>(
-    seed.kind === "garment" ? seed.garmentTypeSlug : null,
-  );
-  const [colorSlug, setColorSlug] = useState<string | null>(
-    seed.kind === "garment" ? seed.colorSlug : null,
-  );
+export default function ProductPickerShell({ motif, shop, backHref, backLabel }: ProductPickerShellProps) {
+  const [garmentTypeSlug, setGarmentTypeSlug] = useState<string | null>(null);
+  const [colorSlug, setColorSlug] = useState<string | null>(null);
   const [sizeName, setSizeName] = useState<string | null>(null);
-  const [motifSlug, setMotifSlug] = useState<string | null>(
-    seed.kind === "motif" ? seed.motifSlug : null,
-  );
+  const [galleryIndex, setGalleryIndex] = useState(() => defaultPhotoIndex(motif.images.length));
 
-  const [designOpen, setDesignOpen] = useState(false);
-  const changeButtonRef = useRef<HTMLButtonElement>(null);
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const moveFocusOnToggle = useRef(false);
-  const toggleDesign = (open: boolean) => {
-    moveFocusOnToggle.current = true;
-    setDesignOpen(open);
-  };
-  // The toggled control unmounts the focused one; move focus to its replacement (not on mount).
-  useEffect(() => {
-    if (!moveFocusOnToggle.current) return;
-    moveFocusOnToggle.current = false;
-    (designOpen ? closeButtonRef.current : changeButtonRef.current)?.focus();
-  }, [designOpen]);
-  const [galleryIndex, setGalleryIndex] = useState(() =>
-    defaultPhotoIndex(motifs.find((m) => m.slug === motifSlug)?.images.length ?? 0),
-  );
-
-  const motif = motifs.find((m) => m.slug === motifSlug);
-  // The pooled shop only serves the garment-first entry before a design is chosen; from then on
-  // price and stock are the design's own.
-  const activeShop = (motif && motifShops[motif.slug]) || shop;
+  const activeShop = shop;
   const { garmentTypes } = activeShop;
   const { garmentType, colorway, size, priceCents, isAddToBagEnabled } = derivePicker(activeShop, {
     garmentTypeSlug,
     colorSlug,
     sizeName,
-    hasMotif: Boolean(motif),
+    hasMotif: true,
   });
   const price = garmentType && priceCents !== null ? priceLabel(priceCents) : null;
 
@@ -114,17 +68,8 @@ export default function ProductPickerShell({
     setRefusedKey(changed ? null : itemKey(pick));
   };
 
-  const heading = motif
-    ? garmentType
-      ? `${motif.name} — ${garmentType.name}`
-      : motif.name
-    : garmentType && colorway
-      ? `${garmentType.name} — ${colorway.name}`
-      : "Build your piece";
+  const heading = garmentType ? `${motif.name} — ${garmentType.name}` : motif.name;
 
-  // Design-first arrivals collapse the chosen design; garment-first ones keep the full grid.
-  const designFirst = seed.kind === "motif";
-  const designCollapsed = designFirst && Boolean(motif) && !designOpen;
   const collectionName = (slug: string) => getCollection(slug)?.name ?? "Weathered Thread";
   const collectionPlace = (slug: string) => getCollection(slug)?.kind === "place";
 
@@ -138,15 +83,13 @@ export default function ProductPickerShell({
     garmentType && colorway && colorway.inStock && !size
       ? "Choose a size for this piece."
       : null;
-  const missingMotifPrompt = garmentType && !motif ? "Choose a design for this piece." : null;
 
   const addToBagDisabledReason = isAddToBagEnabled
     ? null
     : // The garment prompt is shown once, above the garment options, so it is not repeated here.
       (missingColorPrompt ??
       selectedColorOutOfStockPrompt ??
-      missingSizePrompt ??
-      missingMotifPrompt);
+      missingSizePrompt);
 
   const outOfStockColorways = garmentType?.colors.filter((c) => !c.inStock) ?? [];
   const outOfStockColorwayNames = outOfStockColorways.map((c) => c.name).join(", ");
@@ -230,71 +173,18 @@ export default function ProductPickerShell({
             {price && <p className="mb-6 font-mono text-price-mono">{price}</p>}
 
             <div className="mb-6">
-              {missingMotifPrompt && (
-                <p className="mb-4 font-body text-body">{missingMotifPrompt}</p>
-              )}
               <p
                 id={motifHeadingId}
                 className="mb-2 font-mono text-label-mono uppercase text-marsh-sage"
               >
                 Design
               </p>
-              {designCollapsed && motif ? (
-                <DesignSummary
-                  collection={collectionName(motif.collection)}
-                  collectionPlace={collectionPlace(motif.collection)}
-                  name={motif.name}
-                  image={motif.images[0]?.url}
-                  ref={changeButtonRef}
-                  onChange={() => toggleDesign(true)}
-                />
-              ) : (
-                <>
-                  {designFirst && (
-                    <div className="mb-2 flex justify-end">
-                      <button
-                        type="button"
-                        ref={closeButtonRef}
-                        onClick={() => toggleDesign(false)}
-                        className="inline-flex min-h-11 items-center justify-center rounded-sm border border-wet-ink px-4 font-mono text-label-mono uppercase text-wet-ink"
-                      >
-                        Close
-                      </button>
-                    </div>
-                  )}
-                  <div
-                    role="list"
-                    aria-labelledby={motifHeadingId}
-                    className="grid grid-cols-2 gap-4 md:grid-cols-3"
-                  >
-                    {motifs.map((m) => {
-                      const selected = m.slug === motifSlug;
-                      return (
-                        <div key={m.slug} role="listitem">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setMotifSlug(m.slug);
-                              setGalleryIndex(defaultPhotoIndex(m.images.length));
-                              toggleDesign(false);
-                            }}
-                            aria-pressed={selected}
-                            className="block w-full text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-antique-brass"
-                          >
-                            <MotifTile
-                              name={m.name}
-                              image={m.images[0]?.url}
-                              selected={selected}
-                              collection={collectionName(m.collection)}
-                              collectionPlace={collectionPlace(m.collection)}
-                            />
-                          </button>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </>
-              )}
+              <DesignSummary
+                collection={collectionName(motif.collection)}
+                collectionPlace={collectionPlace(motif.collection)}
+                name={motif.name}
+                image={motif.images[0]?.url}
+              />
             </div>
 
             {missingGarmentPrompt && (

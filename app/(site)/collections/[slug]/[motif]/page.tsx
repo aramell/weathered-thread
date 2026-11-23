@@ -3,15 +3,11 @@ import { notFound } from "next/navigation";
 import ProductPickerShell from "@/components/product-picker-shell";
 import { getCollection } from "@/lib/collections";
 import { getMotifs, getMotif } from "@/lib/motifs";
-import { getMotifShops, getShop } from "@/lib/shop";
+import { getMotifShops } from "@/lib/shop";
 
 /**
- * Product-surface entry point, motif-first (Story 3.2 AC2) — the
- * motif-first mirror of `/shop/[type]/[color]`'s garment-first entry
- * (Story 3.1). Renders the full interactive Product Picker (Story 3.3)
- * seeded with this route's motif; garment type, color, and size are
- * chosen from there. Converges with the garment-first entry on the same
- * `ProductPickerShell`.
+ * The Product page for one design. The design is fixed by the URL (chosen on Shop or a
+ * Collection); the visitor picks garment type, color and size in `ProductPickerShell`.
  */
 export function generateStaticParams() {
   return getMotifs().map((motif) => ({ slug: motif.collection, motif: motif.slug }));
@@ -44,12 +40,16 @@ export default async function MotifGarmentPage({
     notFound();
   }
 
+  const shop = getMotifShops()[motif.slug];
+
+  if (!shop) {
+    notFound();
+  }
+
   return (
     <ProductPickerShell
-      shop={getShop()}
-      motifShops={getMotifShops()}
-      motifs={getMotifs()}
-      seed={{ kind: "motif", motifSlug: motif.slug }}
+      motif={motif}
+      shop={shop}
       backHref={`/collections/${collection.slug}`}
       backLabel="Back to Collection"
     />

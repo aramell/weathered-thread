@@ -1,6 +1,6 @@
 /**
- * shop — the one server-only model behind every Shop surface (`/shop`, `/shop/[type]`,
- * `/shop/[type]/[color]`, the homepage grid and the Product Picker). It is built from the
+ * shop — the one server-only model behind every Shop surface (`/shop`, the homepage grid and
+ * the Product page). It is built from the
  * synced catalog's per-variation inventory (Style x Primary color x Size). Catalog entries
  * carry the Etsy `url`, so only the url-free `Shop` shape (`lib/shop-types.ts`) may reach a
  * Client Component (NFR8): read it here, in a Server Component, and pass it down as a prop.
