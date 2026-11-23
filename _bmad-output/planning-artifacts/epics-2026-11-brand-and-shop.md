@@ -111,7 +111,7 @@ Blocked on assets. Do last.
 - Alt text describes the motif and place. No generated imagery.
 - **Blocked by** OQ-4 (logo, photos).
 
-### Story 8.2: About page
+### Story 8.2: About page (built, in review)
 - The About page uses Andrew's supplied copy verbatim, ending with the "Shop the Collection" call to action linking to the Sea Isle collection.
 - Photo slots hold placeholders until images arrive and are clearly marked for later.
 - Unblocked now; only the photos wait.

@@ -51,4 +51,19 @@ describe("brand rules", () => {
       assert.doesNotMatch(readFileSync(join(root, file), "utf8"), /weathered[ -]?clay/i, `${file} uses Weathered Clay`);
     }
   });
+
+  it("the About page keeps the owner's copy, and no unconfirmed claims", () => {
+    const about = readFileSync(join(root, "app/(site)/about/page.tsx"), "utf8").replace(/\s+/g, " ");
+    for (const line of [
+      "Some places just stay with us.",
+      "A sense of place, stitched in.",
+      "The beauty is in the details.",
+      "Made to look better lived in.",
+      "Not just something to wear, but something to remember.",
+      "Shop the Collection",
+    ]) {
+      assert.ok(about.includes(line), `About page is missing: ${line}`);
+    }
+    assert.doesNotMatch(about, /business days/i, "no processing-time claim until the owner confirms one");
+  });
 });
