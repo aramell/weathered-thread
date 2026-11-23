@@ -1,4 +1,5 @@
 import Image from "next/image";
+import CollectionLabel from "@/components/collection-label";
 
 type MotifTileProps = {
   name: string;
@@ -7,6 +8,10 @@ type MotifTileProps = {
   selected?: boolean;
   /** Collection name shown above the design name. */
   collection?: string;
+  /** The collection is a place (set its name in Anton). */
+  collectionPlace?: boolean;
+  /** `name` is itself a place name (collection index tiles): set it in Anton. */
+  nameIsLocation?: boolean;
 };
 
 /**
@@ -19,7 +24,7 @@ type MotifTileProps = {
  * shares one border implementation instead of wrapping its own. Still
  * browse/read only — no tap handling here, callers own selection.
  */
-export default function MotifTile({ name, image, selected = false, collection }: MotifTileProps) {
+export default function MotifTile({ name, image, selected = false, collection, collectionPlace, nameIsLocation = false }: MotifTileProps) {
   return (
     <div
       className={`rounded border-2 bg-paper-raised p-4 ${
@@ -40,8 +45,16 @@ export default function MotifTile({ name, image, selected = false, collection }:
       ) : (
         <div className="mb-3 aspect-square rounded bg-sailcloth" aria-hidden="true" />
       )}
-      {collection && <p className="font-mono text-caption-mono text-marsh-sage">{collection}</p>}
-      <p className="font-mono text-caption-mono uppercase text-wet-ink">{name}</p>
+      {collection && <CollectionLabel name={collection} place={collectionPlace} />}
+      <p
+        className={
+          nameIsLocation
+            ? "font-location text-sm uppercase tracking-location text-wet-ink"
+            : "font-mono text-caption-mono uppercase text-wet-ink"
+        }
+      >
+        {name}
+      </p>
     </div>
   );
 }

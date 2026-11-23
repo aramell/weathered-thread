@@ -14,7 +14,10 @@ import type { CatalogEntry, CatalogListing } from "@/content/catalog/types";
 export function createCatalog(source: Readonly<Record<string, CatalogListing>>) {
   // Sorted by slug so every caller sees one stable order. The manifest slug wins over any
   // field of the listing, and entries are frozen because every caller shares them.
+  // Hidden designs (`hidden: true` in authored.ts) are dropped here, so every reader of the
+  // catalog (shop, collections, product pages, bag pricing) treats them as not there.
   const entries: readonly CatalogEntry[] = Object.keys(source)
+    .filter((slug) => source[slug].hidden !== true)
     .sort()
     .map((slug) => Object.freeze({ ...source[slug], slug }));
 

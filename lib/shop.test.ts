@@ -43,8 +43,8 @@ const base = [
   v(1, "Heavyweight Tee", "Ivory", "M", 3200, 5),
   v(2, "Heavyweight Tee", "Ivory", "S", 3200, 5),
   v(3, "Heavyweight Tee", "Bay", "S", 3200, 5),
-  v(4, "Long Sleeve Tee", "Bay", "S", 3200, 0),
-  v(5, "Long Sleeve Tee", "Bay", "M", 3200, 0),
+  v(4, "Long Sleeve Tee", "Blue Jean", "S", 3200, 0),
+  v(5, "Long Sleeve Tee", "Blue Jean", "M", 3200, 0),
   v(6, "Long Sleeve Tee", "Pepper", "S", 3800, 2),
 ];
 
@@ -62,22 +62,46 @@ describe("buildShop", () => {
 
   it("made-to-order: a combination Etsy shows at zero stock is still orderable at its price", () => {
     const longSleeve = buildShop([entry("logo", base)]).garmentTypes[1];
-    const bay = longSleeve.colors.find((c) => c.slug === "bay");
-    assert.ok(bay);
-    assert.equal(bay.inStock, true);
-    assert.equal(bay.priceCents, 3200);
-    assert.ok(bay.sizes.every((s) => s.inStock && s.priceCents === 3200));
+    const blueJean = longSleeve.colors.find((c) => c.slug === "blue-jean");
+    assert.ok(blueJean);
+    assert.equal(blueJean.inStock, true);
+    assert.equal(blueJean.priceCents, 3200);
+    assert.ok(blueJean.sizes.every((s) => s.inStock && s.priceCents === 3200));
   });
 
   it("mixed listings: orderable if either lists it, lowest price wins", () => {
     const shop = buildShop([
-      entry("a", [v(1, "Tee", "Bay", "S", 3600, 3)]),
-      entry("b", [v(2, "Tee", "Bay", "S", 3400, 1), v(3, "Tee", "Ivory", "S", 1000, 0)]),
+      entry("a", [v(1, "Heavyweight Tee", "Bay", "S", 3600, 3)]),
+      entry("b", [v(2, "Heavyweight Tee", "Bay", "S", 3400, 1), v(3, "Heavyweight Tee", "Ivory", "S", 1000, 0)]),
     ]);
     const [bay, ivory] = [...shop.garmentTypes[0].colors].sort((x, y) => (x.slug < y.slug ? -1 : 1));
     assert.equal(bay.sizes[0].priceCents, 3400);
     assert.equal(ivory.inStock, true);
     assert.equal(ivory.priceCents, 1000);
+  });
+
+  it("Bay is Heavyweight Tee only: dropped from every other style even when a listing lists it", () => {
+    const shop = buildShop([
+      entry("logo", [
+        v(1, "Heavyweight Tee", "Bay", "S", 3200, 1),
+        v(2, "Heavyweight Tee", "Ivory", "S", 3200, 1),
+        v(3, "Long Sleeve Tee", "Bay", "S", 3200, 1),
+        v(4, "Long Sleeve Tee", "Ivory", "S", 3200, 1),
+        v(5, "Heavyweight Crewneck", "Bay", "S", 4800, 1),
+        v(6, "Lightweight Crewneck", "Bay", "S", 4400, 1),
+        v(7, "Lightweight Crewneck", "Pepper", "S", 4400, 1),
+      ]),
+    ]);
+    const colorsOf = (slug: string) => shop.garmentTypes.find((t) => t.slug === slug)?.colors.map((c) => c.slug);
+    assert.deepEqual(colorsOf("heavyweight-tee"), ["ivory", "bay"]);
+    assert.deepEqual(colorsOf("long-sleeve-tee"), ["ivory"]);
+    assert.deepEqual(colorsOf("lightweight-crewneck"), ["pepper"]);
+    assert.equal(colorsOf("heavyweight-crewneck"), undefined, "a style left with no colors is not listed");
+  });
+
+  it("sizes are only those the listing lists", () => {
+    const shop = buildShop([entry("logo", [v(1, "Heavyweight Tee", "Ivory", "S", 3200, 1), v(2, "Heavyweight Tee", "Ivory", "L", 3200, 1)])]);
+    assert.deepEqual(shop.garmentTypes[0].colors[0].sizes.map((s) => s.name), ["S", "L"]);
   });
 
   it("excludes inactive listings and listings with no variations", () => {
@@ -142,7 +166,7 @@ describe("lookups and picker derivation", () => {
     assert.equal(pick({ sizeName: null }).isAddToBagEnabled, false);
     assert.equal(pick({ sizeName: "M", hasMotif: false }).isAddToBagEnabled, false);
     assert.equal(pick({ sizeName: "XL" }).isAddToBagEnabled, false, "unknown size");
-    const zeroStock = pick({ garmentTypeSlug: "long-sleeve-tee", colorSlug: "bay", sizeName: "S" });
+    const zeroStock = pick({ garmentTypeSlug: "long-sleeve-tee", colorSlug: "blue-jean", sizeName: "S" });
     assert.equal(zeroStock.isAddToBagEnabled, true, "made-to-order: Etsy's zero stock does not block");
     assert.equal(zeroStock.priceCents, 3200);
   });

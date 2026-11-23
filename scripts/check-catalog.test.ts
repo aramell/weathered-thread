@@ -142,6 +142,29 @@ describe("check-catalog", () => {
     assert.match(problems[0], /pickleball: authored\.ts field `story` must be a non-empty string/);
   });
 
+  describe("hidden", () => {
+    const listWith = async (fields: Record<string, unknown>) => {
+      await writeListing("pickleball", { ...validFiles(), "authored.ts": authoredSource(fields) });
+      await writeCatalog(["pickleball"]);
+    };
+
+    // One listing per test: the checker's dynamic import caches a module per path.
+    it("true is fine", async () => {
+      await listWith({ hidden: true });
+      assert.deepEqual((await checkCatalog(catalogDir)).problems, []);
+    });
+
+    it("false is fine", async () => {
+      await listWith({ hidden: false });
+      assert.deepEqual((await checkCatalog(catalogDir)).problems, []);
+    });
+
+    it("anything else names `hidden`", async () => {
+      await listWith({ hidden: "yes" });
+      assert.match((await checkCatalog(catalogDir)).problems.join("\n"), /pickleball: authored\.ts field `hidden` must be true or false/);
+    });
+  });
+
   describe("photos", () => {
     const listWith = async (fields: Record<string, unknown>, slug = "pickleball") => {
       await writeListing(slug, { ...validFiles(), "authored.ts": authoredSource(fields) });

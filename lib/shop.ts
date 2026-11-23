@@ -1,6 +1,6 @@
 /**
- * shop — the one server-only model behind every Shop surface (`/shop`, `/shop/[type]`,
- * `/shop/[type]/[color]`, the homepage grid and the Product Picker). It is built from the
+ * shop — the one server-only model behind every Shop surface (`/shop`, the homepage grid and
+ * the Product page). It is built from the
  * synced catalog's per-variation inventory (Style x Primary color x Size). Catalog entries
  * carry the Etsy `url`, so only the url-free `Shop` shape (`lib/shop-types.ts`) may reach a
  * Client Component (NFR8): read it here, in a Server Component, and pass it down as a prop.
@@ -12,7 +12,19 @@ import { getListings } from "./catalog";
 import { COLOR_ORDER, colorPresentation, garmentBlurb } from "./shop-presentation";
 import { slugify, type Shop, type ShopColor, type ShopGarmentType, type ShopSize } from "./shop-types";
 
-const SIZE_ORDER = ["XS", "S", "M", "L", "XL", "2XL", "3XL"];
+/** The only sizes offered, in display order (brand guidelines v1.0: S, M and L). A synced size outside this list is never shown. */
+const SIZE_ORDER = ["S", "M", "L"];
+
+/**
+ * Colors offered on only some styles, by exact Etsy style name. Bay is Heavyweight Tee only
+ * (owner decision, brand sizes & colors chart); every other style never shows it, even if a
+ * synced listing still lists it. A color not named here is offered on every style.
+ */
+export const COLOR_STYLE_RULES: Record<string, readonly string[]> = {
+  Bay: ["Heavyweight Tee"],
+};
+
+const colorOffered = (color: string, style: string): boolean => COLOR_STYLE_RULES[color]?.includes(style) ?? true;
 
 type Cell = { priceCents: number };
 
@@ -40,6 +52,7 @@ export function buildShop(listings: readonly CatalogEntry[]): Shop {
           throw new Error(`listing "${listing.slug}" variation ${variation.productId}: missing option "${axis}"`);
         }
       }
+      if (!colorOffered(color, style) || !SIZE_ORDER.includes(size)) continue;
       const colors = styles.get(style) ?? new Map<string, Map<string, Cell>>();
       const sizes = colors.get(color) ?? new Map<string, Cell>();
       const previous = sizes.get(size);

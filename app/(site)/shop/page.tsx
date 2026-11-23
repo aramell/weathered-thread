@@ -35,6 +35,7 @@ export default async function ShopPage() {
                     price={formatPrice(motif.priceCents)}
                     image={motif.images[0]?.url}
                     collection={getCollection(motif.collection)?.name}
+                    collectionPlace={getCollection(motif.collection)?.kind === "place"}
                   />
                 </Link>
               </div>

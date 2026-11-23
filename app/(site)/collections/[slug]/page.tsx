@@ -42,7 +42,11 @@ export default async function CollectionPage({
     <main className="flex flex-col gap-story-gap">
       <h1 className="sr-only">{collection.heading} Collection Story</h1>
 
-      <CollectionStoryBlock eyebrow={collection.eyebrow} heading={collection.heading}>
+      <CollectionStoryBlock
+        eyebrow={collection.eyebrow}
+        heading={collection.heading}
+        location={collection.kind === "place"}
+      >
         {collection.story.map((paragraph, index) => (
           <p key={index}>{paragraph}</p>
         ))}
