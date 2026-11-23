@@ -66,4 +66,9 @@ describe("brand rules", () => {
     }
     assert.doesNotMatch(about, /business days/i, "no processing-time claim until the owner confirms one");
   });
+
+  it("the homepage shows the approved stacked logo, not a typed name", () => {
+    const home = readFileSync(join(root, "app/(site)/page.tsx"), "utf8");
+    assert.match(home, /images\/brand\/WT_Logo_Stacked\.png/);
+  });
 });

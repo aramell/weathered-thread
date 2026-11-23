@@ -106,7 +106,7 @@ Bring the site to the Master Brand Guidelines v1.0. Palette already matches and 
 
 Blocked on assets. Do last.
 
-### Story 8.1: Homepage shows what the product is
+### Story 8.1: Homepage shows what the product is (built with stand-in photos, in review)
 - The approved logo and a few of Andrew's real photos show embroidered pieces clearly, in the baseline section order (FR15).
 - Alt text describes the motif and place. No generated imagery.
 - **Blocked by** OQ-4 (logo, photos).
