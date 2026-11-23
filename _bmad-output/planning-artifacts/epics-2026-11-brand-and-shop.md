@@ -91,7 +91,7 @@ Bring the site to the Master Brand Guidelines v1.0. Palette already matches and 
 - The design switcher is removed from the product page.
 - The bag and checkout flows are unchanged. Existing picker tests are updated, not deleted.
 
-### Story 7.2: Color names on swatches
+### Story 7.2: Color names on swatches (built, in review)
 - **Given** any style's colors, **then** each swatch shows its name as visible text, and the selected color's name is announced to screen readers.
 - Tap targets stay at least 44px.
 

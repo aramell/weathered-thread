@@ -238,8 +238,9 @@ export default function ProductPickerShell({ motif, shop, backHref, backLabel }:
                   className="mb-2 font-mono text-label-mono uppercase text-marsh-sage"
                 >
                   Color
+                  {colorway && <span aria-live="polite"> — {colorway.name}</span>}
                 </p>
-                <div role="list" aria-labelledby={colorHeadingId} className="flex gap-3">
+                <div role="list" aria-labelledby={colorHeadingId} className="flex flex-wrap gap-x-2 gap-y-3">
                   {garmentType.colors.map((c) => (
                     <div key={c.slug} role="listitem">
                       <GarmentSwatch
