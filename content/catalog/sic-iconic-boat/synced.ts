@@ -7,8 +7,8 @@ export const synced = {
   "url": "https://www.etsy.com/listing/4603867680/sea-isle-city-iconic-boat-embroidered",
   "state": "active",
   "priceCents": 3600,
-  "quantity": 260,
-  "createdTimestamp": 1793060986,
+  "quantity": 259,
+  "createdTimestamp": 1795290078,
   "variations": [
     {
       "productId": 35656017710,
@@ -680,7 +680,7 @@ export const synced = {
         }
       ],
       "priceCents": 3800,
-      "quantity": 5
+      "quantity": 4
     },
     {
       "productId": 35656017690,

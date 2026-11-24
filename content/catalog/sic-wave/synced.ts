@@ -7,8 +7,8 @@ export const synced = {
   "url": "https://www.etsy.com/listing/4590084029/sea-isle-city-embroidered-shirt-sea-isle",
   "state": "active",
   "priceCents": 3600,
-  "quantity": 260,
-  "createdTimestamp": 1792977197,
+  "quantity": 259,
+  "createdTimestamp": 1795289985,
   "variations": [
     {
       "productId": 35133436688,
@@ -680,7 +680,7 @@ export const synced = {
         }
       ],
       "priceCents": 3800,
-      "quantity": 5
+      "quantity": 4
     },
     {
       "productId": 34753943891,
