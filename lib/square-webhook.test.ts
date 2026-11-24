@@ -3,6 +3,8 @@ import { createHmac } from "node:crypto";
 import { describe, it } from "node:test";
 
 import {
+  createEmailSender,
+  createOrderFetcher,
   describeOrder,
   handleSquareWebhook,
   parseCompletedPayment,
@@ -222,5 +224,79 @@ describe("handleSquareWebhook", () => {
     } finally {
       console.error = errors;
     }
+  });
+});
+
+describe("parseCompletedPayment: repeat notifications", () => {
+  const now = new Date("2026-11-24T12:00:00Z");
+  const wrap = (pay: Record<string, unknown>) => event({}, { ...payment, ...pay });
+
+  it("accepts a payment created within the idempotency window", () => {
+    assert.ok(parseCompletedPayment(wrap({ created_at: "2026-11-24T11:00:00Z" }), now));
+  });
+
+  it("ignores a COMPLETED update for a payment older than the window", () => {
+    assert.equal(parseCompletedPayment(wrap({ created_at: "2026-11-22T11:00:00Z" }), now), null);
+  });
+
+  it("ignores a refunded payment", () => {
+    assert.equal(parseCompletedPayment(wrap({ refunded_money: { amount: 1000 } }), now), null);
+    assert.equal(parseCompletedPayment(wrap({ refund_ids: ["R1"] }), now), null);
+  });
+
+  it("treats a zero refunded_money as not refunded", () => {
+    assert.ok(parseCompletedPayment(wrap({ refunded_money: { amount: 0 } }), now));
+  });
+});
+
+describe("describeOrder: shipping country", () => {
+  it("flags an address outside the US in the subject and body", () => {
+    const abroad = { ...payment, shipping_address: { ...payment.shipping_address, country: "CA" } };
+    const { subject, text } = describeOrder(order, abroad);
+    assert.match(subject, /^\[NON-US\] /);
+    assert.match(text, /SHIPS OUTSIDE THE US \(CA\)/);
+  });
+
+  it("does not flag a US address", () => {
+    const { subject, text } = describeOrder(order, payment);
+    assert.doesNotMatch(subject, /NON-US/);
+    assert.doesNotMatch(text, /OUTSIDE THE US/);
+  });
+});
+
+describe("createOrderFetcher", () => {
+  it("GETs the encoded order path and unwraps .order", async () => {
+    const calls: unknown[][] = [];
+    const fetchOrder = createOrderFetcher({
+      request: (async (...args: unknown[]) => {
+        calls.push(args);
+        return { order };
+      }) as never,
+    });
+    assert.deepEqual(await fetchOrder("ORD/1"), order);
+    assert.deepEqual(calls, [["GET", "/v2/orders/ORD%2F1"]]);
+  });
+
+  it("throws when Square returns no order", async () => {
+    const fetchOrder = createOrderFetcher({ request: (async () => ({})) as never });
+    await assert.rejects(fetchOrder("ORD1"), /no order/);
+  });
+});
+
+describe("createEmailSender", () => {
+  const email = { from: "a@x.com", to: "b@x.com", subject: "s", text: "t" };
+
+  it("sends with the idempotency key as an option", async () => {
+    const seen: unknown[][] = [];
+    const send = createEmailSender({
+      emails: { send: async (...args) => (seen.push(args), { error: null }) },
+    });
+    await send(email, "square-order/ORD1");
+    assert.deepEqual(seen, [[email, { idempotencyKey: "square-order/ORD1" }]]);
+  });
+
+  it("throws on a Resend error so Square retries", async () => {
+    const send = createEmailSender({ emails: { send: async () => ({ error: { name: "rate_limit_exceeded" } }) } });
+    await assert.rejects(send(email, "k"), /Resend: rate_limit_exceeded/);
   });
 });
