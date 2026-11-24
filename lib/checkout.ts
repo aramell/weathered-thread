@@ -33,12 +33,9 @@ export const thankYouUrl = (rawOrigin?: string): string => `${shopOrigin(rawOrig
 
 export type ResolvedSelection =
   | { ok: true; garment: string; color: string; size: string; priceCents: number }
-  | { ok: false; reason: "unavailable" | "sold-out" };
+  | { ok: false; reason: "unavailable" };
 
-/**
- * Checks a selection against the design's current Shop. "sold-out" means the combination
- * exists but has no stock now (it may have sold since the visitor picked it).
- */
+/** Checks a selection against the design's current Shop; "unavailable" means that combination is not offered. */
 export function resolveSelection(shop: Shop | undefined, selection: CheckoutSelection): ResolvedSelection {
   const garmentType = shop?.garmentTypes.find((type) => type.slug === selection.style);
   const colorway = garmentType?.colors.find((color) => color.slug === selection.color);
@@ -51,6 +48,6 @@ export function resolveSelection(shop: Shop | undefined, selection: CheckoutSele
     sizeName: sizeEntry.name,
     hasMotif: true,
   });
-  if (!size || priceCents === null) return { ok: false, reason: "sold-out" };
+  if (!size || priceCents === null) return { ok: false, reason: "unavailable" };
   return { ok: true, garment: garmentType.name, color: colorway.name, size: size.name, priceCents };
 }

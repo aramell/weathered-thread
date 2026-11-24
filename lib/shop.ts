@@ -28,11 +28,6 @@ const colorOffered = (color: string, style: string): boolean => COLOR_STYLE_RULE
 
 type Cell = { priceCents: number };
 
-const lowest = (prices: (number | null)[]): number | null => {
-  const real = prices.filter((price): price is number => price !== null);
-  return real.length > 0 ? Math.min(...real) : null;
-};
-
 /**
  * Fold active listings' variations into garment types -> colors -> sizes. Every combination a
  * listing lists is orderable at its price (the lowest across listings), whatever Etsy's
@@ -67,7 +62,7 @@ export function buildShop(listings: readonly CatalogEntry[]): Shop {
     const colors: ShopColor[] = [...colorMap].map(([colorName, sizeMap]) => {
       const colorSlug = slugify(colorName);
       const sizes: ShopSize[] = [...sizeMap]
-        .map(([name, cell]) => ({ name, inStock: true, priceCents: cell.priceCents }))
+        .map(([name, cell]) => ({ name, priceCents: cell.priceCents }))
         .sort((a, b) => {
           const [ia, ib] = [SIZE_ORDER.indexOf(a.name), SIZE_ORDER.indexOf(b.name)];
           return (ia === -1 ? SIZE_ORDER.length : ia) - (ib === -1 ? SIZE_ORDER.length : ib);
@@ -76,8 +71,7 @@ export function buildShop(listings: readonly CatalogEntry[]): Shop {
         slug: colorSlug,
         name: colorName,
         ...colorPresentation(colorSlug),
-        inStock: sizes.some((size) => size.inStock),
-        priceCents: lowest(sizes.map((size) => size.priceCents)),
+        priceCents: Math.min(...sizes.map((size) => size.priceCents)),
         sizes,
       };
     });
@@ -90,8 +84,7 @@ export function buildShop(listings: readonly CatalogEntry[]): Shop {
       slug: styleSlug,
       name: styleName,
       garmentBlurb: garmentBlurb(styleSlug),
-      inStock: colors.some((color) => color.inStock),
-      priceCents: lowest(colors.map((color) => color.priceCents)),
+      priceCents: Math.min(...colors.map((color) => color.priceCents)),
       colors,
     };
   });
