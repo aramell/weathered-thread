@@ -11,7 +11,7 @@ import "server-only";
 
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { formatPrice } from "./format-price";
-import { squareEnvPrefix } from "./square-client";
+import { squareEnvPrefix, type SquareClient } from "./square-client";
 
 export const SIGNATURE_HEADER = "x-square-hmacsha256-signature";
 
@@ -34,6 +34,9 @@ export type SquarePayment = {
   order_id?: string;
   buyer_email_address?: string;
   shipping_address?: SquareAddress;
+  created_at?: string;
+  refunded_money?: Money;
+  refund_ids?: string[];
 };
 
 export type SquareOrder = {
@@ -57,14 +60,54 @@ export function verifySignature(input: {
   return given.length === expected.length && timingSafeEqual(given, expected);
 }
 
-/** The payment of a completed `payment.updated` event, or null for anything else. */
-export function parseCompletedPayment(event: unknown): SquarePayment | null {
+/**
+ * Resend's idempotency key lasts 24 hours, so a `COMPLETED` update for a payment older than
+ * this (a receipt or tip edit, a refund note) is not a new order and must not email again.
+ */
+export const FRESH_PAYMENT_MS = 23 * 60 * 60 * 1000;
+
+/**
+ * The payment of a completed `payment.updated` event that is a new order, or null for anything
+ * else: other events, unfinished payments, refunded payments, and stale payments (see above).
+ */
+export function parseCompletedPayment(event: unknown, now: Date = new Date()): SquarePayment | null {
   if (typeof event !== "object" || event === null) return null;
   const { type, data } = event as { type?: unknown; data?: { object?: { payment?: SquarePayment } } };
   if (type !== "payment.updated") return null;
   const payment = data?.object?.payment;
   if (!payment || payment.status !== "COMPLETED" || !payment.order_id) return null;
+  if ((payment.refunded_money?.amount ?? 0) > 0 || (payment.refund_ids?.length ?? 0) > 0) return null;
+  if (payment.created_at) {
+    const created = Date.parse(payment.created_at);
+    if (Number.isFinite(created) && now.getTime() - created > FRESH_PAYMENT_MS) return null;
+  }
   return payment;
+}
+
+/** Reads an order from Square's order API; the route passes the real client, tests a stub. */
+export function createOrderFetcher(client: Pick<SquareClient, "request">) {
+  return async (orderId: string): Promise<SquareOrder> => {
+    const { order } = await client.request<{ order?: SquareOrder }>("GET", `/v2/orders/${encodeURIComponent(orderId)}`);
+    if (!order) throw new Error(`Square order ${orderId}: response had no order`);
+    return order;
+  };
+}
+
+type EmailSender = {
+  emails: {
+    send: (
+      email: OrderEmail,
+      options: { idempotencyKey: string },
+    ) => Promise<{ error?: { name?: string } | null }>;
+  };
+};
+
+/** Sends through Resend with the idempotency key, and throws on a Resend error so Square retries. */
+export function createEmailSender(resend: EmailSender) {
+  return async (email: OrderEmail, idempotencyKey: string): Promise<void> => {
+    const { error } = await resend.emails.send(email, { idempotencyKey });
+    if (error) throw new Error(`Resend: ${error.name ?? "unknown error"}`);
+  };
 }
 
 const money = (value?: Money) => formatPrice(value?.amount ?? 0);
@@ -89,7 +132,13 @@ export function describeOrder(order: SquareOrder, payment: SquarePayment): { sub
     ? addressLines(undefined, payment.shipping_address)
     : addressLines(recipient?.display_name, recipient?.address);
 
+  const country = (payment.shipping_address?.country ?? recipient?.address?.country)?.trim().toUpperCase();
+  const outsideUs = Boolean(country) && country !== "US";
+
   const text = [
+    ...(outsideUs
+      ? [`!! SHIPS OUTSIDE THE US (${country}) — the buyer paid the flat US shipping rate. Contact them before making this.`, ""]
+      : []),
     `Order ${order.id ?? payment.order_id ?? "?"} · Payment ${payment.id ?? "?"}`,
     "",
     "Make:",
@@ -103,7 +152,8 @@ export function describeOrder(order: SquareOrder, payment: SquarePayment): { sub
     ...(payment.buyer_email_address ? ["", `Buyer email: ${payment.buyer_email_address}`] : []),
   ].join("\n");
 
-  return { subject: `New order: ${pieces} ${pieces === 1 ? "piece" : "pieces"}, ${total}`, text };
+  const subject = `New order: ${pieces} ${pieces === 1 ? "piece" : "pieces"}, ${total}`;
+  return { subject: outsideUs ? `[NON-US] ${subject}` : subject, text };
 }
 
 export type OrderEmail = { from: string; to: string; subject: string; text: string };
