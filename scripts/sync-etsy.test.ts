@@ -274,12 +274,16 @@ describe("failure rows write nothing", () => {
     }
   });
 
-  it("missing listing (404) names the listing", async () => {
+  it("skips a listing Etsy no longer has, still syncs the rest, and reports it", async () => {
     await writeManifest({ pickleball: 111, "beach-day": 222 });
     stubListing(111);
     stubs.set("/listings/222", { status: 404, body: { error: "not found" } });
-    await assertRejects(runSync(deps()), /listing "beach-day" \(222\).*HTTP 404/);
-    assert.equal(await exists(syncedPath("pickleball")), false);
+    const warnings: string[] = [];
+    const result = await runSync({ ...deps(), warn: (line: string) => warnings.push(line) });
+    assert.deepEqual(result.skipped, ["beach-day"]);
+    assert.equal(await exists(syncedPath("pickleball")), true);
+    assert.equal(await exists(syncedPath("beach-day")), false);
+    assert.match(warnings.join("\n"), /SKIPPED: listing "beach-day" \(222\).*HTTP 404/);
   });
 
   it("non-USD currency fails the run", async () => {

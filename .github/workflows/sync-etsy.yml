@@ -60,3 +60,12 @@ jobs:
           git add content/catalog
           git commit -m "Sync Etsy catalog"
           git push origin main
+
+      # A listing Etsy no longer has is skipped, not fatal, so everything else above still
+      # synced. Fail here, after the push, so GitHub emails the owner to fix that listing.
+      - name: Fail if any listing was skipped
+        run: |
+          if [ -s .sync-skipped ]; then
+            echo "::error::Etsy no longer has these listings (deleted or relisted): $(tr '\n' ' ' < .sync-skipped)"
+            exit 1
+          fi
