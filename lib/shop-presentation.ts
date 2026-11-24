@@ -22,20 +22,21 @@ export function colorPresentation(slug: string): ColorPresentation {
   return COLORS[slug] ?? FALLBACK_COLOR;
 }
 
-// TODO: unconfirmed placeholder blurbs — replace with real garment copy before launch.
+// Written from the owner's Style Chart tile (Nov 2026): style number, weight and fit as printed
+// there. Add nothing the tile does not say (no ounces, no care instructions).
 const BLURBS: Record<string, string> = {
   "heavyweight-tee":
-    "Heavyweight cotton tee, garment-dyed for a soft, broken-in feel from the first wear. Substantial without being stiff, cut for an easy, relaxed fit. Fabric weight and care detail pending final spec sheet.",
+    "Comfort Colors Style 1717. Heavyweight cotton in a relaxed, unisex fit, garment-dyed for rich, vintage-inspired color and a soft, lived-in feel.",
   "long-sleeve-tee":
-    "Midweight cotton long sleeve tee, garment-dyed for a soft, broken-in feel from the first wear. Cut for a comfortable, everyday fit. Fabric weight and care detail pending final spec sheet.",
+    "Comfort Colors Style 6014. Heavyweight cotton in a relaxed, unisex fit, garment-dyed for rich, vintage-inspired color and a soft, lived-in feel.",
   "lightweight-crewneck":
-    "Lightweight fleece crewneck, easy to layer and just as soft as the rest of the line from the first wear. Built for everyday wear, not just cold mornings. Fabric weight and care detail pending final spec sheet.",
+    "Comfort Colors Style 1466. Lightweight cotton in a relaxed, unisex fit, garment-dyed for rich, vintage-inspired color and a soft, lived-in feel.",
   "heavyweight-crewneck":
-    "Comfort Colors garment-dyed crewneck sweatshirt. Soft, broken-in feel from the first wear, generous fit. Fabric weight and care detail pending final spec sheet.",
+    "Comfort Colors Style 1566. Heavyweight cotton in a relaxed, unisex fit, garment-dyed for rich, vintage-inspired color and a soft, lived-in feel.",
 };
 
 const FALLBACK_BLURB =
-  "Comfort Colors garment-dyed piece, soft and broken-in from the first wear. Fabric weight and care detail pending final spec sheet.";
+  "Comfort Colors garment-dyed cotton in a relaxed, unisex fit, with rich, vintage-inspired color and a soft, lived-in feel.";
 
 export function garmentBlurb(styleSlug: string): string {
   return BLURBS[styleSlug] ?? FALLBACK_BLURB;
