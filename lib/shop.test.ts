@@ -64,9 +64,8 @@ describe("buildShop", () => {
     const longSleeve = buildShop([entry("logo", base)]).garmentTypes[1];
     const blueJean = longSleeve.colors.find((c) => c.slug === "blue-jean");
     assert.ok(blueJean);
-    assert.equal(blueJean.inStock, true);
     assert.equal(blueJean.priceCents, 3200);
-    assert.ok(blueJean.sizes.every((s) => s.inStock && s.priceCents === 3200));
+    assert.ok(blueJean.sizes.every((s) => s.priceCents === 3200));
   });
 
   it("mixed listings: orderable if either lists it, lowest price wins", () => {
@@ -76,7 +75,6 @@ describe("buildShop", () => {
     ]);
     const [bay, ivory] = [...shop.garmentTypes[0].colors].sort((x, y) => (x.slug < y.slug ? -1 : 1));
     assert.equal(bay.sizes[0].priceCents, 3400);
-    assert.equal(ivory.inStock, true);
     assert.equal(ivory.priceCents, 1000);
   });
 
@@ -136,8 +134,8 @@ describe("buildMotifShops", () => {
     ]);
     assert.deepEqual(Object.keys(shops), ["sea-isle", "logo"]);
     const [seaIsle, logo] = ["sea-isle", "logo"].map((slug) => shops[slug].garmentTypes[0].colors[0].sizes);
-    assert.deepEqual(seaIsle.map((s) => [s.name, s.inStock, s.priceCents]), [["S", true, 3600], ["M", true, 3600]]);
-    assert.deepEqual(logo.map((s) => [s.name, s.inStock, s.priceCents]), [["S", true, 3200], ["M", true, 3200]]);
+    assert.deepEqual(seaIsle.map((s) => [s.name, s.priceCents]), [["S", 3600], ["M", 3600]]);
+    assert.deepEqual(logo.map((s) => [s.name, s.priceCents]), [["S", 3200], ["M", 3200]]);
   });
 
   it("an inactive design gets an empty shop rather than borrowing another's", () => {

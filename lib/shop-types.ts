@@ -14,9 +14,8 @@ export const slugify = (name: string) =>
 
 export type ShopSize = {
   name: string;
-  inStock: boolean;
-  /** Integer cents; null when out of stock (a disabled offering's price is meaningless). */
-  priceCents: number | null;
+  /** Integer cents. */
+  priceCents: number;
 };
 
 export type ShopColor = {
@@ -25,9 +24,8 @@ export type ShopColor = {
   /** Null when no authored photo exists for this color yet. */
   frontImage: string | null;
   swatchColor: string;
-  inStock: boolean;
-  /** Lowest in-stock size price, in cents; null when out of stock. */
-  priceCents: number | null;
+  /** Lowest size price, in cents. */
+  priceCents: number;
   sizes: ShopSize[];
 };
 
@@ -35,17 +33,16 @@ export type ShopGarmentType = {
   slug: string;
   name: string;
   garmentBlurb: string;
-  inStock: boolean;
-  /** Lowest in-stock price across colors, in cents; null when nothing is in stock. */
-  priceCents: number | null;
+  /** Lowest price across colors, in cents. */
+  priceCents: number;
   colors: ShopColor[];
 };
 
 export type Shop = { garmentTypes: ShopGarmentType[] };
 
-/** Display string for a card or heading: the formatted price, or "Sold out" with no price. */
-export function priceLabel(cents: number | null): string {
-  return cents === null ? "Sold out" : formatPrice(cents);
+/** Display string for a card or heading: the formatted price. */
+export function priceLabel(cents: number): string {
+  return formatPrice(cents);
 }
 
 export function getGarmentType(shop: Shop, slug: string): ShopGarmentType | undefined {
@@ -65,14 +62,14 @@ export type PickerSelection = {
 
 /**
  * The picker's derived state, kept pure so it can be tested. A chosen size counts only while
- * it is in stock for the current garment and color; the price narrows as the choice does
- * (size, then color, then the garment's lowest in-stock price) and is null for an
- * out-of-stock color; Add to Bag needs an in-stock color and size plus a motif.
+ * it exists for the current garment and color; the price narrows as the choice does (size,
+ * then color, then the garment's lowest price) and is null before a garment is chosen; Add to
+ * Bag needs a garment, color and size plus a motif.
  */
 export function derivePicker(shop: Shop, selection: PickerSelection) {
   const garmentType = selection.garmentTypeSlug ? getGarmentType(shop, selection.garmentTypeSlug) : undefined;
   const colorway = garmentType && selection.colorSlug ? getColor(garmentType, selection.colorSlug) : undefined;
-  const size = colorway?.sizes.find((s) => s.name === selection.sizeName && s.inStock);
+  const size = colorway?.sizes.find((s) => s.name === selection.sizeName);
   const priceCents = size
     ? size.priceCents
     : colorway
@@ -83,7 +80,7 @@ export function derivePicker(shop: Shop, selection: PickerSelection) {
     colorway,
     size,
     priceCents,
-    isAddToBagEnabled: Boolean(garmentType && colorway?.inStock && size && selection.hasMotif),
+    isAddToBagEnabled: Boolean(garmentType && colorway && size && selection.hasMotif),
   };
 }
 

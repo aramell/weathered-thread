@@ -12,7 +12,6 @@ const shop: Shop = {
       slug: "heavyweight-tee",
       name: "Heavyweight Tee",
       garmentBlurb: "",
-      inStock: true,
       priceCents: 3600,
       colors: [
         {
@@ -20,11 +19,9 @@ const shop: Shop = {
           name: "Ivory",
           frontImage: null,
           swatchColor: "#fff",
-          inStock: true,
           priceCents: 3600,
           sizes: [
-            { name: "S", inStock: false, priceCents: null },
-            { name: "M", inStock: true, priceCents: 3600 },
+            { name: "M", priceCents: 3600 },
           ],
         },
       ],
@@ -43,10 +40,10 @@ describe("checkout selection", () => {
     });
   });
 
-  it("tells a sold-out combination from one that does not exist", () => {
+  it("rejects a combination that is not offered", () => {
     assert.deepEqual(resolveSelection(shop, { style: "heavyweight-tee", color: "ivory", size: "S" }), {
       ok: false,
-      reason: "sold-out",
+      reason: "unavailable",
     });
     assert.deepEqual(resolveSelection(shop, { style: "heavyweight-tee", color: "pepper", size: "M" }), {
       ok: false,

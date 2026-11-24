@@ -75,24 +75,13 @@ export default function ProductPickerShell({ motif, shop, backHref, backLabel }:
 
   const missingGarmentPrompt = !garmentType ? "Choose a garment for this piece." : null;
   const missingColorPrompt = garmentType && !colorway ? "Choose a color for this piece." : null;
-  const selectedColorOutOfStockPrompt =
-    colorway && !colorway.inStock
-      ? `${colorway.name} is currently out of stock in this style.`
-      : null;
   const missingSizePrompt =
-    garmentType && colorway && colorway.inStock && !size
-      ? "Choose a size for this piece."
-      : null;
+    garmentType && colorway && !size ? "Choose a size for this piece." : null;
 
   const addToBagDisabledReason = isAddToBagEnabled
     ? null
     : // The garment prompt is shown once, above the garment options, so it is not repeated here.
-      (missingColorPrompt ??
-      selectedColorOutOfStockPrompt ??
-      missingSizePrompt);
-
-  const outOfStockColorways = garmentType?.colors.filter((c) => !c.inStock) ?? [];
-  const outOfStockColorwayNames = outOfStockColorways.map((c) => c.name).join(", ");
+      (missingColorPrompt ?? missingSizePrompt);
 
   const previewUrl = garmentType && colorway?.frontImage ? colorway.frontImage : null;
   const slides = buildGallerySlides(
@@ -219,7 +208,7 @@ export default function ProductPickerShell({ motif, shop, backHref, backLabel }:
                         onSelect={() => {
                           setGarmentTypeSlug(type.slug);
                           const color = colorSlug ? getColor(type, colorSlug) : undefined;
-                          if (!color?.sizes.some((s) => s.name === sizeName && s.inStock)) setSizeName(null);
+                          if (!color?.sizes.some((s) => s.name === sizeName)) setSizeName(null);
                         }}
                       />
                     </div>
@@ -247,22 +236,14 @@ export default function ProductPickerShell({ motif, shop, backHref, backLabel }:
                         name={c.name}
                         swatchColor={c.swatchColor}
                         selected={c.slug === colorSlug}
-                        inStock={c.inStock}
                         onSelect={() => {
                           setColorSlug(c.slug);
-                          if (!c.sizes.some((s) => s.name === sizeName && s.inStock)) setSizeName(null);
+                          if (!c.sizes.some((s) => s.name === sizeName)) setSizeName(null);
                         }}
                       />
                     </div>
                   ))}
                 </div>
-                {outOfStockColorways.length > 0 && (
-                  <p className="mt-2 font-mono text-caption-mono text-marsh-sage">
-                    {outOfStockColorways.length === 1
-                      ? `${outOfStockColorwayNames} is currently out of stock in this style.`
-                      : `${outOfStockColorwayNames} are currently out of stock in this style.`}
-                  </p>
-                )}
               </div>
             )}
 
@@ -285,10 +266,8 @@ export default function ProductPickerShell({ motif, shop, backHref, backLabel }:
                         <button
                           type="button"
                           onClick={() => setSizeName(s.name)}
-                          disabled={!s.inStock}
                           aria-pressed={selected}
-                          aria-label={s.inStock ? s.name : `${s.name} — out of stock`}
-                          className={`flex h-11 w-11 items-center justify-center rounded border font-mono text-label-mono disabled:cursor-not-allowed disabled:opacity-40 ${
+                          className={`flex h-11 w-11 items-center justify-center rounded border font-mono text-label-mono ${
                             selected
                               ? "border-wet-ink bg-wet-ink text-sailcloth"
                               : "border-line text-wet-ink"
