@@ -5,6 +5,8 @@ export const authored = {
   story:
     "The familiar Exit 17 sign, stitched in. A reminder of the road that always leads back to Sea Isle City.",
   collection: "sea-isle",
+  // Hidden 2026-11-24: its Etsy listing 4603856950 returns 404. Remove this once relisted.
+  hidden: true,
   photos: [
     {
       src: "/images/designs/sic-exit-17/01.jpg",
