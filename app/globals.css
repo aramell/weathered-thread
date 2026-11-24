@@ -1,5 +1,17 @@
 @import "tailwindcss";
 
+/* Tailwind v4's reset leaves buttons with the default arrow; show the pointer on anything
+   clickable. Disabled buttons keep their own `disabled:cursor-not-allowed` utilities. */
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  summary,
+  select:not(:disabled),
+  input:is([type="submit"], [type="button"], [type="checkbox"], [type="radio"]):not(:disabled) {
+    cursor: pointer;
+  }
+}
+
 @theme inline {
   /* Brand colors — five brand colors + two supporting tones (DESIGN.md) */
   --color-sailcloth: #EFEAE0;
