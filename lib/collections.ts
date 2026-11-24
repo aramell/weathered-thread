@@ -23,7 +23,7 @@ export const collections: Collection[] = [
     eyebrow: "For places worth remembering",
     heading: "Sea Isle",
     story: [
-      "A water tower on the skyline, a boat on the water, the exit you take when you're almost there — small landmarks of Sea Isle City, stitched onto garment-dyed cotton built to soften with wear.",
+      "A water tower on the skyline, a boat on the water, the exit you take when you're almost there — small landmarks of Sea Isle City, stitched onto soft, ring-spun, garment-dyed cotton with a lived-in feel.",
     ],
   },
   {

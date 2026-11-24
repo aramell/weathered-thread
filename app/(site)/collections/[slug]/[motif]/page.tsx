@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import ComfortColorsSection from "@/components/comfort-colors-section";
 import ProductPickerShell from "@/components/product-picker-shell";
 import { getCollection } from "@/lib/collections";
 import { getMotifs, getMotif } from "@/lib/motifs";
@@ -47,11 +48,16 @@ export default async function MotifGarmentPage({
   }
 
   return (
-    <ProductPickerShell
-      motif={motif}
-      shop={shop}
-      backHref={`/collections/${collection.slug}`}
-      backLabel="Back to Collection"
-    />
+    <>
+      <ProductPickerShell
+        motif={motif}
+        shop={shop}
+        backHref={`/collections/${collection.slug}`}
+        backLabel="Back to Collection"
+      />
+      <div className="mx-auto w-full max-w-xl px-gutter-mobile md:px-gutter-desktop">
+        <ComfortColorsSection />
+      </div>
+    </>
   );
 }
