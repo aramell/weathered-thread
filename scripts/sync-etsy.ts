@@ -42,6 +42,9 @@ const REQUEST_TIMEOUT_MS = 30_000;
 
 export class SyncError extends EtsyDataError {}
 
+/** Etsy answered 404: the listing was deleted or relisted under a new id. The sync skips it and goes on. */
+export class NotFoundError extends SyncError {}
+
 /** One listing photo, in Etsy's rank order. Public CDN URLs (i.etsystatic.com), unlike the listing `url`. */
 export type SyncedImage = {
   /** 570px-wide rendition, for tiles and galleries. */
@@ -83,7 +86,8 @@ export type SyncDeps = {
   warn: (line: string) => void;
 };
 
-export type SyncResult = { written: string[]; warnings: string[] };
+/** `skipped` lists listings Etsy no longer has; their old synced.ts is left as it was. */
+export type SyncResult = { written: string[]; warnings: string[]; skipped: string[] };
 
 type Manifest = { slug: string; listingId: number }[];
 
@@ -188,7 +192,8 @@ async function etsyGet(
             ? " (not found)"
             : "";
     const detail = (await response.text().catch(() => "")).slice(0, 200).trim();
-    throw new SyncError(`${what}: HTTP ${response.status}${hint}${detail ? ` — ${detail}` : ""}`);
+    const message = `${what}: HTTP ${response.status}${hint}${detail ? ` — ${detail}` : ""}`;
+    throw response.status === 404 ? new NotFoundError(message) : new SyncError(message);
   }
   try {
     return await response.json();
@@ -381,18 +386,24 @@ export async function runSync(deps: SyncDeps): Promise<SyncResult> {
   }
 
   const listings: { slug: string; listing: SyncedListing }[] = [];
+  const skipped: string[] = [];
+  const warnings: string[] = [];
   for (const { slug, listingId } of manifest) {
     deps.log(`fetching ${slug} (${listingId})…`);
     try {
       listings.push({ slug, listing: await fetchListing(deps, apiKey, accessToken, slug, listingId) });
     } catch (error) {
+      if (error instanceof NotFoundError) {
+        skipped.push(slug);
+        warnings.push(`SKIPPED: ${error.message} — deleted or relisted on Etsy? Its last synced data is unchanged; update its listing id in the manifest or hide it`);
+        continue;
+      }
       // The shared parsers throw EtsyDataError; callers of the sync see one error type.
       if (error instanceof EtsyDataError && !(error instanceof SyncError)) throw new SyncError(error.message);
       throw error;
     }
   }
 
-  const warnings: string[] = [];
   const notes: string[] = [];
   for (const { slug, listing } of listings) {
     if (listing.state !== "active") {
@@ -417,7 +428,7 @@ export async function runSync(deps: SyncDeps): Promise<SyncResult> {
   for (const warning of warnings) deps.warn(`warning: ${warning}`);
   deps.log(`wrote ${written.length} file${written.length === 1 ? "" : "s"}:`);
   for (const file of written) deps.log(`  ${file}`);
-  return { written, warnings };
+  return { written, warnings, skipped };
 }
 
 async function readMainFileFromGit(repoRelativePath: string): Promise<string | null> {
@@ -433,7 +444,7 @@ async function readMainFileFromGit(repoRelativePath: string): Promise<string | n
 
 async function main(): Promise<void> {
   try {
-    await runSync({
+    const { skipped } = await runSync({
       apiKey: process.env.ETSY_API_KEY,
       refreshToken: process.env.ETSY_REFRESH_TOKEN,
       saveRefreshToken: (token) => upsertEnvVar(path.join(process.cwd(), ".env.local"), "ETSY_REFRESH_TOKEN", token),
@@ -443,6 +454,8 @@ async function main(): Promise<void> {
       log: (line) => console.log(line),
       warn: (line) => console.warn(line),
     });
+    // The workflow reads this after committing what did sync, then fails so GitHub emails the owner.
+    if (skipped.length > 0) await fs.writeFile(path.join(process.cwd(), ".sync-skipped"), `${skipped.join("\n")}\n`);
   } catch (error) {
     console.error(`sync-etsy: ${error instanceof Error ? error.message : String(error)}`);
     console.error("sync-etsy: nothing was written.");
