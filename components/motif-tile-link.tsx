@@ -8,8 +8,8 @@ type MotifTileLinkProps = {
   name: string;
   href: string;
   image?: string;
-  /** `name` is a place name (collection index tiles). */
-  nameIsLocation?: boolean;
+  /** `name` is a collection title (collection index tiles). */
+  nameIsTitle?: boolean;
 };
 
 /**
@@ -24,7 +24,7 @@ type MotifTileLinkProps = {
  * Collection Story) gains interactivity. Behavior unchanged from before
  * Story 3.3 — only the border's ownership moved into `motif-tile`.
  */
-export default function MotifTileLink({ name, href, image, nameIsLocation }: MotifTileLinkProps) {
+export default function MotifTileLink({ name, href, image, nameIsTitle }: MotifTileLinkProps) {
   const [selected, setSelected] = useState(false);
 
   return (
@@ -39,7 +39,7 @@ export default function MotifTileLink({ name, href, image, nameIsLocation }: Mot
       aria-current={selected ? "true" : undefined}
       className="block rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay-brown"
     >
-      <MotifTile name={name} image={image} selected={selected} nameIsLocation={nameIsLocation} />
+      <MotifTile name={name} image={image} selected={selected} nameIsTitle={nameIsTitle} />
     </Link>
   );
 }

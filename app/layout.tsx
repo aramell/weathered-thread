@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Anton, Fraunces, IBM_Plex_Mono, Libre_Franklin } from "next/font/google";
+import { Fraunces, IBM_Plex_Mono, Libre_Franklin } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
@@ -25,14 +25,6 @@ const libreFranklin = Libre_Franklin({
   weight: ["400"],
 });
 
-// Anton is for location wording only (place names such as "SEA ISLE"): never headlines in
-// general and never the logo (Master Brand Guidelines, Nov 2026).
-const anton = Anton({
-  variable: "--font-anton",
-  subsets: ["latin"],
-  weight: "400",
-});
-
 export const metadata: Metadata = {
   title: "Weathered Thread — Made to Remember. Stitched in.",
   description: "Embroidered apparel for the towns worth remembering.",
@@ -42,7 +34,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${ibmPlexMono.variable} ${libreFranklin.variable} ${anton.variable} h-full antialiased`}
+      className={`${fraunces.variable} ${ibmPlexMono.variable} ${libreFranklin.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-display">
         {children}

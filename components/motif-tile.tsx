@@ -8,10 +8,8 @@ type MotifTileProps = {
   selected?: boolean;
   /** Collection name shown above the design name. */
   collection?: string;
-  /** The collection is a place (set its name in Anton). */
-  collectionPlace?: boolean;
-  /** `name` is itself a place name (collection index tiles): set it in Anton. */
-  nameIsLocation?: boolean;
+  /** `name` is a collection title (collection index tiles): set it in Fraunces. */
+  nameIsTitle?: boolean;
 };
 
 /**
@@ -24,7 +22,7 @@ type MotifTileProps = {
  * shares one border implementation instead of wrapping its own. Still
  * browse/read only — no tap handling here, callers own selection.
  */
-export default function MotifTile({ name, image, selected = false, collection, collectionPlace, nameIsLocation = false }: MotifTileProps) {
+export default function MotifTile({ name, image, selected = false, collection, nameIsTitle = false }: MotifTileProps) {
   return (
     <div
       className={`rounded border-2 bg-paper-raised p-4 ${
@@ -45,11 +43,11 @@ export default function MotifTile({ name, image, selected = false, collection, c
       ) : (
         <div className="mb-3 aspect-square rounded bg-sailcloth" aria-hidden="true" />
       )}
-      {collection && <CollectionLabel name={collection} place={collectionPlace} />}
+      {collection && <CollectionLabel name={collection} />}
       <p
         className={
-          nameIsLocation
-            ? "font-location text-sm uppercase tracking-location text-weathered-ink"
+          nameIsTitle
+            ? "font-display text-headline text-weathered-ink"
             : "font-mono text-caption-mono uppercase text-weathered-ink"
         }
       >

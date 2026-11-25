@@ -5,7 +5,7 @@
  */
 export type Collection = {
   slug: string;
-  /** "place" collections are named for a location and set that name in Anton; "brand" is the Weathered Thread mark. */
+  /** "place" collections are named for a location; "brand" is the Weathered Thread mark. */
   kind: "place" | "brand";
   /** Short name used in running copy, e.g. "the Sea Isle City collection". */
   name: string;

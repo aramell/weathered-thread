@@ -1,18 +1,12 @@
 type CollectionLabelProps = {
   name: string;
-  /** A place collection (Sea Isle City): its name is location wording, set in Anton. */
-  place?: boolean;
 };
 
 /**
- * collection-label — the small collection name above a design name. Place names are location
- * wording and use Anton, uppercase and tracked, per the Master Brand Guidelines (Nov 2026);
- * the brand collection keeps the quiet mono label.
+ * collection-label — the small collection name above a design name, in the quiet mono caption
+ * style. Place names such as "Sea Isle City" are set in Fraunces where they are titles (story
+ * block, collection tiles), per the Brand Identity Board.
  */
-export default function CollectionLabel({ name, place = false }: CollectionLabelProps) {
-  return place ? (
-    <p className="font-location text-sm uppercase tracking-location text-olive">{name}</p>
-  ) : (
-    <p className="font-mono text-caption-mono text-olive">{name}</p>
-  );
+export default function CollectionLabel({ name }: CollectionLabelProps) {
+  return <p className="font-mono text-caption-mono text-olive">{name}</p>;
 }
