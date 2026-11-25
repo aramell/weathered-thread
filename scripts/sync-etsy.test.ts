@@ -24,6 +24,7 @@ function listingBody(id: number, overrides: Record<string, unknown> = {}) {
     price: { amount: 3200, divisor: 100, currency_code: "USD" },
     quantity: 12,
     created_timestamp: 1793060986,
+    description: "Embroidered on Comfort Colors.\r\nRuns &amp; wears true to size.",
     ...overrides,
   };
 }
@@ -157,6 +158,21 @@ afterEach(async () => {
 });
 
 describe("happy path", () => {
+  it("syncs the Etsy description with entities decoded and line breaks normalised", async () => {
+    await writeManifest({ pickleball: 111 });
+    stubListing(111);
+    await runSync(deps());
+    const text = await fs.readFile(syncedPath("pickleball"), "utf8");
+    assert.ok(text.includes('"description": "Embroidered on Comfort Colors.\\nRuns & wears true to size."'), text);
+  });
+
+  it("a listing with no description syncs as an empty string", async () => {
+    await writeManifest({ pickleball: 111 });
+    stubListing(111, { description: undefined });
+    await runSync(deps());
+    assert.ok((await fs.readFile(syncedPath("pickleball"), "utf8")).includes('"description": ""'));
+  });
+
   it("writes one synced.ts per listing with cents prices, sends the key, and leaves authored.ts alone", async () => {
     await writeManifest({ pickleball: 111, "beach-day": 222 });
     stubListing(111);

@@ -4,11 +4,12 @@
 export const synced = {
   "listingId": 4605331012,
   "name": "Seagull with a French Fry - Sea Isle City Embroidered Shirt | Sea Isle City Crewneck and Tees | Comfort Colors | Boutique Apparel",
+  "description": "SEAGULL WITH A FRENCH FRY - SEA ISLE CITY \n\nSea Isle has a few locals who really know how to work a beach day. 🐦🍟\n\nYou bring the fries. The seagulls make their move.\n\nThis little guy knows exactly what he’s doing—and if you’ve ever tried to enjoy a promenade snack in Sea Isle, you know the struggle is real. With a French fry in his beak and SEA ISLE CITY stitched underneath, this original embroidered design is a fun nod to one of the shore’s most familiar characters.\n\nPerfect for beach days, boardwalk runs, grabbing dinner in town, or just wishing you were back in Sea Isle. Because some of the best vacation memories are the little things (even the ones involving stolen fries).\n\nTHE DETAILS\n\n• Original Weathered Thread embroidery design\n• Embroidered directly onto your selected garment\n• Made to order\n• Quality Comfort Colors® garment\n• Soft, substantial feel with the lived-in character of a favorite piece\n• Available in multiple garment styles, colors, and sizes  \n• Unisex fit\n• Don't see what you want? Send a message!\n\n\nCHOOSE YOUR PIECE\n\nSelect your garment style, color, and size from your choice of Comfort Colors® tee, long-sleeve tee, or crewneck. Choose from the listing options.\n\nEach piece is embroidered to order and finished individually. Because of this, slight variations in stitch texture or placement may occur. These small variations are part of the character of a handmade piece made just for you.\n\nMade to Remember. Stitched in.",
   "url": "https://www.etsy.com/listing/4605331012/seagull-with-a-french-fry-sea-isle-city",
   "state": "active",
   "priceCents": 3600,
-  "quantity": 259,
-  "createdTimestamp": 1795290140,
+  "quantity": 258,
+  "createdTimestamp": 1795621374,
   "variations": [
     {
       "productId": 35713566768,
@@ -920,7 +921,7 @@ export const synced = {
         }
       ],
       "priceCents": 4800,
-      "quantity": 5
+      "quantity": 4
     },
     {
       "productId": 35332635277,

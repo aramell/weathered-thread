@@ -4,6 +4,7 @@
 export const synced = {
   "listingId": 4588337944,
   "name": "Weathered Thread Embroidered Tee or Crewneck | Comfort Colors | Horizontal Logo | Boutique Apparel | Variety of Colors and Styles",
+  "description": "WEATHERED THREAD\n\nMade to Remember. Stitched in.\n\nThe signature Weathered Thread logo, stitched simply onto an everyday favorite.\nInspired by the places, people, and moments worth remembering, this understated embroidered piece is designed to become the kind of sweatshirt you reach for again and again. Clean, easy to wear, and finished with our signature mark.\n\nTHE DETAILS\n\n• Original Weathered Thread embroidery design\n• Embroidered directly onto your selected garment\n• Made to order\n• Quality Comfort Colors® garment\n• Soft, substantial feel with the lived-in character of a favorite piece\n• Available in multiple garment styles, colors, and sizes  \n• Unisex fit\n• Don't see what you want? Send a message!\n\n\nCHOOSE YOUR PIECE\n\nSelect your garment style, color, and size from your choice of Comfort Colors® tee, long-sleeve tee, or crewneck. Choose from the listing options.\n\nEach piece is embroidered to order and finished individually. Because of this, slight variations in stitch texture or placement may occur. These small variations are part of the character of a handmade piece made just for you.\n\nMade to Remember. Stitched in.",
   "url": "https://www.etsy.com/listing/4588337944/weathered-thread-embroidered-tee-or",
   "state": "active",
   "priceCents": 3200,

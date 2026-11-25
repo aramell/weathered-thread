@@ -4,6 +4,7 @@
 export const synced = {
   "listingId": 4589978644,
   "name": "Smile You're in Sea Isle Embroidered Shirt | Sea Isle City Crewnecks and Tees | Comfort Colors | Boutique Apparel",
+  "description": "SMILE, YOU’RE IN SEA ISLE 😎\n\nThe sun’s out, and you’re right where you belong. ☀️\n\nThis original Weathered Thread design features the iconic smiling sun and saying - “Smile You're in Sea Isle\"—a fun little nod to that feeling when you finally arrive at your favorite shore town. \n\nPerfect for beach days, promenade strolls, grabbing dinner in town, or wearing a little Sea Isle sunshine wherever you are.\n\nTHE DETAILS\n\n• Original Weathered Thread embroidery design\n• Embroidered directly onto your selected garment\n• Made to order\n• Quality Comfort Colors® garment\n• Soft, substantial feel with the lived-in character of a favorite piece\n• Available in multiple garment styles, colors, and sizes  \n• Unisex fit\n• Don't see what you want? Send a message!\n\n\nCHOOSE YOUR PIECE\n\nSelect your garment style, color, and size from your choice of Comfort Colors® tee, long-sleeve tee, or crewneck. Choose from the listing options.\n\nEach piece is embroidered to order and finished individually. Because of this, slight variations in stitch texture or placement may occur. These small variations are part of the character of a handmade piece made just for you.\n\nMade to Remember. Stitched in.",
   "url": "https://www.etsy.com/listing/4589978644/smile-youre-in-sea-isle-embroidered",
   "state": "active",
   "priceCents": 3600,

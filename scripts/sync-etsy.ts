@@ -60,6 +60,11 @@ export type SyncedImage = {
 export type SyncedListing = {
   listingId: number;
   name: string;
+  /**
+   * Etsy's listing description, entities decoded, "\n" line breaks; empty when none is set.
+   * Optional because a hidden design Etsy no longer serves keeps its old synced.ts, which predates this field.
+   */
+  description?: string;
   url: string;
   state: string;
   priceCents: number;
@@ -280,6 +285,8 @@ async function fetchListing(
   return {
     listingId,
     name: decodeEntities(expectString(listing.title, `${listingWhat} title`)),
+    description:
+      typeof listing.description === "string" ? decodeEntities(listing.description).replace(/\r\n?/g, "\n").trim() : "",
     url,
     state: expectString(listing.state, `${listingWhat} state`),
     priceCents: moneyToCents(listing.price, listingWhat),
