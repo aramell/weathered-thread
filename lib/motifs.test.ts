@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
 import type { CatalogEntry } from "@/content/catalog/types";
-import { buildMotifs } from "./motifs";
+import { buildMotifs, withoutEtsyWording } from "./motifs";
 
 const entry = (overrides: Partial<CatalogEntry> = {}): CatalogEntry =>
   ({
@@ -34,5 +34,25 @@ describe("buildMotifs", () => {
   it("falls back to an empty description for a listing synced before the field existed", () => {
     const [motif] = buildMotifs([entry({ description: undefined })]);
     assert.equal(motif.description, "");
+  });
+
+  it("drops Etsy-only wording from the description", () => {
+    const [motif] = buildMotifs([
+      entry({
+        description:
+          "THE DETAILS\n\n\u2022 Made to order\n\u2022 Don't see what you want? Send a message!  \n\nSelect your garment style. Choose from the listing options.\n\nMade to Remember.",
+      }),
+    ]);
+    assert.equal(
+      motif.description,
+      "THE DETAILS\n\n\u2022 Made to order\n\nSelect your garment style.\n\nMade to Remember.",
+    );
+  });
+});
+
+describe("withoutEtsyWording", () => {
+  it("handles a curly apostrophe and leaves unrelated text alone", () => {
+    assert.equal(withoutEtsyWording("A\n\u2022 Don\u2019t see what you want? Send a message!\nB"), "A\nB");
+    assert.equal(withoutEtsyWording("Choose your color."), "Choose your color.");
   });
 });

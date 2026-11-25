@@ -9,6 +9,20 @@ import type { CatalogEntry } from "@/content/catalog/types";
 import { getListings } from "./catalog";
 import type { Motif } from "./motif-types";
 
+/**
+ * The synced Etsy description with the lines that only make sense on Etsy removed: the variation
+ * dropdown ("Choose from the listing options.") and Etsy messaging ("Send a message!"). Checkout
+ * here is Square, so neither control exists. The synced file stays a faithful copy of Etsy.
+ */
+export function withoutEtsyWording(description: string): string {
+  return description
+    .split("\n")
+    .filter((line) => !/^\W*Don['\u2019]t see what you want\? Send a message!?\s*$/i.test(line))
+    .join("\n")
+    .replace(/[^\S\n]*Choose from the listing options\.?/gi, "")
+    .trim();
+}
+
 /** Newest first, like Etsy's "Most Recent" (ties fall back to slug so the order is stable). */
 export function buildMotifs(listings: readonly CatalogEntry[]): Motif[] {
   return listings
@@ -19,7 +33,7 @@ export function buildMotifs(listings: readonly CatalogEntry[]): Motif[] {
       name: motifName,
       priceCents,
       story,
-      description: description ?? "",
+      description: withoutEtsyWording(description ?? ""),
       collection,
       images: photos.map(({ src, width, height, alt }) => ({ url: src, width, height, alt })),
     }));
