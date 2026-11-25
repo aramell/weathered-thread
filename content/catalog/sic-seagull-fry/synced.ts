@@ -7,8 +7,8 @@ export const synced = {
   "url": "https://www.etsy.com/listing/4605331012/seagull-with-a-french-fry-sea-isle-city",
   "state": "active",
   "priceCents": 3600,
-  "quantity": 259,
-  "createdTimestamp": 1795290140,
+  "quantity": 258,
+  "createdTimestamp": 1795621374,
   "variations": [
     {
       "productId": 35713566768,
@@ -920,7 +920,7 @@ export const synced = {
         }
       ],
       "priceCents": 4800,
-      "quantity": 5
+      "quantity": 4
     },
     {
       "productId": 35332635277,
