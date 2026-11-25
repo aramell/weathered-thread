@@ -30,4 +30,9 @@ describe("buildMotifs", () => {
     assert.equal(motif.description, "Embroidered on Comfort Colors.\n\nRuns true to size.");
     assert.equal(motif.story, "A wave.");
   });
+
+  it("falls back to an empty description for a listing synced before the field existed", () => {
+    const [motif] = buildMotifs([entry({ description: undefined })]);
+    assert.equal(motif.description, "");
+  });
 });

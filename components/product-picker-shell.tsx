@@ -338,7 +338,7 @@ export default function ProductPickerShell({ motif, shop, backHref, backLabel }:
                 Description
               </h2>
               <p className="font-body text-body-sm">{motif.story}</p>
-              {motif.description.split(/\n{2,}/).filter(Boolean).map((paragraph, i) => (
+              {motif.description.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean).map((paragraph, i) => (
                 <p key={i} className="mt-4 whitespace-pre-line font-body text-body-sm">
                   {paragraph}
                 </p>
