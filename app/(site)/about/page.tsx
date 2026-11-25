@@ -13,10 +13,31 @@ type AboutPhoto = { src: string; width: number; height: number; alt: string };
 
 /** Photos arrive later. `null` = no photo yet, nothing is rendered. */
 const ABOUT_PHOTOS: Record<"intro" | "place" | "details" | "lived", AboutPhoto | null> = {
-  intro: null,
-  place: null,
-  details: null,
-  lived: null,
+  intro: {
+    src: "/images/about/intro-olive-grove.jpg",
+    width: 1599,
+    height: 2000,
+    alt: "Woman in sunglasses and a grey Weathered Thread tee standing under an olive tree, looking out toward the hills.",
+  },
+  // Stand-in: swap for a Sea Isle City photo when there is one.
+  place: {
+    src: "/images/about/place-autumn-label.jpg",
+    width: 1600,
+    height: 2000,
+    alt: "The back of a blue tee with its woven Weathered Thread label, arms raised against autumn leaves.",
+  },
+  details: {
+    src: "/images/about/details-hem-label.jpg",
+    width: 1600,
+    height: 2000,
+    alt: "A washed blue cuff and hem with a small woven wt label stitched into the seam.",
+  },
+  lived: {
+    src: "/images/about/lived-ivory-tee.jpg",
+    width: 1600,
+    height: 2000,
+    alt: "Smiling woman in an ivory tee with the Weathered Thread logo embroidered on the chest.",
+  },
 };
 
 function SectionPhoto({ photo }: { photo: AboutPhoto | null }) {
