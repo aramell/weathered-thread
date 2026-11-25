@@ -86,7 +86,7 @@ export type SyncDeps = {
   warn: (line: string) => void;
 };
 
-/** `skipped` lists listings Etsy no longer has; their old synced.ts is left as it was. */
+/** `skipped` lists visible listings Etsy no longer has (these alert the owner); hidden ones are only warned about. Old synced.ts is left as it was. */
 export type SyncResult = { written: string[]; warnings: string[]; skipped: string[] };
 
 type Manifest = { slug: string; listingId: number }[];
@@ -127,6 +127,16 @@ function assertEtsyUrl(url: string, slug: string): void {
   const host = parsed.hostname.toLowerCase();
   if (parsed.protocol !== "https:" || (host !== "etsy.com" && !host.endsWith(".etsy.com"))) {
     throw new SyncError(`listing "${slug}": returned url is not https on etsy.com: ${url}`);
+  }
+}
+
+/** True when the design's authored.ts sets `hidden: true` (an uncommented line), i.e. the owner parked it on purpose. */
+async function isHidden(catalogDir: string, slug: string): Promise<boolean> {
+  try {
+    const source = await fs.readFile(path.join(catalogDir, slug, "authored.ts"), "utf8");
+    return /^\s*hidden:\s*true\b/m.test(source);
+  } catch {
+    return false;
   }
 }
 
@@ -394,6 +404,11 @@ export async function runSync(deps: SyncDeps): Promise<SyncResult> {
       listings.push({ slug, listing: await fetchListing(deps, apiKey, accessToken, slug, listingId) });
     } catch (error) {
       if (error instanceof NotFoundError) {
+        // A hidden design is parked on purpose (inactive on Etsy for now): note it, don't alert.
+        if (await isHidden(catalogDir, slug)) {
+          warnings.push(`"${slug}" is hidden and Etsy has no active listing for it (${error.message}); left unchanged`);
+          continue;
+        }
         skipped.push(slug);
         warnings.push(`SKIPPED: ${error.message} — deleted or relisted on Etsy? Its last synced data is unchanged; update its listing id in the manifest or hide it`);
         continue;
