@@ -1,6 +1,6 @@
 type CollectionLabelProps = {
   name: string;
-  /** A place collection (Sea Isle): its name is location wording, set in Anton. */
+  /** A place collection (Sea Isle City): its name is location wording, set in Anton. */
   place?: boolean;
 };
 

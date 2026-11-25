@@ -71,7 +71,7 @@ export default function AboutPage() {
       {/* Intro */}
       <section className={`${sectionClass} pt-8 text-center`}>
         <SectionPhoto photo={ABOUT_PHOTOS.intro} />
-        <p className="mb-4 font-mono text-label-mono uppercase text-olive">
+        <p className="mb-4 font-mono text-eyebrow-mono uppercase text-deep-harbor">
           Made to Remember. Stitched in.
         </p>
         <h1 className="mb-6 font-display text-display-lg-mobile md:text-display-lg">
@@ -160,7 +160,7 @@ export default function AboutPage() {
       {/* Close */}
       <section className={`${sectionClass} pb-story-gap text-center`}>
         <p className="mb-1 font-display text-headline">Weathered Thread</p>
-        <p className="mb-6 font-mono text-label-mono uppercase text-olive">
+        <p className="mb-6 font-mono text-eyebrow-mono uppercase text-deep-harbor">
           Made to Remember. Stitched in.
         </p>
         <ButtonPrimary href="/collections/sea-isle">Shop the Collection</ButtonPrimary>

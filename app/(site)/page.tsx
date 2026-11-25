@@ -55,7 +55,7 @@ export default async function Home() {
           Made to Remember.{" "}
           <em className="text-deep-harbor">Stitched in.</em>
         </h1>
-        <p className="font-body text-body">
+        <p className="font-body text-body text-muted">
           Embroidered apparel for the towns worth remembering.
         </p>
       </section>
@@ -83,11 +83,11 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Sea Isle feature */}
+      {/* Sea Isle City feature */}
       {seaIsle && (
         <CollectionStoryBlock eyebrow={seaIsle.eyebrow} heading={seaIsle.heading} location>
           <p>{seaIsle.story[0]}</p>
-          <ButtonPrimary href="/collections/sea-isle">Shop Sea Isle</ButtonPrimary>
+          <ButtonPrimary href="/collections/sea-isle">Shop Sea Isle City</ButtonPrimary>
         </CollectionStoryBlock>
       )}
 
@@ -113,7 +113,7 @@ export default async function Home() {
         <section className="px-gutter-mobile md:px-gutter-desktop">
           <p
             id={shopHeadingId}
-            className="mb-4 font-mono text-label-mono uppercase text-olive"
+            className="mb-4 font-mono text-eyebrow-mono uppercase text-deep-harbor"
           >
             Shop
           </p>

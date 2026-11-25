@@ -88,7 +88,7 @@ export default function CollectionStoryBlock({
         revealed ? "opacity-100" : "opacity-0"
       }`}
     >
-      <p className="mb-3 font-mono text-label-mono uppercase text-sailcloth/75">
+      <p className="mb-3 font-mono text-eyebrow-mono uppercase text-sailcloth/75">
         {eyebrow}
       </p>
       <h2
