@@ -11,8 +11,8 @@ Status of the Nov 2026 brand and shop revision, plus the Square launch work. Tic
 
 ## Questions for the owner
 
-- [ ] **Exit 17:** relisted (send the new Etsy listing ID), removed for good, or just inactive? It is hidden (`hidden: true` in `content/catalog/sic-exit-17/authored.ts`); the sync fails and emails every 6 hours until this is settled.
-- [ ] **Two inactive Etsy listings:** reactivate them, or say which designs they are, so the shop reaches 15 instead of 13.
+- [x] **Exit 17:** just inactive on Etsy for the time being. Stays hidden (`hidden: true` in `content/catalog/sic-exit-17/authored.ts`); unhide it once the listing is active again. The sync now skips a hidden design that Etsy 404s without failing, so there are no more 6-hourly emails. A visible design that goes missing still fails the run.
+- [x] **Inactive Etsy listings:** Beach Cruiser, Exit 17 and Beach Chair. Decision (25 Nov): skip them for launch. Beach Cruiser and Beach Chair are not in the manifest, so there is nothing to change; reactivate and add them to `listings.json` later.
 - [ ] **"Prices aren't right" screenshot:** send it. `lib/price-chart.test.ts` checks every synced price against the pricing chart and passes, so the screenshot is needed to find the price in question.
 - [ ] **Sandbox test now, or wait for activation?** Sandbox would test the order email before activation; it needs a separate sandbox subscription for Preview.
 

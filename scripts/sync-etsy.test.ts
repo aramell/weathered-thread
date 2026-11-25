@@ -286,6 +286,23 @@ describe("failure rows write nothing", () => {
     assert.match(warnings.join("\n"), /SKIPPED: listing "beach-day" \(222\).*HTTP 404/);
   });
 
+  it("a hidden design Etsy no longer has is left alone and does not count as skipped", async () => {
+    await writeManifest({ pickleball: 111, "beach-day": 222 });
+    await fs.mkdir(path.join(root, "content", "catalog", "beach-day"), { recursive: true });
+    await fs.writeFile(
+      path.join(root, "content", "catalog", "beach-day", "authored.ts"),
+      "export const authored = {\n  // hidden: true was here\n  hidden: true,\n};\n",
+    );
+    stubListing(111);
+    stubs.set("/listings/222", { status: 404, body: { error: "not found" } });
+    const warnings: string[] = [];
+    const result = await runSync({ ...deps(), warn: (line: string) => warnings.push(line) });
+    assert.deepEqual(result.skipped, []);
+    assert.equal(await exists(syncedPath("pickleball")), true);
+    assert.equal(await exists(syncedPath("beach-day")), false);
+    assert.match(warnings.join("\n"), /"beach-day" is hidden/);
+  });
+
   it("non-USD currency fails the run", async () => {
     await writeManifest({ pickleball: 111 });
     stubListing(111, { price: { amount: 3200, divisor: 100, currency_code: "CAD" } });
