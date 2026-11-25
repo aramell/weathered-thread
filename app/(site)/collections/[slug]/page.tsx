@@ -55,7 +55,7 @@ export default async function CollectionPage({
       <section className="px-gutter-mobile md:px-gutter-desktop">
         <p
           id={motifsHeadingId}
-          className="mb-4 font-mono text-label-mono uppercase text-olive"
+          className="mb-4 font-mono text-eyebrow-mono uppercase text-deep-harbor"
         >
           Motifs
         </p>

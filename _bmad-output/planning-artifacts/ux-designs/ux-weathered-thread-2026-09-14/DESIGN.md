@@ -14,6 +14,7 @@ colors:
   paper-raised: '#F7F4EC'
   garment-blank: '#E3DDCE'
   line: '#D9D2C2'
+  muted: '#596A7E'
 typography:
   display-lg:
     fontFamily: Fraunces
@@ -52,6 +53,12 @@ typography:
     fontSize: 16px
     fontWeight: '500'
     lineHeight: '1.3'
+  eyebrow-mono:
+    fontFamily: IBM Plex Mono
+    fontSize: 12px
+    fontWeight: '400'
+    lineHeight: '1.3'
+    letterSpacing: 0.2em
   caption-mono:
     fontFamily: IBM Plex Mono
     fontSize: 12px
@@ -124,6 +131,11 @@ components:
     surface: '{colors.sailcloth}'
     text: '{colors.weathered-ink}'
     label: '{typography.label-mono}'
+  footer:
+    surface: '{colors.deep-harbor}'
+    text: '{colors.sailcloth}'
+    label: '{typography.caption-mono}'
+    signoff: '{typography.eyebrow-mono}'
 ---
 
 ## Brand & Style
@@ -147,6 +159,7 @@ Aligned to the Brand Identity Board (Nov 2026). Hexes were read from a screensho
 - **Deep Gold (`{colors.deep-gold}`)** — embroidery-thread accent from the board. Only 2.4:1 on Parchment, so decoration or use on Deep Harbor only; never text or a state indicator on light surfaces.
 - **Paper Raised (`{colors.paper-raised}`)** — supporting tone for cards and raised surfaces (product cards, motif tiles) sitting a half-step above Sailcloth. Not a headline brand color — a construction tone.
 - **Line (`{colors.line}`)** — supporting tone for hairline borders and dividers. Lowest-contrast separator that still reads.
+- **Muted (`{colors.muted}`)** — the board's Grey thread, added 2026-11-25. Supporting copy under a headline (the home hero subline) and annotation text. 4.8:1 on Parchment, so it passes for body-size text. Never on Deep Harbor.
 - **Garment Blank (`{colors.garment-blank}`)** — a construction tone added 2026-10-27, not from the brand PRD: the untinted `garment-option` caricature fill, one step darker than Paper Raised so it still reads on a Paper Raised card.
 
 ## Typography
@@ -158,6 +171,7 @@ Four typefaces, each with one job. **Fraunces** (serif, with italic for the "Sti
 - `{typography.body}` / `{typography.body-sm}` — the emotional description copy, story paragraphs, product narrative.
 - `{typography.label-mono}` — nav items, button labels, form labels, tags. Letter-spaced, small, uppercase in use even though the token itself doesn't force case.
 - `{typography.price-mono}` — price display specifically, everywhere it appears.
+- `{typography.eyebrow-mono}` — section eyebrows and sign-offs ("Shop", "Motifs", "Made to Remember · Stitched in"): wide-tracked (0.2em), uppercase, Deep Harbor on light surfaces and Sailcloth on Deep Harbor. Form labels in the product picker stay on `{typography.label-mono}`.
 - `{typography.caption-mono}` — motif tile captions, meta text, size/fit fine print.
 
 ## Layout & Spacing
@@ -180,12 +194,13 @@ Visual reference: [`mockups/key-product.html`](mockups/key-product.html) (button
 
 - **`button-primary`** — Deep Harbor fill, Sailcloth label text in `{typography.label-mono}`, `{rounded.sm}` corners. Used once per screen for the one primary action (Add to Bag, Shop the Collection). Never Clay Brown as a fill.
 - **`button-secondary`** — transparent with a Weathered Ink border and text. Used for secondary actions (View Details, Back to Collection, Change, Close, See all designs).
-- **`motif-tile`** — the embroidery-design picker unit. Paper Raised surface, a `{typography.caption-mono}` collection label (e.g. "Sea Isle") above the design name (e.g. "Water Tower"), `{rounded.DEFAULT}` corners. Selected state: a thin Clay Brown border — the system's one flourish, spent on the moment a customer commits to a design.
+- **`motif-tile`** — the embroidery-design picker unit. Paper Raised surface, a `{typography.caption-mono}` collection label (e.g. "Sea Isle City") above the design name (e.g. "Water Tower"), `{rounded.DEFAULT}` corners. Selected state: a thin Clay Brown border — the system's one flourish, spent on the moment a customer commits to a design.
 - **`garment-option`** — one garment type in the picker: a hand-drawn caricature (Tee, Long Sleeve Tee, Crewneck) above its name and `{typography.price-mono}` price, on a Paper Raised card. Caricature is a loose, slightly imperfect line drawing with a Weathered Ink outline and soft ribbing and hem details, filled with the selected garment color (`{colors.garment-blank}` before a color is chosen). Selected state: 2px Weathered Ink border. Replaces blank-garment photography.
 - **`design-summary`** — the collapsed design row on the Product page: small thumbnail, collection label in `{typography.caption-mono}`, design name, and a `button-secondary` "Change". Paper Raised surface, `{rounded.DEFAULT}` corners.
 - **`garment-swatch`** — small circular color swatch (`{rounded.full}`) for garment color selection (Pepper / Blue Jean / Ivory / Bay). Line-colored border at rest, Weathered Ink border when selected.
 - **`product-card`** — used in grid contexts (Home and Shop design tiles, search results). Paper Raised surface, the design's photo, a `{typography.caption-mono}` collection label, `{typography.body}` title, `{typography.price-mono}` price, `{rounded.DEFAULT}` corners.
 - **`collection-story-block`** — the PLACE → STORY moment (Sea Isle feature). Deep Harbor surface, Sailcloth text, `{typography.display-lg}` heading. This is the one place Deep Harbor covers a large area by design.
+- **`footer`** — Deep Harbor band, Sailcloth text: copyright and "Shipping · Returns" in `{typography.caption-mono}`, and the "Made to Remember · Stitched in" sign-off in `{typography.eyebrow-mono}`. Stacks on mobile, one row on desktop. Mirrors the Brand Identity Board's closing band.
 - **`nav-header`** — Sailcloth surface, Weathered Ink text, `{typography.label-mono}` for SHOP / COLLECTIONS / ABOUT plus search and bag icons. Stays quiet — no color fill, no shadow, a `{colors.line}` hairline at most on scroll.
 
 ## Do's and Don'ts

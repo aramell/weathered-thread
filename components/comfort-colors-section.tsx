@@ -15,7 +15,7 @@ export default function ComfortColorsSection() {
     <section className="py-6" aria-labelledby="comfort-colors-heading">
       <h2
         id="comfort-colors-heading"
-        className="mb-4 font-mono text-label-mono uppercase text-olive"
+        className="mb-4 font-mono text-eyebrow-mono uppercase text-deep-harbor"
       >
         Why Comfort Colors®?
       </h2>

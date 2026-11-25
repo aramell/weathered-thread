@@ -6,7 +6,7 @@ type ProductCardProps = {
   name: string;
   price: string;
   image?: string;
-  /** Collection name shown above the design name, e.g. "Sea Isle". */
+  /** Collection name shown above the design name, e.g. "Sea Isle City". */
   collection?: string;
   /** The collection is a place (set its name in Anton). */
   collectionPlace?: boolean;

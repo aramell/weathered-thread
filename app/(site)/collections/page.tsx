@@ -5,7 +5,7 @@ import { getMotifsByCollection } from "@/lib/motifs";
 
 export const metadata: Metadata = {
   title: "Collections — Weathered Thread",
-  description: "The Weathered Thread collection and the Sea Isle collection.",
+  description: "The Weathered Thread collection and the Sea Isle City collection.",
 };
 
 export default function CollectionsPage() {

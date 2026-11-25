@@ -7,7 +7,7 @@ export type Collection = {
   slug: string;
   /** "place" collections are named for a location and set that name in Anton; "brand" is the Weathered Thread mark. */
   kind: "place" | "brand";
-  /** Short name used in running copy, e.g. "the Sea Isle collection". */
+  /** Short name used in running copy, e.g. "the Sea Isle City collection". */
   name: string;
   eyebrow: string;
   heading: string;
@@ -18,10 +18,10 @@ export const collections: Collection[] = [
   {
     slug: "sea-isle",
     kind: "place",
-    name: "Sea Isle",
+    name: "Sea Isle City",
     // Collection language from the Master Brand Guidelines; never the site tagline.
     eyebrow: "For places worth remembering",
-    heading: "Sea Isle",
+    heading: "Sea Isle City",
     story: [
       "A water tower on the skyline, a boat on the water, the exit you take when you're almost there — small landmarks of Sea Isle City, stitched onto soft, ring-spun, garment-dyed cotton with a lived-in feel.",
     ],
