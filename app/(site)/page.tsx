@@ -5,21 +5,30 @@ import ButtonSecondary from "@/components/button-secondary";
 import CollectionStoryBlock from "@/components/collection-story-block";
 import EmailSignupForm from "@/components/email-signup-form";
 import ProductCard from "@/components/product-card";
+import VideoLoop from "@/components/video-loop";
 import { getCollection } from "@/lib/collections";
 import { formatPrice } from "@/lib/format-price";
 import { getMotifs } from "@/lib/motifs";
 
 /**
- * Real product photos shown under the hero so it is clear what is sold. Each pick is a design
- * and which of its photos (0 = first). They are existing shop photos, used as a stand-in until
- * the owner's chosen homepage photos arrive: replace these picks (or add files and point to
- * them) then. Alt text comes from the design's own photo data. A pick whose design is hidden or
- * missing is skipped.
+ * The owner's own photos shown under the hero so it is clear what is sold (files in
+ * `public/images/home/`, resized to 1600x2000, 4:5). Mobile shows the first two, desktop all
+ * three, so the order matters. They are lifestyle shots, not tied to one design, so they are
+ * not links.
  */
-const HERO_PHOTO_PICKS = [
-  { slug: "sic-terrapin-turtle", index: 0 },
-  { slug: "sic-seagull-fry", index: 0 },
-  { slug: "sic-pickleball", index: 1 },
+const HERO_PHOTOS = [
+  {
+    src: "/images/home/hero-stairs-blue-longsleeve.jpg",
+    alt: "Smiling woman seated on garden stairs in a blue long-sleeve tee with a small embroidered Weathered Thread mark.",
+  },
+  {
+    src: "/images/home/hero-ivory-crewneck-fall.jpg",
+    alt: "Ivory crewneck sweatshirt with the Weathered Thread logo embroidered on the chest, against autumn leaves.",
+  },
+  {
+    src: "/images/home/hero-pepper-tee-pool.jpg",
+    alt: "Grey tee draped over a teak lounger beside a pool, its woven Weathered Thread neck label in focus.",
+  },
 ] as const;
 
 export default async function Home() {
@@ -28,11 +37,6 @@ export default async function Home() {
   const motifs = allMotifs.length > 8 ? allMotifs.slice(0, 6) : allMotifs;
   const shopHeadingId = "shop-heading";
   const seaIsle = getCollection("sea-isle");
-  const heroPhotos = HERO_PHOTO_PICKS.flatMap(({ slug, index }) => {
-    const motif = allMotifs.find((m) => m.slug === slug);
-    const image = motif?.images[index];
-    return motif && image ? [{ motif, image }] : [];
-  });
 
   return (
     <main className="flex flex-col gap-story-gap">
@@ -57,35 +61,27 @@ export default async function Home() {
       </section>
 
       {/* What we make: real embroidered pieces */}
-      {heroPhotos.length > 0 && (
-        <section
-          aria-label="Embroidered pieces"
-          className="mx-auto -mt-16 w-full max-w-4xl px-gutter-mobile md:px-gutter-desktop"
-        >
-          <div role="list" className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
-            {heroPhotos.map(({ motif, image }, position) => (
-              <div key={motif.slug} role="listitem" className={position === 2 ? "hidden md:block" : undefined}>
-                <Link
-                  href={`/collections/${motif.collection}/${motif.slug}`}
-                  className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay-brown"
-                >
-                  <div className="relative aspect-[4/5] overflow-hidden rounded bg-paper-raised">
-                    <Image
-                      src={image.url}
-                      alt={image.alt}
-                      fill
-                      priority={position === 0}
-                      sizes="(max-width: 768px) 50vw, 33vw"
-                      className="object-cover"
-                    />
-                  </div>
-                  <p className="mt-2 font-mono text-caption-mono uppercase text-weathered-ink">{motif.name}</p>
-                </Link>
+      <section
+        aria-label="Embroidered pieces"
+        className="mx-auto -mt-16 w-full max-w-4xl px-gutter-mobile md:px-gutter-desktop"
+      >
+        <div role="list" className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
+          {HERO_PHOTOS.map(({ src, alt }, position) => (
+            <div key={src} role="listitem" className={position === 2 ? "hidden md:block" : undefined}>
+              <div className="relative aspect-[4/5] overflow-hidden rounded bg-paper-raised">
+                <Image
+                  src={src}
+                  alt={alt}
+                  fill
+                  priority={position < 2}
+                  sizes="(max-width: 768px) 50vw, 33vw"
+                  className="object-cover"
+                />
               </div>
-            ))}
-          </div>
-        </section>
-      )}
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* Sea Isle feature */}
       {seaIsle && (
@@ -101,6 +97,15 @@ export default async function Home() {
           &ldquo;The embroidery is the medium. The feeling is the
           product.&rdquo;
         </p>
+        {/* Moving photo: the feeling, not the product. Poster frame shows if motion is off. */}
+        <div className="mt-8 overflow-hidden rounded bg-paper-raised">
+          <VideoLoop
+            src="/video/tee-in-the-wind.mp4"
+            poster="/video/tee-in-the-wind-poster.jpg"
+            label="A grey Weathered Thread tee hanging from an olive branch above the sea, moving in the wind."
+            className="aspect-[4/5] w-full object-cover"
+          />
+        </div>
       </section>
 
       {/* Shop: designs, newest first */}
@@ -139,6 +144,14 @@ export default async function Home() {
 
       {/* Embroidery detail */}
       <section className="mx-auto w-full max-w-md px-gutter-mobile text-center md:px-gutter-desktop">
+        <Image
+          src="/images/home/embroidery-neck-label.jpg"
+          alt="Close-up of the woven Weathered Thread label stitched inside the neck of a washed grey tee."
+          width={1440}
+          height={1800}
+          sizes="(max-width: 768px) 100vw, 448px"
+          className="mb-6 h-auto w-full rounded"
+        />
         <h2 className="mb-3 font-display text-headline">The Embroidery</h2>
         <p className="font-body text-body">
           Every motif is stitched, not printed — close-up detail on stitch
