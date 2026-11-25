@@ -40,7 +40,7 @@ export default function EmailSignupForm() {
           type="email"
           placeholder="you@email.com"
           disabled={pending}
-          className="min-h-11 flex-1 rounded-sm border border-line bg-paper-raised px-3 font-body text-body-sm text-wet-ink disabled:opacity-60"
+          className="min-h-11 flex-1 rounded-sm border border-line bg-paper-raised px-3 font-body text-body-sm text-weathered-ink disabled:opacity-60"
         />
         <button
           type="submit"
@@ -64,7 +64,7 @@ export default function EmailSignupForm() {
           autoComplete="off"
         />
       </div>
-      <p aria-live="polite" className="font-body text-body-sm text-marsh-sage">
+      <p aria-live="polite" className="font-body text-body-sm text-olive">
         {state.message}
       </p>
     </form>

@@ -148,7 +148,7 @@ export default function ProductPickerShell({ motif, shop, backHref, backLabel }:
               />
             ) : (
               <div className="flex aspect-square items-center justify-center rounded bg-paper-raised p-6 text-center">
-                <p className="font-mono text-caption-mono text-marsh-sage">
+                <p className="font-mono text-caption-mono text-olive">
                   {garmentType
                     ? "Select a color to preview this design."
                     : "Select a garment to preview this design."}
@@ -164,7 +164,7 @@ export default function ProductPickerShell({ motif, shop, backHref, backLabel }:
             <div className="mb-6">
               <p
                 id={motifHeadingId}
-                className="mb-2 font-mono text-label-mono uppercase text-marsh-sage"
+                className="mb-2 font-mono text-label-mono uppercase text-olive"
               >
                 Design
               </p>
@@ -185,7 +185,7 @@ export default function ProductPickerShell({ motif, shop, backHref, backLabel }:
             <div className="mb-6">
               <p
                 id={garmentTypeHeadingId}
-                className="mb-2 font-mono text-label-mono uppercase text-marsh-sage"
+                className="mb-2 font-mono text-label-mono uppercase text-olive"
               >
                 Garment Type
               </p>
@@ -224,7 +224,7 @@ export default function ProductPickerShell({ motif, shop, backHref, backLabel }:
                 )}
                 <p
                   id={colorHeadingId}
-                  className="mb-2 font-mono text-label-mono uppercase text-marsh-sage"
+                  className="mb-2 font-mono text-label-mono uppercase text-olive"
                 >
                   Color
                   {colorway && <span aria-live="polite"> — {colorway.name}</span>}
@@ -254,7 +254,7 @@ export default function ProductPickerShell({ motif, shop, backHref, backLabel }:
                 )}
                 <span
                   id={sizeHeadingId}
-                  className="mb-2 block font-mono text-label-mono uppercase text-marsh-sage"
+                  className="mb-2 block font-mono text-label-mono uppercase text-olive"
                 >
                   Size
                 </span>
@@ -269,8 +269,8 @@ export default function ProductPickerShell({ motif, shop, backHref, backLabel }:
                           aria-pressed={selected}
                           className={`flex h-11 w-11 items-center justify-center rounded border font-mono text-label-mono ${
                             selected
-                              ? "border-wet-ink bg-wet-ink text-sailcloth"
-                              : "border-line text-wet-ink"
+                              ? "border-weathered-ink bg-weathered-ink text-sailcloth"
+                              : "border-line text-weathered-ink"
                           }`}
                         >
                           {s.name}
@@ -345,7 +345,7 @@ export default function ProductPickerShell({ motif, shop, backHref, backLabel }:
             <section className="py-6" aria-labelledby={garmentDetailHeadingId}>
               <h2
                 id={garmentDetailHeadingId}
-                className="mb-2 font-mono text-label-mono uppercase text-antique-brass"
+                className="mb-2 font-mono text-label-mono uppercase text-olive"
               >
                 The Garment
               </h2>
@@ -357,7 +357,7 @@ export default function ProductPickerShell({ motif, shop, backHref, backLabel }:
             <section className="py-6" aria-labelledby={embroideryHeadingId}>
               <h2
                 id={embroideryHeadingId}
-                className="mb-2 font-mono text-label-mono uppercase text-antique-brass"
+                className="mb-2 font-mono text-label-mono uppercase text-olive"
               >
                 The Embroidery
               </h2>
@@ -375,7 +375,7 @@ export default function ProductPickerShell({ motif, shop, backHref, backLabel }:
           <section className="py-6" aria-labelledby={fitSizeHeadingId}>
             <h2
               id={fitSizeHeadingId}
-              className="mb-2 font-mono text-label-mono uppercase text-antique-brass"
+              className="mb-2 font-mono text-label-mono uppercase text-olive"
             >
               Fit &amp; Size
             </h2>
@@ -390,7 +390,7 @@ export default function ProductPickerShell({ motif, shop, backHref, backLabel }:
           <section className="py-6" aria-labelledby={careHeadingId}>
             <h2
               id={careHeadingId}
-              className="mb-2 font-mono text-label-mono uppercase text-antique-brass"
+              className="mb-2 font-mono text-label-mono uppercase text-olive"
             >
               Care
             </h2>
@@ -405,7 +405,7 @@ export default function ProductPickerShell({ motif, shop, backHref, backLabel }:
           <section className="py-6" aria-labelledby={shippingHeadingId}>
             <h2
               id={shippingHeadingId}
-              className="mb-2 font-mono text-label-mono uppercase text-antique-brass"
+              className="mb-2 font-mono text-label-mono uppercase text-olive"
             >
               Shipping &amp; Returns
             </h2>

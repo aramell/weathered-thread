@@ -2,13 +2,15 @@
 name: Weathered Thread
 description: Coastal heritage embroidery brand — quiet, tactile, place-led storytelling for a custom storefront that hands off to Etsy only to pay.
 status: final
-updated: 2026-10-27
+updated: 2026-11-25
 colors:
+  warm-parchment: '#F4F0E7'
   sailcloth: '#EFEAE0'
-  wet-ink: '#2B2A26'
-  deep-harbor: '#2F4858'
-  marsh-sage: '#7C8567'
-  antique-brass: '#A8823C'
+  weathered-ink: '#292824'
+  deep-harbor: '#304650'
+  olive: '#6B6C4F'
+  deep-gold: '#B89766'
+  clay-brown: '#906E5E'
   paper-raised: '#F7F4EC'
   garment-blank: '#E3DDCE'
   line: '#D9D2C2'
@@ -79,18 +81,18 @@ components:
     radius: '{rounded.sm}'
   button-secondary:
     background: transparent
-    border: '{colors.wet-ink}'
-    text: '{colors.wet-ink}'
+    border: '{colors.weathered-ink}'
+    text: '{colors.weathered-ink}'
     font: '{typography.label-mono}'
     radius: '{rounded.sm}'
   motif-tile:
     surface: '{colors.paper-raised}'
-    border-selected: '{colors.antique-brass}'
+    border-selected: '{colors.clay-brown}'
     label: '{typography.caption-mono}'
     radius: '{rounded.DEFAULT}'
   garment-option:
     surface: '{colors.paper-raised}'
-    border-selected: '{colors.wet-ink}'
+    border-selected: '{colors.weathered-ink}'
     label: '{typography.body-sm}'
     price: '{typography.price-mono}'
     radius: '{rounded.DEFAULT}'
@@ -103,7 +105,7 @@ components:
   garment-swatch:
     shape: '{rounded.full}'
     border: '{colors.line}'
-    border-selected: '{colors.wet-ink}'
+    border-selected: '{colors.weathered-ink}'
   product-card:
     surface: '{colors.paper-raised}'
     title: '{typography.body}'
@@ -120,7 +122,7 @@ components:
     heading: '{typography.display-lg}'
   nav-header:
     surface: '{colors.sailcloth}'
-    text: '{colors.wet-ink}'
+    text: '{colors.weathered-ink}'
     label: '{typography.label-mono}'
 ---
 
@@ -134,20 +136,22 @@ Hold the line against category default. This is explicitly **not** the souvenir-
 
 ## Colors
 
-Five brand colors, two supporting tones, transcribed exactly from `imports/website-build-handoff-prd.md` §2 (that document is canonical for these hex values; this section carries the rationale). Every one has a job; none of them free-floats as decoration.
+Aligned to the Brand Identity Board (Nov 2026). Hexes were read from a screenshot of the board; confirm against the Canva source. Every one has a job; none of them free-floats as decoration. Previously Weathered Ink `#2B2A26`, Deep Harbor `#2F4858`, Marsh Sage `#7C8567`, Clay Brown `#A8823C`. Every one has a job; none of them free-floats as decoration.
 
-- **Sailcloth (`{colors.sailcloth}`)** — the canvas. Primary page background everywhere. Warm off-white on purpose: a pure-white ground would read clinical and undercut "lived-in." Never substitute `#FFFFFF`.
-- **Wet Ink (`{colors.wet-ink}`)** — the voice. Primary body text, headings, dark UI text. A soft near-black, never true `#000000` — hard black is the one thing that makes this palette feel corporate instead of tactile.
+- **Warm Parchment (`{colors.warm-parchment}`)** — the canvas. Primary page background (the body). Never substitute `#FFFFFF`.
+- **Sailcloth (`{colors.sailcloth}`)** — the secondary surface: header, tiles and bands sitting on Parchment. Warm off-white on purpose: a pure-white ground would read clinical and undercut "lived-in." Never substitute `#FFFFFF`.
+- **Weathered Ink (`{colors.weathered-ink}`)** — the voice. Primary body text, headings, dark UI text. A soft near-black, never true `#000000` — hard black is the one thing that makes this palette feel corporate instead of tactile.
 - **Deep Harbor (`{colors.deep-harbor}`)** — the depth. Reserved for dark hero/feature sections (the Sea Isle story block), the footer, and other strong-contrast moments. This is a deliberately muted slate-blue, not "navy" — if it starts reading as nautical navy, it's being used wrong (too saturated, too much of it, or paired with red/white).
-- **Marsh Sage (`{colors.marsh-sage}`)** — the quiet accent. Secondary links, small details, occasional background fills. It should never be the loudest color on a screen; if a layout leans on sage to carry hierarchy, pull it back.
-- **Antique Brass (`{colors.antique-brass}`)** — the one flourish. Small, premium touches only: a rule, a selected-state border on a motif tile, a tiny highlight. Never a background fill of any size, never the default button color. Its value comes from scarcity.
+- **Olive (`{colors.olive}`)** — the quiet accent, replacing Marsh Sage. Muted text, small labels, captions (4.8:1 on Parchment). Never the loudest color on a screen.
+- **Clay Brown (`{colors.clay-brown}`)** — the one flourish, replacing Clay Brown: selected-state borders on motif tiles and focus outlines (4.0:1 on Parchment, passes 3:1 for non-text). Never a background fill, never the default button color.
+- **Deep Gold (`{colors.deep-gold}`)** — embroidery-thread accent from the board. Only 2.4:1 on Parchment, so decoration or use on Deep Harbor only; never text or a state indicator on light surfaces.
 - **Paper Raised (`{colors.paper-raised}`)** — supporting tone for cards and raised surfaces (product cards, motif tiles) sitting a half-step above Sailcloth. Not a headline brand color — a construction tone.
 - **Line (`{colors.line}`)** — supporting tone for hairline borders and dividers. Lowest-contrast separator that still reads.
 - **Garment Blank (`{colors.garment-blank}`)** — a construction tone added 2026-10-27, not from the brand PRD: the untinted `garment-option` caricature fill, one step darker than Paper Raised so it still reads on a Paper Raised card.
 
 ## Typography
 
-Four typefaces, each with one job. **Fraunces** (serif) carries display and headline moments only — hero, collection-story headlines, section headers ("THE GARMENT," "THE EMBROIDERY") — where its personality earns its place. **Libre Franklin** (sans) carries body copy — emotional description, story paragraphs, product narrative — a plainer, more legible workhorse at paragraph length. **IBM Plex Mono** carries everything functional and precise — labels, navigation, prices, SKU/care detail, captions — the brand's nod to a garment tag or a hand-stamped receipt. **Anton** (condensed sans) carries location wording only: place names such as "SEA ISLE" on the collection story block, collection index tiles and the collection label above a design name. Uppercase, tracked `0.06em`, single weight. It is never used for headlines in general and never to recreate the logo (Master Brand Guidelines v1.0, Nov 2026). The "Weathered Thread" brand collection is not a place, so it stays Fraunces / mono.
+Four typefaces, each with one job. **Fraunces** (serif, with italic for the "Stitched in." accent) carries display and headline moments only — hero, collection-story headlines, section headers ("THE GARMENT," "THE EMBROIDERY") — where its personality earns its place. **Libre Franklin** (sans) carries body copy — emotional description, story paragraphs, product narrative — a plainer, more legible workhorse at paragraph length. **IBM Plex Mono** carries everything functional and precise — labels, navigation, prices, SKU/care detail, captions — the brand's nod to a garment tag or a hand-stamped receipt. **Anton** (condensed sans) carries location wording and embroidery-style lettering (the board: "Embroidery lettering in Artspira"): place names such as "SEA ISLE" on the collection story block, collection index tiles and the collection label above a design name, and short stitched-in-style callouts. Uppercase, tracked `0.06em`, single weight. It is never used for general headlines or paragraph copy and never to recreate the logo (Master Brand Guidelines v1.0, Nov 2026). The "Weathered Thread" brand collection is not a place, so it stays Fraunces / mono.
 
 - `{typography.display-lg}` — hero and collection-story headlines; a place name such as "SEA ISLE" is set in Anton instead of Fraunces (see above). Drop to `{typography.display-lg-mobile}` under the mobile breakpoint.
 - `{typography.headline}` — section headers within a page ("THE GARMENT," "THE EMBROIDERY").
@@ -164,7 +168,7 @@ Mobile is the design center, not an afterthought (per brand rule: "optimize mobi
 
 ## Elevation & Depth
 
-Kept deliberately thin — this is a quiet, near-flat system, not a shadow-driven one. Depth comes from tone (`{colors.paper-raised}` cards sitting a half-step above `{colors.sailcloth}`) rather than drop shadows. Where a shadow is unavoidable (e.g., a sticky mobile "Add to Bag" bar lifting off content beneath it), keep it soft, low-opacity, and tinted toward `{colors.wet-ink}` rather than pure black — never a hard, saturated shadow.
+Kept deliberately thin — this is a quiet, near-flat system, not a shadow-driven one. Depth comes from tone (`{colors.paper-raised}` cards sitting a half-step above `{colors.sailcloth}`) rather than drop shadows. Where a shadow is unavoidable (e.g., a sticky mobile "Add to Bag" bar lifting off content beneath it), keep it soft, low-opacity, and tinted toward `{colors.weathered-ink}` rather than pure black — never a hard, saturated shadow.
 
 ## Shapes
 
@@ -174,15 +178,15 @@ Small, restrained radii (`{rounded.sm}` 2px, `{rounded.DEFAULT}` 4px, `{rounded.
 
 Visual reference: [`mockups/key-product.html`](mockups/key-product.html) (button-primary, garment-option, design-summary, garment-swatch, motif-tile selected state, product page in full), [`mockups/key-collection-story.html`](mockups/key-collection-story.html) (collection-story-block, motif-tile gallery), [`mockups/key-home.html`](mockups/key-home.html) (nav-header, product-card, collection-story-block on Home). Mocks illustrate; this table and `EXPERIENCE.md.Component Patterns` are the contract — spines win on conflict.
 
-- **`button-primary`** — Deep Harbor fill, Sailcloth label text in `{typography.label-mono}`, `{rounded.sm}` corners. Used once per screen for the one primary action (Add to Bag, Shop the Collection). Never Antique Brass as a fill.
-- **`button-secondary`** — transparent with a Wet Ink border and text. Used for secondary actions (View Details, Back to Collection, Change, Close, See all designs).
-- **`motif-tile`** — the embroidery-design picker unit. Paper Raised surface, a `{typography.caption-mono}` collection label (e.g. "Sea Isle") above the design name (e.g. "Water Tower"), `{rounded.DEFAULT}` corners. Selected state: a thin Antique Brass border — the system's one flourish, spent on the moment a customer commits to a design.
-- **`garment-option`** — one garment type in the picker: a hand-drawn caricature (Tee, Long Sleeve Tee, Crewneck) above its name and `{typography.price-mono}` price, on a Paper Raised card. Caricature is a loose, slightly imperfect line drawing with a Wet Ink outline and soft ribbing and hem details, filled with the selected garment color (`{colors.garment-blank}` before a color is chosen). Selected state: 2px Wet Ink border. Replaces blank-garment photography.
+- **`button-primary`** — Deep Harbor fill, Sailcloth label text in `{typography.label-mono}`, `{rounded.sm}` corners. Used once per screen for the one primary action (Add to Bag, Shop the Collection). Never Clay Brown as a fill.
+- **`button-secondary`** — transparent with a Weathered Ink border and text. Used for secondary actions (View Details, Back to Collection, Change, Close, See all designs).
+- **`motif-tile`** — the embroidery-design picker unit. Paper Raised surface, a `{typography.caption-mono}` collection label (e.g. "Sea Isle") above the design name (e.g. "Water Tower"), `{rounded.DEFAULT}` corners. Selected state: a thin Clay Brown border — the system's one flourish, spent on the moment a customer commits to a design.
+- **`garment-option`** — one garment type in the picker: a hand-drawn caricature (Tee, Long Sleeve Tee, Crewneck) above its name and `{typography.price-mono}` price, on a Paper Raised card. Caricature is a loose, slightly imperfect line drawing with a Weathered Ink outline and soft ribbing and hem details, filled with the selected garment color (`{colors.garment-blank}` before a color is chosen). Selected state: 2px Weathered Ink border. Replaces blank-garment photography.
 - **`design-summary`** — the collapsed design row on the Product page: small thumbnail, collection label in `{typography.caption-mono}`, design name, and a `button-secondary` "Change". Paper Raised surface, `{rounded.DEFAULT}` corners.
-- **`garment-swatch`** — small circular color swatch (`{rounded.full}`) for garment color selection (Pepper / Blue Jean / Ivory / Bay). Line-colored border at rest, Wet Ink border when selected.
+- **`garment-swatch`** — small circular color swatch (`{rounded.full}`) for garment color selection (Pepper / Blue Jean / Ivory / Bay). Line-colored border at rest, Weathered Ink border when selected.
 - **`product-card`** — used in grid contexts (Home and Shop design tiles, search results). Paper Raised surface, the design's photo, a `{typography.caption-mono}` collection label, `{typography.body}` title, `{typography.price-mono}` price, `{rounded.DEFAULT}` corners.
 - **`collection-story-block`** — the PLACE → STORY moment (Sea Isle feature). Deep Harbor surface, Sailcloth text, `{typography.display-lg}` heading. This is the one place Deep Harbor covers a large area by design.
-- **`nav-header`** — Sailcloth surface, Wet Ink text, `{typography.label-mono}` for SHOP / COLLECTIONS / ABOUT plus search and bag icons. Stays quiet — no color fill, no shadow, a `{colors.line}` hairline at most on scroll.
+- **`nav-header`** — Sailcloth surface, Weathered Ink text, `{typography.label-mono}` for SHOP / COLLECTIONS / ABOUT plus search and bag icons. Stays quiet — no color fill, no shadow, a `{colors.line}` hairline at most on scroll.
 
 ## Do's and Don'ts
 
@@ -190,8 +194,8 @@ Visual reference: [`mockups/key-product.html`](mockups/key-product.html) (button
 |---|---|
 | Use the five brand colors and two supporting tones exactly as specified | Substitute standard nautical navy/red/white, or reach for a sixth color |
 | Let Sailcloth (warm off-white) carry the page | Use pure white `#FFFFFF` as the canvas |
-| Use Wet Ink for text | Use true black `#000000` anywhere |
-| Spend Antique Brass on one small, earned moment per screen | Use Antique Brass as a background fill or default button color |
+| Use Weathered Ink for text | Use true black `#000000` anywhere |
+| Spend Clay Brown on one small, earned moment per screen | Use Clay Brown as a background fill or default button color |
 | Let Deep Harbor cover a full section (hero, story block, footer) | Let Deep Harbor read as "navy" — watch saturation and pairing |
 | Treat garment quality as part of the story (fabric, weight, fit language) | Describe pieces as merely "embroidered shirts" |
 | Keep motion and layout quiet, print-like | Add gradients, hero animations, popups, or effects "because a template offers them" |

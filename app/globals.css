@@ -13,12 +13,14 @@
 }
 
 @theme inline {
-  /* Brand colors — five brand colors + two supporting tones (DESIGN.md) */
+  /* Brand colors — Brand Identity Board, Nov 2026 (DESIGN.md) */
+  --color-warm-parchment: #F4F0E7;
   --color-sailcloth: #EFEAE0;
-  --color-wet-ink: #2B2A26;
-  --color-deep-harbor: #2F4858;
-  --color-marsh-sage: #7C8567;
-  --color-antique-brass: #A8823C;
+  --color-weathered-ink: #292824;
+  --color-deep-harbor: #304650;
+  --color-olive: #6B6C4F;
+  --color-deep-gold: #B89766;
+  --color-clay-brown: #906E5E;
   --color-paper-raised: #F7F4EC;
   --color-line: #D9D2C2;
   /* Untinted garment-option caricature fill (DESIGN.md garment-blank). */
@@ -90,6 +92,6 @@
 }
 
 body {
-  background: var(--color-sailcloth);
-  color: var(--color-wet-ink);
+  background: var(--color-warm-parchment);
+  color: var(--color-weathered-ink);
 }

@@ -40,7 +40,7 @@ export default async function Home() {
       <section className="mx-auto w-full max-w-3xl px-gutter-mobile pt-12 text-center md:pt-16 md:px-gutter-desktop">
         {/* Approved stacked logo, unaltered (navy on transparent: light surface only). */}
         <Image
-          src="/images/brand/WT_Logo_Stacked.png"
+          src="/images/brand/WT_Logo_Primary.png"
           alt="Weathered Thread"
           width={1536}
           height={1024}
@@ -48,7 +48,8 @@ export default async function Home() {
           className="mx-auto mb-6 h-auto w-52 md:w-60"
         />
         <h1 className="mb-4 font-display text-display-lg-mobile md:text-display-lg">
-          Made to Remember. Stitched in.
+          Made to Remember.{" "}
+          <em className="text-deep-harbor">Stitched in.</em>
         </h1>
         <p className="font-body text-body">
           Embroidered apparel for the towns worth remembering.
@@ -66,7 +67,7 @@ export default async function Home() {
               <div key={motif.slug} role="listitem" className={position === 2 ? "hidden md:block" : undefined}>
                 <Link
                   href={`/collections/${motif.collection}/${motif.slug}`}
-                  className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-antique-brass"
+                  className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay-brown"
                 >
                   <div className="relative aspect-[4/5] overflow-hidden rounded bg-paper-raised">
                     <Image
@@ -78,7 +79,7 @@ export default async function Home() {
                       className="object-cover"
                     />
                   </div>
-                  <p className="mt-2 font-mono text-caption-mono uppercase text-wet-ink">{motif.name}</p>
+                  <p className="mt-2 font-mono text-caption-mono uppercase text-weathered-ink">{motif.name}</p>
                 </Link>
               </div>
             ))}
@@ -107,7 +108,7 @@ export default async function Home() {
         <section className="px-gutter-mobile md:px-gutter-desktop">
           <p
             id={shopHeadingId}
-            className="mb-4 font-mono text-label-mono uppercase text-marsh-sage"
+            className="mb-4 font-mono text-label-mono uppercase text-olive"
           >
             Shop
           </p>

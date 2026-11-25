@@ -32,7 +32,7 @@ export default function AddToBagBar({ price, disabled, visible, added, onAddToBa
         <Link
           href="/bag"
           tabIndex={visible ? 0 : -1}
-          className="font-mono text-label-mono uppercase text-wet-ink underline underline-offset-2"
+          className="font-mono text-label-mono uppercase text-weathered-ink underline underline-offset-2"
         >
           Added · View bag
         </Link>

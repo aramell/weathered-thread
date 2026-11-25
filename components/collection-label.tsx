@@ -11,8 +11,8 @@ type CollectionLabelProps = {
  */
 export default function CollectionLabel({ name, place = false }: CollectionLabelProps) {
   return place ? (
-    <p className="font-location text-sm uppercase tracking-location text-marsh-sage">{name}</p>
+    <p className="font-location text-sm uppercase tracking-location text-olive">{name}</p>
   ) : (
-    <p className="font-mono text-caption-mono text-marsh-sage">{name}</p>
+    <p className="font-mono text-caption-mono text-olive">{name}</p>
   );
 }

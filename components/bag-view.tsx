@@ -15,7 +15,7 @@ const FAILURE_COPY: Record<StartCheckoutFailure["error"], string> = {
 };
 
 const stepperClass =
-  "inline-flex h-11 w-11 items-center justify-center rounded-sm border border-line font-mono text-label-mono text-wet-ink disabled:cursor-not-allowed disabled:opacity-40";
+  "inline-flex h-11 w-11 items-center justify-center rounded-sm border border-line font-mono text-label-mono text-weathered-ink disabled:cursor-not-allowed disabled:opacity-40";
 
 /**
  * bag-view — the bag page's one Client Component. The stored picks come from the browser
@@ -121,7 +121,7 @@ export default function BagView() {
                   <p className="font-mono text-price-mono">{formatPrice(line.pick.priceCents * item.quantity)}</p>
                 </div>
               ) : (
-                <p className="font-body text-body-sm text-marsh-sage">Loading…</p>
+                <p className="font-body text-body-sm text-olive">Loading…</p>
               )}
               <div className="flex items-center justify-between gap-4">
                 {line?.status === "unavailable" ? (
@@ -153,7 +153,7 @@ export default function BagView() {
                 )}
                 <button
                   type="button"
-                  className="inline-flex min-h-11 items-center px-2 font-mono text-label-mono uppercase text-wet-ink underline underline-offset-2"
+                  className="inline-flex min-h-11 items-center px-2 font-mono text-label-mono uppercase text-weathered-ink underline underline-offset-2"
                   onClick={() => cartStore.remove(key)}
                 >
                   Remove
@@ -209,7 +209,7 @@ export default function BagView() {
       >
         {pending ? "Taking you to checkout…" : "Checkout"}
       </button>
-      <p className="font-body text-body-sm text-marsh-sage">
+      <p className="font-body text-body-sm text-olive">
         You&apos;ll enter your address and pay on Square&apos;s secure checkout.
       </p>
     </section>

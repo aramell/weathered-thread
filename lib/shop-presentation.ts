@@ -10,10 +10,10 @@ export type ColorPresentation = { frontImage: string | null; swatchColor: string
 export const COLOR_ORDER = ["pepper", "ivory", "blue-jean", "bay"] as const;
 
 const COLORS: Record<string, ColorPresentation> = {
-  pepper: { frontImage: "/images/garments/pepper-front.jpg", swatchColor: "#5B5652" },
-  ivory: { frontImage: "/images/garments/ivory-front.jpg", swatchColor: "#EFE9D8" },
-  "blue-jean": { frontImage: "/images/garments/blue-jean-front.jpg", swatchColor: "#45607A" },
-  bay: { frontImage: "/images/garments/bay-front.jpg", swatchColor: "#7F8F8A" },
+  pepper: { frontImage: "/images/garments/pepper-front.jpg", swatchColor: "#505050" },
+  ivory: { frontImage: "/images/garments/ivory-front.jpg", swatchColor: "#EADDCD" },
+  "blue-jean": { frontImage: "/images/garments/blue-jean-front.jpg", swatchColor: "#6A7E97" },
+  bay: { frontImage: "/images/garments/bay-front.jpg", swatchColor: "#A6A799" },
 };
 
 const FALLBACK_COLOR: ColorPresentation = { frontImage: null, swatchColor: "#C9C4B8" };

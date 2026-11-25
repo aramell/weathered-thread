@@ -15,7 +15,7 @@ type PickerGalleryProps = {
 };
 
 const buttonClass =
-  "flex h-11 w-11 items-center justify-center rounded-full bg-paper-raised/90 font-mono text-label-mono text-wet-ink disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-antique-brass";
+  "flex h-11 w-11 items-center justify-center rounded-full bg-paper-raised/90 font-mono text-label-mono text-weathered-ink disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay-brown";
 
 /**
  * picker-gallery — user-driven hero gallery (never autoplay): a scroll-snap track that swipes
@@ -55,7 +55,7 @@ export default function PickerGallery({ slides, index, onIndexChange, previewAlt
     scrollThumbIntoView(previewIndex);
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     previewThumbRef.current?.animate(
-      [{ boxShadow: "0 0 0 3px var(--color-antique-brass)" }, { boxShadow: "0 0 0 3px transparent" }],
+      [{ boxShadow: "0 0 0 3px var(--color-clay-brown)" }, { boxShadow: "0 0 0 3px transparent" }],
       { duration: 1400, easing: "ease-out" },
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -136,14 +136,14 @@ export default function PickerGallery({ slides, index, onIndexChange, previewAlt
                 onClick={() => onIndexChange(i)}
                 aria-label={`Show ${slideLabel(i, total).toLowerCase()}`}
                 aria-current={i === active ? "true" : undefined}
-                className={`relative block h-14 w-14 overflow-hidden rounded bg-paper-raised focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-antique-brass ${
-                  i === active ? "ring-2 ring-wet-ink" : "opacity-70"
+                className={`relative block h-14 w-14 overflow-hidden rounded bg-paper-raised focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay-brown ${
+                  i === active ? "ring-2 ring-weathered-ink" : "opacity-70"
                 }`}
               >
                 <Image src={slide.url} alt="" fill sizes="56px" className="object-cover" />
               </button>
               {slide.kind === "preview" && (
-                <span aria-hidden="true" className="font-mono text-caption-mono text-marsh-sage">
+                <span aria-hidden="true" className="font-mono text-caption-mono text-olive">
                   Your garment
                 </span>
               )}
@@ -151,7 +151,7 @@ export default function PickerGallery({ slides, index, onIndexChange, previewAlt
           ))}
         </ul>
       )}
-      <p aria-live="polite" className="mt-2 font-mono text-caption-mono text-marsh-sage">
+      <p aria-live="polite" className="mt-2 font-mono text-caption-mono text-olive">
         {slideLabel(active, total)}
         {activeSlide?.kind === "preview" && ` — ${previewCaption}`}
       </p>

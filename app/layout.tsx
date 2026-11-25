@@ -6,6 +6,7 @@ import "./globals.css";
 const fraunces = Fraunces({
   variable: "--font-fraunces",
   subsets: ["latin"],
+  style: ["normal", "italic"], // italic carries the "Stitched in." accent
 });
 
 const ibmPlexMono = IBM_Plex_Mono({

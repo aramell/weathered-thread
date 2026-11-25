@@ -37,7 +37,7 @@ export default function MotifTileLink({ name, href, image, nameIsLocation }: Mot
         setSelected(true);
       }}
       aria-current={selected ? "true" : undefined}
-      className="block rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-antique-brass"
+      className="block rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay-brown"
     >
       <MotifTile name={name} image={image} selected={selected} nameIsLocation={nameIsLocation} />
     </Link>

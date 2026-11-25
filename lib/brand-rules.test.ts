@@ -14,8 +14,8 @@ const sha = (file: string) => createHash("sha256").update(readFileSync(join(root
 
 /** SHA-256 of the approved transparent PNGs supplied by the owner (Nov 2026). A change here means the artwork changed: confirm it is a newly approved file. */
 const APPROVED_LOGOS = {
-  "public/images/brand/WT_Logo_Primary.png": "0c685ef7a149",
-  "public/images/brand/WT_Logo_Stacked.png": "4c0418bd61dd",
+  "public/images/brand/WT_Logo_Lockup.png": "0c685ef7a149", // horizontal secondary lockup
+  "public/images/brand/WT_Logo_Primary.png": "4c0418bd61dd", // stacked primary logo
   "public/images/brand/WT_Mark.png": "be7a3039fe59",
 } as const;
 
@@ -37,7 +37,7 @@ describe("brand rules", () => {
   it("the header uses the approved files, not a font-set wordmark", () => {
     const header = readFileSync(join(root, "components/nav-header.tsx"), "utf8");
     assert.match(header, /images\/brand\/WT_Mark\.png/);
-    assert.match(header, /images\/brand\/WT_Logo_Primary\.png/);
+    assert.match(header, /images\/brand\/WT_Logo_Lockup\.png/);
   });
 
   it("no lighthouse reference anywhere in app, components, lib or content", () => {
@@ -69,6 +69,6 @@ describe("brand rules", () => {
 
   it("the homepage shows the approved stacked logo, not a typed name", () => {
     const home = readFileSync(join(root, "app/(site)/page.tsx"), "utf8");
-    assert.match(home, /images\/brand\/WT_Logo_Stacked\.png/);
+    assert.match(home, /images\/brand\/WT_Logo_Primary\.png/);
   });
 });

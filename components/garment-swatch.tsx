@@ -31,14 +31,14 @@ export default function GarmentSwatch({
       <span
         aria-hidden="true"
         className={`h-11 w-11 rounded-full border-2 transition-colors ${
-          selected ? "border-wet-ink" : "border-line"
+          selected ? "border-weathered-ink" : "border-line"
         }`}
         style={{ backgroundColor: swatchColor }}
       />
       <span
         aria-hidden="true"
         className={`text-center font-mono text-caption-mono ${
-          selected ? "text-wet-ink underline underline-offset-4" : "text-wet-ink"
+          selected ? "text-weathered-ink underline underline-offset-4" : "text-weathered-ink"
         }`}
       >
         {name}
