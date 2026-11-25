@@ -15,7 +15,7 @@ export default function BagLink() {
     <Link
       href="/bag"
       aria-label={count > 0 ? `Bag, ${count} ${count === 1 ? "item" : "items"}` : "Bag"}
-      className="relative flex h-11 w-11 items-center justify-center text-wet-ink"
+      className="relative flex h-11 w-11 items-center justify-center text-weathered-ink"
     >
       <svg
         width="20"

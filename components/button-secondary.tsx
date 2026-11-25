@@ -15,7 +15,7 @@ export default function ButtonSecondary({ href, children }: ButtonSecondaryProps
   return (
     <Link
       href={href}
-      className="inline-flex min-h-11 items-center justify-center rounded-sm border border-wet-ink px-5 font-mono text-label-mono uppercase text-wet-ink"
+      className="inline-flex min-h-11 items-center justify-center rounded-sm border border-weathered-ink px-5 font-mono text-label-mono uppercase text-weathered-ink"
     >
       {children}
     </Link>

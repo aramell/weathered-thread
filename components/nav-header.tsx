@@ -31,7 +31,7 @@ export default function NavHeader() {
           className="h-10 w-auto md:hidden"
         />
         <Image
-          src="/images/brand/WT_Logo_Primary.png"
+          src="/images/brand/WT_Logo_Lockup.png"
           alt="Weathered Thread"
           width={2048}
           height={682}
@@ -45,7 +45,7 @@ export default function NavHeader() {
           <Link
             key={link.href}
             href={link.href}
-            className="inline-flex min-h-11 min-w-11 items-center justify-center px-1 font-mono text-label-mono uppercase text-wet-ink"
+            className="inline-flex min-h-11 min-w-11 items-center justify-center px-1 font-mono text-label-mono uppercase text-weathered-ink"
           >
             {link.label}
           </Link>
@@ -56,7 +56,7 @@ export default function NavHeader() {
         <span
           role="img"
           aria-label="Search"
-          className="flex h-11 w-11 items-center justify-center text-wet-ink"
+          className="flex h-11 w-11 items-center justify-center text-weathered-ink"
         >
           <svg
             width="20"

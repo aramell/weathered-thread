@@ -7,7 +7,7 @@ type GarmentArtProps = {
   className?: string;
 };
 
-const INK = "#2B2A26";
+const INK = "#292824";
 
 /**
  * garment-art — hand-drawn caricature of a garment type (Tee, Long Sleeve Tee, Crewneck),

@@ -54,4 +54,4 @@ Status of the Nov 2026 brand and shop revision, plus the Square launch work. Tic
 - [x] Comfort Colors section, tile-based garment blurbs and cotton line (PR #8).
 - [x] Resend sending domain `weatheredthread.com` verified (DKIM and SPF records added at Squarespace DNS). Until then every order email failed with `Resend: validation_error`.
 - [x] Square account activated, production webhook subscription created, and a real order's email delivered end to end (24 Nov).
-- [ ] Checkout showed a false "That didn't go through" while opening Square: fix is in PR #9, not yet merged or deployed.
+- [x] Checkout showed a false "That didn't go through" while opening Square: fixed in PR #9, merged 25 Nov.

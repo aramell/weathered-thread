@@ -22,8 +22,8 @@ export default function GarmentOption({ name, price, kind, tint, selected, onSel
       type="button"
       onClick={onSelect}
       aria-pressed={selected}
-      className={`flex min-h-11 w-full flex-col items-center rounded border-2 bg-paper-raised px-1 py-3 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-antique-brass ${
-        selected ? "border-wet-ink" : "border-transparent"
+      className={`flex min-h-11 w-full flex-col items-center rounded border-2 bg-paper-raised px-1 py-3 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay-brown ${
+        selected ? "border-weathered-ink" : "border-transparent"
       }`}
     >
       <GarmentArt kind={kind} tint={tint} className="mb-2 h-16 w-16" />

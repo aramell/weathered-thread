@@ -28,7 +28,7 @@ export default function MotifTile({ name, image, selected = false, collection, c
   return (
     <div
       className={`rounded border-2 bg-paper-raised p-4 ${
-        selected ? "border-antique-brass" : "border-transparent"
+        selected ? "border-clay-brown" : "border-transparent"
       }`}
     >
       {image ? (
@@ -49,8 +49,8 @@ export default function MotifTile({ name, image, selected = false, collection, c
       <p
         className={
           nameIsLocation
-            ? "font-location text-sm uppercase tracking-location text-wet-ink"
-            : "font-mono text-caption-mono uppercase text-wet-ink"
+            ? "font-location text-sm uppercase tracking-location text-weathered-ink"
+            : "font-mono text-caption-mono uppercase text-weathered-ink"
         }
       >
         {name}
