@@ -1,6 +1,5 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { priceBag, startBagCheckout } from "@/lib/bag";
 import { parseCart, type PricedCart } from "@/lib/cart";
 import { thankYouUrl } from "@/lib/checkout";
@@ -15,9 +14,14 @@ export async function priceBagAction(raw: string): Promise<PricedCart> {
 }
 
 export type StartCheckoutFailure = { error: "empty" | "unavailable" | "failed" };
+export type StartCheckoutResult = StartCheckoutFailure | { url: string };
 
-/** Creates the Square checkout for the bag and sends the visitor there; returns only on failure. */
-export async function startCheckout(raw: string): Promise<StartCheckoutFailure> {
+/**
+ * Creates the Square checkout for the bag and returns its URL for the browser to open.
+ * It returns the URL instead of calling `redirect()`: a redirecting Server Action rejects its
+ * promise on the client, which the bag's error handling would show as a failed checkout.
+ */
+export async function startCheckout(raw: string): Promise<StartCheckoutResult> {
   let result: Awaited<ReturnType<typeof startBagCheckout>>;
   try {
     result = await startBagCheckout(parseCart(raw), {
@@ -29,7 +33,6 @@ export async function startCheckout(raw: string): Promise<StartCheckoutFailure> 
     console.error("Square checkout unavailable:", error instanceof Error ? error.message : "unknown error");
     return { error: "failed" };
   }
-  // redirect() throws, so it stays outside the try.
-  if (result.ok) redirect(result.url);
+  if (result.ok) return { url: result.url };
   return { error: result.reason };
 }

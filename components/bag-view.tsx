@@ -93,7 +93,8 @@ export default function BagView() {
     startTransition(async () => {
       try {
         const result = await startCheckout(raw);
-        if (result) setFailure(result.error);
+        if ("url" in result) window.location.assign(result.url);
+        else setFailure(result.error);
       } catch {
         setFailure("failed");
       }
