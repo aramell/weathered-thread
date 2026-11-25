@@ -71,7 +71,6 @@ export default function ProductPickerShell({ motif, shop, backHref, backLabel }:
   const heading = garmentType ? `${motif.name} — ${garmentType.name}` : motif.name;
 
   const collectionName = (slug: string) => getCollection(slug)?.name ?? "Weathered Thread";
-  const collectionPlace = (slug: string) => getCollection(slug)?.kind === "place";
 
   const missingGarmentPrompt = !garmentType ? "Choose a garment for this piece." : null;
   const missingColorPrompt = garmentType && !colorway ? "Choose a color for this piece." : null;
@@ -169,7 +168,6 @@ export default function ProductPickerShell({ motif, shop, backHref, backLabel }:
               </p>
               <DesignSummary
                 collection={collectionName(motif.collection)}
-                collectionPlace={collectionPlace(motif.collection)}
                 name={motif.name}
                 image={motif.images[0]?.url}
               />

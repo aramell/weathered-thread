@@ -45,7 +45,6 @@ export default async function CollectionPage({
       <CollectionStoryBlock
         eyebrow={collection.eyebrow}
         heading={collection.heading}
-        location={collection.kind === "place"}
       >
         {collection.story.map((paragraph, index) => (
           <p key={index}>{paragraph}</p>

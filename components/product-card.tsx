@@ -8,8 +8,6 @@ type ProductCardProps = {
   image?: string;
   /** Collection name shown above the design name, e.g. "Sea Isle City". */
   collection?: string;
-  /** The collection is a place (set its name in Anton). */
-  collectionPlace?: boolean;
   /** Replaces the image slot (e.g. a garment caricature); wins over `image`. */
   media?: ReactNode;
 };
@@ -22,7 +20,7 @@ type ProductCardProps = {
  * photo when one is (e.g. `/shop/[type]`'s colorway cards). Reused by
  * Epic 3's Shop grid and browse-by-color flow.
  */
-export default function ProductCard({ name, price, image, collection, collectionPlace, media }: ProductCardProps) {
+export default function ProductCard({ name, price, image, collection, media }: ProductCardProps) {
   return (
     <div className="rounded bg-paper-raised p-4">
       {media ? (
@@ -40,7 +38,7 @@ export default function ProductCard({ name, price, image, collection, collection
       ) : (
         <div className="mb-3 aspect-square rounded bg-sailcloth" aria-hidden="true" />
       )}
-      {collection && <CollectionLabel name={collection} place={collectionPlace} />}
+      {collection && <CollectionLabel name={collection} />}
       <p className="font-body text-body">{name}</p>
       <p className="font-mono text-price-mono">{price}</p>
     </div>

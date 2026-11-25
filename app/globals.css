@@ -35,9 +35,6 @@
   --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
   --font-mono: var(--font-ibm-plex-mono), ui-monospace, "SFMono-Regular", monospace;
   --font-body: var(--font-libre-franklin), ui-sans-serif, system-ui, sans-serif;
-  /* Anton carries location wording only (place names), uppercase and slightly tracked. */
-  --font-location: var(--font-anton), Impact, "Arial Narrow", sans-serif;
-  --tracking-location: 0.06em;
 
   /* Type scale (DESIGN.md typography tokens) */
   --text-display-lg: 40px;

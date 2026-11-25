@@ -27,7 +27,7 @@ export default function CollectionsPage() {
             <div key={collection.slug} role="listitem">
               <MotifTileLink
                 name={collection.name}
-                nameIsLocation={collection.kind === "place"}
+                nameIsTitle
                 image={motifs[0]?.images[0]?.url}
                 href={`/collections/${collection.slug}`}
               />
