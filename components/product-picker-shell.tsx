@@ -124,7 +124,6 @@ export default function ProductPickerShell({ motif, shop, backHref, backLabel }:
   const garmentPromptId = "garment-prompt";
   const descriptionHeadingId = "description-heading";
   const garmentDetailHeadingId = "garment-detail-heading";
-  const embroideryHeadingId = "embroidery-heading";
   const fitSizeHeadingId = "fit-size-heading";
   const careHeadingId = "care-heading";
   const shippingHeadingId = "shipping-heading";
@@ -321,10 +320,10 @@ export default function ProductPickerShell({ motif, shop, backHref, backLabel }:
         </div>
 
         {/* Detail sections — fixed order per FR12/Epic 3: emotional
-            description → THE GARMENT → THE EMBROIDERY → fit/size → care →
+            description → THE GARMENT → fit/size → care →
             shipping/returns. Flat/static `.section` blocks matching
             key-product.html, not an accordion. THE GARMENT depends on
-            garmentType, description/THE EMBROIDERY depend on motif — each
+            garmentType, description depends on motif — each
             is omitted when its dependency is unselected. Fit/size, care,
             and shipping/returns always render. */}
         <div className="mt-10 divide-y divide-line border-t border-line md:mt-14">
@@ -338,6 +337,11 @@ export default function ProductPickerShell({ motif, shop, backHref, backLabel }:
                 Description
               </h2>
               <p className="font-body text-body-sm">{motif.story}</p>
+              {motif.description.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean).map((paragraph, i) => (
+                <p key={i} className="mt-4 whitespace-pre-line font-body text-body-sm">
+                  {paragraph}
+                </p>
+              ))}
             </section>
           )}
 
@@ -350,25 +354,6 @@ export default function ProductPickerShell({ motif, shop, backHref, backLabel }:
                 The Garment
               </h2>
               <p className="font-body text-body-sm">{garmentType.garmentBlurb}</p>
-            </section>
-          )}
-
-          {motif && (
-            <section className="py-6" aria-labelledby={embroideryHeadingId}>
-              <h2
-                id={embroideryHeadingId}
-                className="mb-2 font-mono text-label-mono uppercase text-olive"
-              >
-                The Embroidery
-              </h2>
-              {/* Template intentionally drops key-product.html's closing
-                  "a specific landmark, remembered" clause — that phrasing is
-                  landmark-specific and doesn't generalize across every
-                  motif (e.g. the logo designs aren't landmarks). */}
-              <p className="font-body text-body-sm">
-                {motif.name} — one motif from the {getCollection(motif.collection)?.name ?? "Weathered Thread"} collection. Stitched in navy thread,
-                part of the &quot;PLACE → STORY → MOTIF → OBJECT&quot; line.
-              </p>
             </section>
           )}
 

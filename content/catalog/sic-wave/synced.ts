@@ -4,6 +4,7 @@
 export const synced = {
   "listingId": 4590084029,
   "name": "Sea Isle City Embroidered Shirt | Sea Isle Wave Crewneck and Tees | Comfort Colors | Boutique Apparel",
+  "description": "SEA ISLE CITY\n\nA little piece of Sea Isle City, stitched in.\n\nInspired by the feeling of being near the water and the familiar places that bring you back, this embroidered design pairs a simple wave with the words “SEA ISLE CITY.” Part of the Weathered Thread Sea Isle City collection, this piece is designed to feel like an everyday reminder of a place worth remembering.\n\nTHE DETAILS\n\n• Original Weathered Thread embroidery design\n• Embroidered directly onto your selected garment\n• Made to order\n• Quality Comfort Colors® garment\n• Soft, substantial feel with the lived-in character of a favorite piece\n• Available in multiple garment styles, colors, and sizes  \n• Unisex fit\n• Don't see what you want? Send a message!\n\n\nCHOOSE YOUR PIECE\n\nSelect your garment style, color, and size from your choice of Comfort Colors® tee, long-sleeve tee, or crewneck. Choose from the listing options.\n\nEach piece is embroidered to order and finished individually. Because of this, slight variations in stitch texture or placement may occur. These small variations are part of the character of a handmade piece made just for you.\n\nMade to Remember. Stitched in.",
   "url": "https://www.etsy.com/listing/4590084029/sea-isle-city-embroidered-shirt-sea-isle",
   "state": "active",
   "priceCents": 3600,

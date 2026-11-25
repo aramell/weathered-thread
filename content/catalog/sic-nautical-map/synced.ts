@@ -4,6 +4,7 @@
 export const synced = {
   "listingId": 4603211770,
   "name": "Sea Isle Water Nautical Map Embroidered Shirt | Sea Isle City Crewneck and Tees | Comfort Colors | Boutique Apparel",
+  "description": "SEA ISLE CITY — NAUTICAL MAP ⛵\n\nFor the ones who always find their way back.\nA little piece of Sea Isle City, stitched in.\n\nInspired by the shoreline and familiar waters of Sea Isle City, this original Weathered Thread design features an embroidered map, sailboat, and Sea Isle City lettering. It’s made for beach days, summer traditions, and the places that keep calling you back.\n\nTHE DETAILS\n\n• Original Weathered Thread embroidery design\n• Embroidered directly onto your selected garment\n• Made to order\n• Quality Comfort Colors® garment\n• Soft, substantial feel with the lived-in character of a favorite piece\n• Available in multiple garment styles, colors, and sizes  \n• Unisex fit\n• Don't see what you want? Send a message!\n\n\nCHOOSE YOUR PIECE\n\nSelect your garment style, color, and size from your choice of Comfort Colors® tee, long-sleeve tee, or crewneck. Choose from the listing options.\n\nEach piece is embroidered to order and finished individually. Because of this, slight variations in stitch texture or placement may occur. These small variations are part of the character of a handmade piece made just for you.\n\nMade to Remember. Stitched in.",
   "url": "https://www.etsy.com/listing/4603211770/sea-isle-water-nautical-map-embroidered",
   "state": "active",
   "priceCents": 3600,

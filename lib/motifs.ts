@@ -14,11 +14,12 @@ export function buildMotifs(listings: readonly CatalogEntry[]): Motif[] {
   return listings
     .filter((listing) => listing.state === "active")
     .sort((a, b) => b.createdTimestamp - a.createdTimestamp || a.slug.localeCompare(b.slug))
-    .map(({ slug, priceCents, motifName, story, collection, photos }) => ({
+    .map(({ slug, priceCents, motifName, story, description, collection, photos }) => ({
       slug,
       name: motifName,
       priceCents,
       story,
+      description: description ?? "",
       collection,
       images: photos.map(({ src, width, height, alt }) => ({ url: src, width, height, alt })),
     }));

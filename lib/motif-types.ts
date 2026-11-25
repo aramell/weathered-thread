@@ -19,6 +19,8 @@ export type Motif = {
   priceCents: number;
   /** Story copy from `authored.ts`, shown above THE GARMENT. */
   story: string;
+  /** Product details from the Etsy listing description, synced; paragraphs split on blank lines. Empty when Etsy has none. */
+  description: string;
   /** Collection slug, e.g. "sea-isle". */
   collection: string;
   /** Listing photos in Etsy's rank order; empty when the listing has none. */
